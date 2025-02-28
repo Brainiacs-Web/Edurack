@@ -1,447 +1,781 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edurack - Smart Test Series</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edurack</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        body {
-            background: #f9f9f9;
-            color: #333;
-            text-align: center;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            padding: 20px;
-            background: #ffffff;
-            border-bottom: 2px solid #0077b6;
-            font-family: 'Orbitron', sans-serif;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        
-        h1 {
-            font-size: 2.5rem;
-            color: #0077b6;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .glow {
-            color: #0096c7;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-        }
-
-        nav ul li {
-            margin: 0 15px;
-        }
-
-        nav ul li a {
-            color: #333;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: 0.3s;
-        }
-
-        nav ul li a:hover {
-            color: #0077b6;
-        }
-
-        .hero {
-            padding: 100px 20px;
-            background: linear-gradient(135deg, #caf0f8, #90e0ef);
-        }
-
-        .hero h2 {
-            font-size: 3rem;
-            font-family: 'Orbitron', sans-serif;
-            color: #0077b6;
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            margin: 20px 0;
-            color: #333;
-        }
-
-        button {
-            background: #0077b6;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: 0.3s;
-            font-family: 'Orbitron', sans-serif;
-            text-transform: uppercase;
-        }
-
-       
-
-        section {
-            padding: 50px 20px;
-        }
-
-        .feature-card {
-            background: #ffffff;
-            padding: 20px;
-            margin: 20px auto;
-            width: 80%;
-            max-width: 400px;
-            border-radius: 10px;
-            transition: 0.3s;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 1.3rem;
-            border: 1px solid #0077b6;
-            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-card:hover {
-            background: #90e0ef;
-            color: black;
-            transform: scale(1.05);
-            box-shadow: 0px 0px 15px #0077b6;
-        }
-
-        footer {
-            padding: 20px;
-            background: #0f0e0e;
-            border-top: 2px solid #0077b6;
-            font-family: 'Orbitron', sans-serif;
-            box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- Scroll Animation (Smooth Rising Effect) --- */
-        .animate {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-
-        .animate.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-/* Flashcard Section */
-#select-exam {
-        text-align: center;
-        margin-top: 40px;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
     }
-
-    .exam-container {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        flex-wrap: wrap;
+    body {
+      background: linear-gradient(to bottom, #e0f2ff, #f7faff);
+      color: #333;
     }
-
-    /* Flashcard Design */
-    .exam-card {
-        width: 320px;
-        background: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        transition: 0.3s;
-        position: relative;
-        overflow: hidden; /* Prevents overflow of the pseudo-element */
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 60px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
     }
-
-    .exam-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     }
-
-    /* Left Side Content */
-    .exam-content {
-        text-align: left;
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: #007adf;
     }
-
-    h3 {
-        margin-bottom: 10px;
-        font-size: 1.4rem;
-        color: #333;
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 15px;
     }
-
-    .tags span {
-        display: inline-block;
-        background: #f0f0f0;
-        padding: 5px 10px;
-        margin: 5px;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        color: #333;
+    .nav-links li {
+      margin: 0 15px;
     }
-
-    .explore-btn {
-        background: none;
-        border: none;
-        font-size: 1rem;
-        color: #0077b6;
-        cursor: pointer;
-        margin-top: 10px;
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      font-size: 16px;
+      position: relative;
+      transition: all 0.3s ease;
     }
-
-    .explore-btn:hover {
-        text-decoration: underline;
+    .nav-links a:hover {
+      color: #007adf;
     }
-
-    /* Right Side Image */
-    .exam-image img {
-        width: 60px;
-        height: 60px;
+    .nav-links a::after {
+      content: "";
+      width: 0;
+      height: 2px;
+      background: #007adf;
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
     }
-
-    /* Modal Styles */
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .get-started {
+      background: linear-gradient(135deg, #009dff, #006edc);
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .get-started:hover {
+      background: linear-gradient(135deg, #007adf, #005ab5);
+      transform: scale(1.05);
+    }
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #333;
+    }
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 140px 20px;
+      max-width: 900px;
+      margin: auto;
+      animation: fadeInUp 1s ease-in-out;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: 3.5em;
+      font-weight: 700;
+      color: #1c1c1c;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .hero span {
+      color: #009dff;
+      display: block;
+      margin-top: 10px;
+    }
+    .hero p {
+      margin: 15px 0;
+      font-size: 20px;
+      color: #555;
+    }
+    .btn {
+      background: linear-gradient(135deg, #009dff, #006edc);
+      color: white;
+      padding: 12px 30px;
+      font-size: 1.1em;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 20px auto 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: block;
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, #007adf, #005ab5);
+      transform: scale(1.05);
+    }
+    /* Sections */
+    .section {
+      padding: 80px 8%;
+      text-align: center;
+      padding-top: 40px;
+    }
+    .section:not(:last-child) {
+      margin-bottom: 50px;
+    }
+    .features, .about-content, .arena, .reviews {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .about-box, .feature-box, .review-box, .progress-box {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+      max-width: 100%;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    .about-box:hover, .feature-box:hover, .review-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .about-box i, .feature-box i {
+      font-size: 2.5em;
+      color: #007adf;
+      margin-bottom: 15px;
+    }
+    /* Track Your Growth Section */
+    #progress {
+      padding: 80px 8%;
+      text-align: center;
+    }
+    #progress h2 {
+      font-size: 2.2em;
+      margin-bottom: 15px;
+    }
+    .progress-container {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .progress-box {
+      width: 260px;
+      max-width: 100%;
+    }
+    .progress-bar {
+      background: #ddd;
+      height: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #009dff, #006edc);
+      transition: width 1.2s ease-in-out;
+    }
+    /* Arena Section */
+    #arena {
+      background: #e0f2ff;
+      padding: 80px 8%;
+      text-align: center;
+    }
+    #arena h2 {
+      font-size: 2.2em;
+      margin-bottom: 15px;
+    }
+    /* Footer */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      padding: 20px;
+      background-color: #000;
+      color: #fff;
+      border-top: 3px solid #00aaff;
+    }
+    footer h2 {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: #00aaff;
+    }
+    footer p {
+      font-size: 0.9em;
+      line-height: 1.6;
+    }
+    footer > div {
+      margin: 15px;
+      flex: 1;
+    }
+    footer a {
+      text-decoration: none;
+      color: #00aaff;
+      transition: color 0.3s;
+    }
+    footer a:hover {
+      color: #ffbb00;
+    }
+    footer .social-icons {
+      display: flex;
+      gap: 15px;
+    }
+    footer .social-icons img {
+      width: 24px;
+      height: 24px;
+    }
+    /* Modal Popup Styles */
+    .modal-container {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
     .modal {
-    display: none; /* Hide modal initially */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
-}
-
-
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
-    text-align: center;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.close-btn {
-    float: right;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-}
-.close-btn:hover {
-    color: red;
-}
-
-/* Input Fields */
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-/* Login Button */
-.modal-content button {
-    background: #0077b6;
-    color: white;
-    border: none;
-    padding: 10px;
-    font-size: 1rem;
-    cursor: pointer;
-    border-radius: 5px;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.modal-content button:hover {
-    background: #005f87;
-}
-
-
-    </style>
+      background: #fff;
+      width: 90%;
+      max-width: 500px;
+      padding: 20px 30px;
+      border-radius: 10px;
+      position: relative;
+      max-height: 90%;
+      overflow-y: auto;
+    }
+    .close-btn {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .toggle-form {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .toggle-form button {
+      background: none;
+      border: none;
+      color: #007adf;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .forgot-password {
+      display: block;
+      text-align: right;
+      margin-top: 5px;
+      font-size: 0.9em;
+      color: #007adf;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 10px 20px;
+      }
+      .nav-links li {
+        margin: 0 10px;
+      }
+      .logo {
+        font-size: 22px;
+      }
+      .hero {
+        padding: 100px 20px;
+      }
+      .hero h1 {
+        font-size: 2.5em;
+      }
+      .hero p {
+        font-size: 16px;
+      }
+      .section {
+        padding: 60px 5%;
+      }
+      .about-box,
+      .feature-box,
+      .review-box,
+      .progress-box {
+        width: 100%;
+        max-width: 320px;
+      }
+    }
+    @media (max-width: 480px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 10px 0;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .hamburger {
+        display: block;
+      }
+    }
+    #loginForm h2,
+    #registerForm h2 {
+      text-align: center;
+    }
+  </style>
+  
+  <!-- Firebase SDKs (Compat Versions) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <!-- Firebase Configuration -->
+  <script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  </script>
+  
+  <!-- EmailJS Library -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    // Initialize EmailJS with your user ID
+    (function(){
+      emailjs.init("hQ3S3CD8mgGsukftX");
+    })();
+  </script>
 </head>
 <body>
-<!-- Login Popup Modal -->
-
-
-    <header class="animate">
-        <h1>Edu<span class="glow">Rack</span></h1>
-        <nav>
-            <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <section class="hero animate">
-        <h2>Welcome to Edurack</h2>
-        <p>Experience a real exam-like interface.</p>
-        <button id="explore-btn">Get Started</button>
-    </section>
-
-    <section id="select-exam">
-        <h2>Select Your Exam</h2>
-        <div class="exam-container">
-            
-            <!-- JEE Mains Card -->
-            <div class="exam-card">
-                <div class="exam-content">
-                    <h3>JEE Mains</h3>
-                    <div class="tags">
-                       
-                    </div>
-                    <button class="explore-btn" onclick="redirectTo('jee-mains.html')">
-                        GO →
-                    </button>
-                </div>
-                <div class="exam-image">
-                    <img src="https://i.postimg.cc/J4ycjc1N/physics.png" alt="JEE Mains">
-                </div>
-            </div>
-    
-            <!-- JEE Advanced Card -->
-            <div class="exam-card">
-                <div class="exam-content">
-                    <h3>JEE Advanced</h3>
-                    <div class="tags">
-                        
-                    </div>
-                    <button class="explore-btn" onclick="redirectTo('jee-advanced.html')">
-                        GO →
-                    </button>
-                </div>
-                <div class="exam-image">
-                    <img src="https://i.postimg.cc/y6pyJrz6/relativity.png" alt="JEE Advanced">
-                </div>
-            </div>
-    
-            <!-- NEET Card -->
-            <div class="exam-card">
-                <div class="exam-content">
-                    <h3>NEET</h3>
-                    <div class="tags">
-                    </div>
-                    <button class="explore-btn" onclick="redirectTo('neet.html')">
-                        GO →
-                    </button>
-                </div>
-                <div class="exam-image">
-                    <img src="https://i.postimg.cc/br5xKdRS/stethoscope.pngg" alt="NEET">
-                </div>
-            </div>
-    
-        </div>
-    </section>
-
-    <section id="about" class="animate">
-        <h2>About Edurack</h2>
-        <p>Edurack is a platform that provides test series for multiple entrance exams.</p>
-    </section>
-
-    <section id="features" class="animate">
-        <h2>Features</h2>
-        <div class="feature-card animate">
-            <h3>CBT Based</h3>
-            <p>CBT (Computer-Based Test) for both Android & Web devices.</p>
-        </div>
-        <div class="feature-card animate">
-            <h3>AI-Powered Test Series</h3>
-            <p>Prevent cheating & inappropriate behavior during the test.</p>
-        </div>
-    </section>
-
-    <footer class="animate">
-        <p>© 2025 Edurack | The Future of Test Series</p>
-    </footer>
-
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Login</h2>
-            <form>
-                <label for="username">Username:</label>
-                <input type="text" id="username" placeholder="Enter your username" required>
-    
-                <label for="password">Password:</label>
-                <input type="password" id="password" placeholder="Enter your password" required>
-    
-                <button type="submit">Login</button>
-            </form>
-        </div>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Edurack</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#free">Free Content</a></li>
+      <li><a href="#arena">Arena</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="get-started" id="navGetStarted">Get Started</button>
+      <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
+  </nav>
 
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Let Your Preparation <br /><span>Go Ahead With Edurack!</span></h1>
+    <p>Learn ► Practice ► Analyze ► Better Results</p>
+    <button class="get-started" id="heroGetStarted">Get Started for Free</button>
+  </section>
 
-    
+  <!-- What You Get Section -->
+  <section id="free" class="section">
+    <h2><i class="fas fa-gift"></i> What You Get</h2>
+    <div class="features">
+      <div class="feature-box">
+        <i class="fas fa-file-alt"></i>
+        <h3>Free PYQs</h3>
+        <p>Access previous year JEE & NEET questions for free.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-tasks"></i>
+        <h3>6+ Test Series</h3>
+        <p>Full-length and topic-wise tests with real-time rankings.</p>
+      </div>
+      <div class="feature-box">
+        <i class="fas fa-question-circle"></i>
+        <h3>Daily Quiz</h3>
+        <p>Test your skills daily with fun and challenging quizzes.</p>
+      </div>
+    </div>
+  </section>
 
-    <script>
-      
+  <!-- Arena Section -->
+  <section id="arena" class="section">
+    <h2><i class="fas fa-trophy"></i> Arena - Compete & Win!</h2>
+    <p>Challenge another student in a 5-question quiz. The winner gets ranked on the leaderboard!</p>
+    <button class="btn">Join Arena</button>
+  </section>
 
-        // Scroll Animation with Smooth Effect
-        function revealOnScroll() {
-            let elements = document.querySelectorAll('.animate');
-            let windowHeight = window.innerHeight;
+  <!-- Track Your Growth Section -->
+  <section id="progress" class="section">
+    <h2><i class="fas fa-chart-bar"></i> Track Your Growth</h2>
+    <p>Monitor your improvement with AI-powered analytics.</p>
+    <div class="progress-container">
+      <div class="progress-box">
+        <h3>Physics</h3>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 75%;"></div>
+        </div>
+        <p>75% Mastery</p>
+      </div>
+      <div class="progress-box">
+        <h3>Chemistry</h3>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 62%;"></div>
+        </div>
+        <p>62% Mastery</p>
+      </div>
+      <div class="progress-box">
+        <h3>Mathematics</h3>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 85%;"></div>
+        </div>
+        <p>85% Mastery</p>
+      </div>
+    </div>
+  </section>
 
-            elements.forEach(el => {
-                let position = el.getBoundingClientRect().top;
+  <!-- About Section -->
+  <section id="about" class="section">
+    <h2><i class="fas fa-rocket"></i> About Edurack</h2>
+    <p>Your ultimate destination for JEE & NEET preparation with free resources, premium content, and competitive quizzes.</p>
+    <div class="about-content">
+      <div class="about-box">
+        <i class="fas fa-book-open"></i>
+        <h3>Comprehensive Study Materials</h3>
+        <p>Curated content from top educators to boost your exam preparation.</p>
+      </div>
+      <div class="about-box">
+        <i class="fas fa-bolt"></i>
+        <h3>Interactive Learning</h3>
+        <p>Engaging quizzes & challenges to test and enhance your knowledge.</p>
+      </div>
+      <div class="about-box">
+        <i class="fas fa-chart-line"></i>
+        <h3>Track Your Progress</h3>
+        <p>Smart analytics help you improve your weak areas effectively.</p>
+      </div>
+    </div>
+  </section>
 
-                if (position < windowHeight - 100) {
-                    el.classList.add('show');
-                }
-            });
-        }
+  <!-- Footer Section -->
+  <footer class="footer">
+    <div>
+      <h3>About Us</h3>
+      <p>Edurack provides top-tier exam preparation resources, including past papers, test series, and competitive quizzes.</p>
+    </div>
+    <div>
+      <h3>Quick Links</h3>
+      <p><a href="#" style="color: white;">Home</a></p>
+      <p><a href="#" style="color: white;">Courses</a></p>
+      <p><a href="#" style="color: white;">Arena</a></p>
+      <p><a href="#" style="color: white;">Contact</a></p>
+    </div>
+    <div>
+      <h3>Follow Us</h3>
+      <p>
+        <a href="#" style="color: white;">Facebook</a> |
+        <a href="#" style="color: white;">Twitter</a> |
+        <a href="#" style="color: white;">Instagram</a> |
+        <a href="#" style="color: white;">LinkedIn</a>
+      </p>
+    </div>
+    <div style="text-align: center; width: 100%;">
+      <p>© 2025 Edurack. All rights reserved.</p>
+    </div>
+  </footer>
 
-        window.addEventListener('scroll', revealOnScroll);
-        window.addEventListener('load', revealOnScroll);
-    
-    
+  <!-- Modal Popup for Login/Registration Form -->
+  <div class="modal-container" id="modalContainer">
+    <div class="modal">
+      <button class="close-btn" id="closePopup">&times;</button>
+      <div id="formContainer">
+        <!-- Registration Form (default view) -->
+        <div id="registerForm">
+          <h2>Register</h2>
+          <form id="registerFormElement">
+            <div class="form-group">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" placeholder="Your Name" required>
+            </div>
+            <div class="form-group">
+              <label for="regEmail">Email</label>
+              <input type="email" id="regEmail" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="regPassword">Password</label>
+              <input type="password" id="regPassword" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm Password</label>
+              <input type="password" id="confirmPassword" placeholder="Re-enter Password" required>
+            </div>
+            <div class="form-group">
+              <label for="targetExam">Target Exam</label>
+              <select id="targetExam" required>
+                <option value="">Select</option>
+                <option value="JEE">JEE</option>
+                <option value="NEET">NEET</option>
+                <option value="Both">Both</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="userClass">Class</label>
+              <select id="userClass" required>
+                <option value="">Select</option>
+                <option value="11th">11th</option>
+                <option value="12th">12th</option>
+                <option value="Dropper">Dropper</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="state">State</label>
+              <input type="text" id="state" placeholder="Your State" required>
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" id="city" placeholder="Your City" required>
+            </div>
+            <button type="submit" class="btn">Register</button>
+          </form>
+          <div class="toggle-form">
+            Already have an account? <button type="button" id="showLogin">Login</button>
+          </div>
+        </div>
+        <!-- Login Form -->
+        <div id="loginForm" style="display:none;">
+          <h2>Login</h2>
+          <form id="loginFormElement">
+            <div class="form-group">
+              <label for="loginEmail">Email</label>
+              <input type="email" id="loginEmail" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="loginPassword">Password</label>
+              <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
+          </form>
+          <button class="forgot-password" id="forgotPasswordBtn">Forgot Password?</button>
+          <div class="toggle-form">
+            Don't have an account? <button type="button" id="showRegister">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        function redirectTo(page) {
-        window.location.href = page;
-    }
+  <script>
+    // Navbar scroll and hamburger toggle
+    window.addEventListener("scroll", function () {
+      document.querySelector(".navbar").classList.toggle("scrolled", window.scrollY > 50);
+    });
+    document.querySelector(".hamburger").addEventListener("click", function () {
+      document.querySelector(".nav-links").classList.toggle("active");
+    });
 
     document.addEventListener("DOMContentLoaded", function() {
-    let modal = document.getElementById('login-modal');
-    let exploreBtn = document.getElementById('explore-btn');
-    let closeBtn = document.querySelector('.close-btn');
+      // Check if user is already logged in from localStorage and redirect if yes
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        window.location.href = "home.html";
+      }
 
-    // Show modal only when "Get Started" button is clicked
-    exploreBtn.addEventListener('click', function() {
-        modal.style.display = 'flex';
-    });
+      // Get both "Get Started" buttons (navbar & hero)
+      const navGetStarted = document.getElementById("navGetStarted");
+      const heroGetStarted = document.getElementById("heroGetStarted");
+      const modalContainer = document.getElementById("modalContainer");
+      const closePopup = document.getElementById("closePopup");
 
-    // Close modal when clicking the "X" button
-    closeBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
+      // Open modal when either button is clicked
+      navGetStarted.addEventListener("click", () => {
+        modalContainer.style.display = "flex";
+      });
+      heroGetStarted.addEventListener("click", () => {
+        modalContainer.style.display = "flex";
+      });
+      
+      // Close modal when close button is clicked
+      closePopup.addEventListener("click", () => {
+        modalContainer.style.display = "none";
+      });
 
-    // Close modal when clicking outside of it
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
+      // Toggle between registration and login forms
+      const showLoginBtn = document.getElementById("showLogin");
+      const showRegisterBtn = document.getElementById("showRegister");
+      const registerFormDiv = document.getElementById("registerForm");
+      const loginFormDiv = document.getElementById("loginForm");
+      
+      showLoginBtn.addEventListener("click", () => {
+        registerFormDiv.style.display = "none";
+        loginFormDiv.style.display = "block";
+      });
+      showRegisterBtn.addEventListener("click", () => {
+        loginFormDiv.style.display = "none";
+        registerFormDiv.style.display = "block";
+      });
+      
+      // Firebase Auth and Firestore initialization
+      const auth = firebase.auth();
+      const firestore = firebase.firestore();
+      
+      // Registration form submission
+      const registerFormElement = document.getElementById("registerFormElement");
+      registerFormElement.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById("fullName").value.trim();
+        const email = document.getElementById("regEmail").value.trim();
+        const password = document.getElementById("regPassword").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const targetExam = document.getElementById("targetExam").value;
+        const userClass = document.getElementById("userClass").value;
+        const state = document.getElementById("state").value.trim();
+        const city = document.getElementById("city").value.trim();
+        
+        if (password !== confirmPassword) {
+          alert("Passwords do not match.");
+          return;
         }
+        
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => {
+            return auth.createUserWithEmailAndPassword(email, password);
+          })
+          .then((userCredential) => {
+            // Save user data in localStorage
+            localStorage.setItem("user", JSON.stringify(userCredential.user));
+            return firestore.collection('users').doc(userCredential.user.uid).set({
+              fullName,
+              email,
+              targetExam,
+              class: userClass,
+              state,
+              city,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          })
+          .then(() => {
+            emailjs.send("service_okigh8x", "template_vhp13oh", {
+              username: fullName,
+              email: email
+            })
+            .then(function(response) {
+              console.log('Welcome email sent successfully!', response.status, response.text);
+            }, function(error) {
+              console.error('Failed to send welcome email:', error);
+            })
+            .finally(() => {
+              alert("Registration successful!");
+              window.location.href = "home.html";
+            });
+          })
+          .catch((error) => {
+            console.error("Registration error:", error);
+            alert("Error: " + error.message);
+          });
+      });
+      
+      // Login form submission
+      const loginFormElement = document.getElementById("loginFormElement");
+      loginFormElement.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+        auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+          .then(() => {
+            return auth.signInWithEmailAndPassword(email, password);
+          })
+          .then((userCredential) => {
+            // Save user data in localStorage
+            localStorage.setItem("user", JSON.stringify(userCredential.user));
+            alert("Login successful!");
+            window.location.href = "home.html";
+          })
+          .catch((error) => {
+            console.error("Login error:", error);
+            alert("Error: " + error.message);
+          });
+      });
+      
+      // Forgot Password functionality
+      const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+      forgotPasswordBtn.addEventListener("click", () => {
+        const email = document.getElementById("loginEmail").value.trim();
+        if (!email) {
+          alert("Please enter your email in the login field to reset your password.");
+          return;
+        }
+        auth.sendPasswordResetEmail(email)
+          .then(() => {
+            alert("Password reset email sent! Please check your inbox.");
+          })
+          .catch((error) => {
+            console.error("Password Reset Error:", error);
+            alert("Error: " + error.message);
+          });
+      });
     });
-});
-
-    </script>
-
-
+  </script>
 </body>
 </html>
