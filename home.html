@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Edurack</title>
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007adf" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    /* Import Poppins font */
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+    
+    /* CSS Variables */
+    :root {
+      --primary-color: #007adf; /* Blue accent used sparingly */
+      --primary-hover: #0056b3;
+      --bg-gradient-start: #e0f2ff;
+      --bg-light: #f7faff;
+      --text-light: #333; /* Dark gray text */
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --card-shadow-hover: rgba(0, 0, 0, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Body Background and Text Colors */
+    body {
+      background: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-light));
+      color: var(--text-light);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Navbar Styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 60px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .profile i {
+      font-size: 40px;
+      color: var(--primary-color);
+      transition: transform 0.3s ease;
+    }
+    .profile:hover i {
+      transform: scale(1.1);
+    }
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: color 0.3s ease;
+    }
+    .hamburger:hover {
+      color: var(--primary-hover);
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 240px;
+      height: calc(100% - 70px);
+      background: #fff;
+      box-shadow: 2px 0 8px var(--card-shadow);
+      padding: 20px;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      border-right: 1px solid #e0e0e0;
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      text-align: center;
+    }
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar ul li {
+      margin-bottom: 12px;
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .sidebar ul li a:hover {
+      background: var(--primary-color);
+      color: #fff;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      padding: 100px 20px 40px;
+      max-width: 1200px;
+      transition: margin-left 0.3s ease;
+    }
+    .welcome {
+      font-size: 2em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-light);
+      text-align: center;
+    }
+    /* Quote Section */
+    .quote {
+      background: #f0fbff;
+      padding: 20px;
+      border-left: 4px solid var(--primary-color);
+      margin-bottom: 30px;
+      font-style: italic;
+      transition: background 0.3s ease;
+      font-size: 1.1em;
+      color: var(--text-light);
+    }
+    /* Announcements Section */
+    .announcements {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+    .announcements h2 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      color: var(--text-light);
+    }
+    .announcement-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .announcement-item:last-child {
+      border-bottom: none;
+    }
+    .announcement-item i {
+      color: var(--primary-color);
+      font-size: 1.2em;
+    }
+    /* Dashboard Cards */
+    .dashboard-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px var(--card-shadow-hover);
+    }
+    .card h3 {
+      font-size: 1.2em;
+      color: var(--text-light);
+      margin-bottom: 10px;
+    }
+    .card p {
+      font-size: 0.95em;
+      color: var(--text-light);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        padding: 100px 10px 40px;
+      }
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .hamburger {
+        display: block;
+      }
+      .logo {
+        display: none;
+      }
+    }
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 10px 20px;
+      }
+      .dashboard-cards {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <button id="hamburgerBtn" class="hamburger"><i class="fas fa-bars"></i></button>
+    <div class="logo">Edurack</div>
+    <div class="nav-right">
+      <div class="profile">
+        <i class="fas fa-user-circle"></i>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="mytests.html"><i class="fas fa-tasks"></i> Test Series</a></li>
+      <li><a href="quizzes.html"><i class="fas fa-question-circle"></i> Daily Quiz</a></li>
+      <li><a href="arena.html"><i class="fas fa-trophy"></i> Arena</a></li>
+      <li><a href="library.html"><i class="fas fa-university"></i> Library</a></li>
+      <li><a href="forum.html"><i class="fas fa-comments"></i> Forum</a></li>
+      <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Events</a></li>
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="welcome" id="welcomeMsg">Welcome!</div>
+    
+    <!-- Quote of the Day -->
+    <div class="quote">
+      "Education is the most powerful weapon which you can use to change the world." – Nelson Mandela
+    </div>
+    
+    <!-- Announcements Section -->
+    <div class="announcements">
+      <h2>Latest Announcements</h2>
+      <div class="announcement-item">
+        <i class="fas fa-bullhorn"></i>
+        <span>NEET 8+1 Ultimate Test series is Launched!</span>
+      </div>
+      <div class="announcement-item">
+        <i class="fas fa-bullhorn"></i>
+        <span>Join our Telegram channel for daily polls.</span>
+      </div>
+      <div class="announcement-item">
+        <i class="fas fa-bullhorn"></i>
+        <span>Your Feedback is our command.</span>
+      </div>
+    </div>
+    
+    <!-- Dashboard Cards -->
+    <div class="dashboard-cards">
+      <div class="card" onclick="window.location.href='Tests.html';">
+        <h3>My Tests</h3>
+        <p>Your Enrolled tests.</p>
+      </div>
+      <div class="card" onclick="window.location.href='arena.html';">
+        <h3>Arena Stats</h3>
+        <p>View your ranking and performance metrics.</p>
+      </div>
+      <div class="card" onclick="window.location.href='quiz.html';">
+        <h3>Daily Quiz</h3>
+        <p>Participate in today's quiz challenge.</p>
+      </div>
+      <div class="card" onclick="window.location.href='resources.html';">
+        <h3>Resource Hub</h3>
+        <p>Explore articles, tutorials, and study guides.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+    if (!firebase.apps.length) { 
+      firebase.initializeApp(firebaseConfig); 
+    }
+
+    // Fetch user data and update welcome message
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        firebase.firestore().collection("users").doc(user.uid).get()
+          .then(function(doc) {
+            if (doc.exists && doc.data().fullName) {
+              document.getElementById("welcomeMsg").innerText = "Welcome, " + doc.data().fullName + "!";
+            } else {
+              document.getElementById("welcomeMsg").innerText = "Welcome, User!";
+            }
+          })
+          .catch(function(error) {
+            console.error("Error fetching user data:", error);
+            document.getElementById("welcomeMsg").innerText = "Welcome, User!";
+          });
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    // Hamburger button toggles sidebar visibility on small screens
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.getElementById('sidebar');
+    hamburgerBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+    });
+
+    // Register Service Worker for PWA Capabilities
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }, function(err) {
+          console.error('Service Worker registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
