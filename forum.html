@@ -12,29 +12,31 @@
     /* Import Poppins font */
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
     
+    /* CSS Variables */
     :root {
       --primary-color: #007adf;
-      --primary-hover: #005ab3;
+      --primary-hover: #0056b3;
       --bg-gradient-start: #e0f2ff;
       --bg-light: #f7faff;
       --text-light: #333;
       --card-shadow: rgba(0, 0, 0, 0.1);
       --card-shadow-hover: rgba(0, 0, 0, 0.15);
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Poppins', sans-serif;
     }
-    
+
     body {
       background: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-light));
       color: var(--text-light);
+      transition: background 0.3s ease, color 0.3s ease;
     }
-    
-    /* Navbar styling */
+
+    /* Navbar Styling (same as home.html) */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -47,35 +49,83 @@
       width: 100%;
       top: 0;
       z-index: 100;
+      transition: all 0.3s ease;
       border-bottom: 1px solid #e0e0e0;
+    }
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     }
     .logo {
       font-size: 26px;
       font-weight: 700;
       color: var(--primary-color);
     }
-    .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 15px;
-    }
-    .nav-links li a {
-      text-decoration: none;
-      color: var(--text-light);
-      font-weight: 500;
-      font-size: 16px;
-      transition: color 0.3s ease;
-    }
-    .nav-links li a:hover {
-      color: var(--primary-color);
-    }
     .nav-right {
       display: flex;
       align-items: center;
       gap: 15px;
+      position: relative;
     }
-    
-    /* Sidebar styling */
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .profile i {
+      font-size: 40px;
+      color: var(--primary-color);
+      transition: transform 0.3s ease;
+    }
+    .profile:hover i {
+      transform: scale(1.1);
+    }
+    /* Profile Dropdown Styling */
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 1000;
+      min-width: 150px;
+    }
+    .profile-dropdown p,
+    .profile-dropdown a {
+      display: block;
+      padding: 8px 12px;
+      color: #333;
+      text-decoration: none;
+      font-size: 0.95em;
+    }
+    .profile-dropdown a:hover {
+      background: #f0f0f0;
+    }
+    .profile-dropdown a i {
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+    /* Hamburger Button for mobile */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: color 0.3s ease;
+    }
+    .hamburger:hover {
+      color: var(--primary-hover);
+    }
+
+    /* Sidebar Styling (same as home.html) */
     .sidebar {
       position: fixed;
       top: 70px;
@@ -85,7 +135,18 @@
       background: #fff;
       box-shadow: 2px 0 8px var(--card-shadow);
       padding: 20px;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
       border-right: 1px solid #e0e0e0;
+    }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      text-align: center;
     }
     .sidebar ul {
       list-style: none;
@@ -102,27 +163,29 @@
       gap: 8px;
       padding: 10px;
       border-radius: 6px;
-      transition: background 0.3s ease;
+      transition: background 0.3s ease, color 0.3s ease;
     }
     .sidebar ul li a:hover {
       background: var(--primary-color);
       color: #fff;
     }
-    
-    /* Main content styling */
+
+    /* Main Content */
     .main-content {
       margin-left: 260px;
       padding: 100px 20px 40px;
       max-width: 1200px;
+      transition: margin-left 0.3s ease;
     }
     .welcome {
       font-size: 2em;
       font-weight: 600;
       margin-bottom: 20px;
+      color: var(--text-light);
       text-align: center;
     }
-    
-    /* Forums chat container */
+
+    /* Forum Chat Container */
     .forum-container {
       background: #fff;
       padding: 20px;
@@ -174,27 +237,40 @@
     .chat-input button:hover {
       background: var(--primary-hover);
     }
-    
-    /* Responsive adjustments */
+
+    /* Responsive Adjustments */
     @media (max-width: 768px) {
       .main-content {
         margin-left: 0;
         padding: 100px 10px 40px;
       }
       .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .hamburger {
+        display: block;
+      }
+      .logo {
         display: none;
+      }
+    }
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 10px 20px;
       }
     }
   </style>
   
-  <!-- Firebase SDKs (Compat Versions) -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-  
-  <!-- Firebase Configuration -->
   <script>
+    // Firebase configuration (update with your own credentials)
     const firebaseConfig = {
       apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
       authDomain: "arena-b8996.firebaseapp.com",
@@ -203,39 +279,46 @@
       messagingSenderId: "188106766480",
       appId: "1:188106766480:web:801e701f00151448090015"
     };
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) { 
+      firebase.initializeApp(firebaseConfig); 
     }
   </script>
 </head>
 <body>
-  <!-- Navbar -->
+  <!-- Navbar (same structure as home.html) -->
   <nav class="navbar">
+    <button id="hamburgerBtn" class="hamburger"><i class="fas fa-bars"></i></button>
     <div class="logo">Edurack</div>
-    <ul class="nav-links">
-      <li><a href="home.html">Home</a></li>
-      <li><a href="courses.html">Courses</a></li>
-      <li><a href="forum.html">Forum</a></li>
-      <li><a href="profile.html">Profile</a></li>
-    </ul>
     <div class="nav-right">
-      <button class="get-started" onclick="window.location.href='login.html'">Log In</button>
+      <div class="profile">
+        <i class="fas fa-user-circle"></i>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <p id="profileGreeting">Hi, User!</p>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </div>
     </div>
   </nav>
-  
-  <!-- Sidebar -->
+
+  <!-- Sidebar (same structure as home.html) -->
   <aside class="sidebar" id="sidebar">
     <ul>
-      <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
-      <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="mytests.html"><i class="fas fa-book"></i> My Tests</a></li>
+      <li><a href="tests.html"><i class="fas fa-tasks"></i> Test Series</a></li>
+      <li><a href="quiz.html"><i class="fas fa-question-circle"></i> Daily Quiz</a></li>
+      <li><a href="arena.html"><i class="fas fa-trophy"></i> Arena</a></li>
+      <li><a href="library.html"><i class="fas fa-university"></i> Library</a></li>
       <li><a href="forum.html"><i class="fas fa-comments"></i> Forum</a></li>
+      <li><a href="events.html"><i class="fas fa-calendar-alt"></i> Events</a></li>
       <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
     </ul>
   </aside>
-  
+
   <!-- Main Content -->
   <div class="main-content">
-    <div class="welcome" id="welcomeMsg">Welcome to the Forum!</div>
+    <div class="welcome" id="welcomeMsg">Welcome!</div>
     
     <!-- Forum Chat Container -->
     <div class="forum-container">
@@ -246,51 +329,106 @@
       </div>
     </div>
   </div>
-  
-  <!-- Firebase Auth, Firestore, and Realtime Database scripts are loaded above -->
+
   <script>
-    // Reference to the Realtime Database "forum" node
+    // Update welcome message and profile greeting with user's name (same as home.html)
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        firebase.firestore().collection("users").doc(user.uid).get()
+          .then(function(doc) {
+            const name = (doc.exists && doc.data().fullName) ? doc.data().fullName : "User";
+            document.getElementById("welcomeMsg").innerText = "Welcome, " + name + "!";
+            document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
+          })
+          .catch(function(error) {
+            console.error("Error fetching user data:", error);
+            document.getElementById("welcomeMsg").innerText = "Welcome, User!";
+            document.getElementById("profileGreeting").innerText = "Hi, User!";
+          });
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+
+    // Hamburger button toggles sidebar on small screens
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.getElementById('sidebar');
+    hamburgerBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+    });
+
+    // Profile dropdown toggle
+    const profile = document.querySelector('.profile');
+    const profileDropdown = document.getElementById('profileDropdown');
+    profile.addEventListener('click', function(e) {
+      e.stopPropagation();
+      profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', function() {
+      if (profileDropdown.style.display === 'block') {
+        profileDropdown.style.display = 'none';
+      }
+    });
+
+    // Logout functionality with redirect to index.html
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      }).catch((error) => {
+        console.error("Sign out error:", error);
+      });
+    });
+
+    // Chat functionality using Firebase Realtime Database
     const db = firebase.database();
     const messagesRef = db.ref("forum");
 
-    // Function to add a message element to the messages div
+    // Function to add a message to the messages container
     function addMessage(key, data) {
       const messagesDiv = document.getElementById("messages");
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message");
-      // You can extend this to include username and timestamp
-      messageDiv.innerHTML = `<strong>${data.sender || "Anonymous"}:</strong> ${data.text} <br/><span>${new Date(data.timestamp).toLocaleString()}</span>`;
       messageDiv.setAttribute("data-key", key);
+      messageDiv.innerHTML = `<strong>${data.sender || "Anonymous"}:</strong> ${data.text} <br/><span>${new Date(data.timestamp).toLocaleString()}</span>`;
       messagesDiv.appendChild(messageDiv);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    // Listen for new messages added to the forum node
+    // Listen for new messages added in the "forum" node
     messagesRef.on("child_added", function(snapshot) {
       addMessage(snapshot.key, snapshot.val());
     });
 
-    // Send message on button click
+    // Send message on button click or Enter key press
     document.getElementById("sendBtn").addEventListener("click", function() {
       const messageInput = document.getElementById("messageInput");
       const text = messageInput.value.trim();
       if (text !== "") {
-        // You could also store sender info if available
         messagesRef.push({
           text: text,
-          sender: "Anonymous",
+          sender: document.getElementById("welcomeMsg").innerText.replace("Welcome, ", "").replace("!", ""),
           timestamp: Date.now()
         });
         messageInput.value = "";
       }
     });
-
-    // Optionally, send message on Enter key
     document.getElementById("messageInput").addEventListener("keypress", function(e) {
       if (e.key === "Enter") {
         document.getElementById("sendBtn").click();
       }
     });
+
+    // Register Service Worker for PWA capabilities
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(registration) {
+          console.log('Service Worker registered with scope:', registration.scope);
+        }, function(err) {
+          console.error('Service Worker registration failed:', err);
+        });
+      });
+    }
   </script>
 </body>
 </html>
