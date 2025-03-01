@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forums - Edurack</title>
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007adf" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <style>
+    /* Import Poppins font */
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+    
+    :root {
+      --primary-color: #007adf;
+      --primary-hover: #005ab3;
+      --bg-gradient-start: #e0f2ff;
+      --bg-light: #f7faff;
+      --text-light: #333;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --card-shadow-hover: rgba(0, 0, 0, 0.15);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-light));
+      color: var(--text-light);
+    }
+    
+    /* Navbar styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 60px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+    }
+    .nav-links li a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      font-size: 16px;
+      transition: color 0.3s ease;
+    }
+    .nav-links li a:hover {
+      color: var(--primary-color);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    /* Sidebar styling */
+    .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 240px;
+      height: calc(100% - 70px);
+      background: #fff;
+      box-shadow: 2px 0 8px var(--card-shadow);
+      padding: 20px;
+      border-right: 1px solid #e0e0e0;
+    }
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar ul li {
+      margin-bottom: 12px;
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s ease;
+    }
+    .sidebar ul li a:hover {
+      background: var(--primary-color);
+      color: #fff;
+    }
+    
+    /* Main content styling */
+    .main-content {
+      margin-left: 260px;
+      padding: 100px 20px 40px;
+      max-width: 1200px;
+    }
+    .welcome {
+      font-size: 2em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    /* Forums chat container */
+    .forum-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px var(--card-shadow);
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .messages {
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+    }
+    .message {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .message:last-child {
+      border-bottom: none;
+    }
+    .message span {
+      font-size: 0.9em;
+      color: #555;
+    }
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+    .chat-input button {
+      background: var(--primary-color);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .chat-input button:hover {
+      background: var(--primary-hover);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        padding: 100px 10px 40px;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+  
+  <!-- Firebase SDKs (Compat Versions) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  
+  <!-- Firebase Configuration -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+  </script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Edurack</div>
+    <ul class="nav-links">
+      <li><a href="home.html">Home</a></li>
+      <li><a href="courses.html">Courses</a></li>
+      <li><a href="forum.html">Forum</a></li>
+      <li><a href="profile.html">Profile</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="get-started" onclick="window.location.href='login.html'">Log In</button>
+    </div>
+  </nav>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+      <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="forum.html"><i class="fas fa-comments"></i> Forum</a></li>
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+    </ul>
+  </aside>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="welcome" id="welcomeMsg">Welcome to the Forum!</div>
+    
+    <!-- Forum Chat Container -->
+    <div class="forum-container">
+      <div class="messages" id="messages"></div>
+      <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Type your message here..." />
+        <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Firebase Auth, Firestore, and Realtime Database scripts are loaded above -->
+  <script>
+    // Reference to the Realtime Database "forum" node
+    const db = firebase.database();
+    const messagesRef = db.ref("forum");
+
+    // Function to add a message element to the messages div
+    function addMessage(key, data) {
+      const messagesDiv = document.getElementById("messages");
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message");
+      // You can extend this to include username and timestamp
+      messageDiv.innerHTML = `<strong>${data.sender || "Anonymous"}:</strong> ${data.text} <br/><span>${new Date(data.timestamp).toLocaleString()}</span>`;
+      messageDiv.setAttribute("data-key", key);
+      messagesDiv.appendChild(messageDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Listen for new messages added to the forum node
+    messagesRef.on("child_added", function(snapshot) {
+      addMessage(snapshot.key, snapshot.val());
+    });
+
+    // Send message on button click
+    document.getElementById("sendBtn").addEventListener("click", function() {
+      const messageInput = document.getElementById("messageInput");
+      const text = messageInput.value.trim();
+      if (text !== "") {
+        // You could also store sender info if available
+        messagesRef.push({
+          text: text,
+          sender: "Anonymous",
+          timestamp: Date.now()
+        });
+        messageInput.value = "";
+      }
+    });
+
+    // Optionally, send message on Enter key
+    document.getElementById("messageInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        document.getElementById("sendBtn").click();
+      }
+    });
+  </script>
+</body>
+</html>
