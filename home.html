@@ -14,11 +14,11 @@
     
     /* CSS Variables */
     :root {
-      --primary-color: #007adf; /* Blue accent used sparingly */
+      --primary-color: #007adf;
       --primary-hover: #0056b3;
       --bg-gradient-start: #e0f2ff;
       --bg-light: #f7faff;
-      --text-light: #333; /* Dark gray text */
+      --text-light: #333;
       --card-shadow: rgba(0, 0, 0, 0.1);
       --card-shadow-hover: rgba(0, 0, 0, 0.15);
     }
@@ -30,7 +30,6 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    /* Body Background and Text Colors */
     body {
       background: linear-gradient(to bottom, var(--bg-gradient-start), var(--bg-light));
       color: var(--text-light);
@@ -66,11 +65,13 @@
       display: flex;
       align-items: center;
       gap: 15px;
+      position: relative;
     }
     .profile {
       display: flex;
       align-items: center;
       cursor: pointer;
+      position: relative;
     }
     .profile i {
       font-size: 40px;
@@ -80,6 +81,38 @@
     .profile:hover i {
       transform: scale(1.1);
     }
+    /* Profile Dropdown Styling */
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 1000;
+      min-width: 150px;
+    }
+    .profile-dropdown p,
+    .profile-dropdown a {
+      display: block;
+      padding: 8px 12px;
+      color: #333;
+      text-decoration: none;
+      font-size: 0.95em;
+    }
+    .profile-dropdown a:hover {
+      background: #f0f0f0;
+    }
+    /* Decrease the size of the icons in the dropdown */
+    .profile-dropdown a i {
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+    /* Hamburger Button */
     .hamburger {
       display: none;
       background: none;
@@ -152,7 +185,6 @@
       color: var(--text-light);
       text-align: center;
     }
-    /* Quote Section */
     .quote {
       background: #f0fbff;
       padding: 20px;
@@ -163,7 +195,6 @@
       font-size: 1.1em;
       color: var(--text-light);
     }
-    /* Announcements Section */
     .announcements {
       background: #fff;
       padding: 20px;
@@ -191,7 +222,6 @@
       color: var(--primary-color);
       font-size: 1.2em;
     }
-    /* Dashboard Cards */
     .dashboard-cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -256,6 +286,12 @@
     <div class="nav-right">
       <div class="profile">
         <i class="fas fa-user-circle"></i>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <p id="profileGreeting">Hi, User!</p>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -339,20 +375,19 @@
       firebase.initializeApp(firebaseConfig); 
     }
 
-    // Fetch user data and update welcome message
+    // Update welcome message and profile greeting with user's name
     firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         firebase.firestore().collection("users").doc(user.uid).get()
           .then(function(doc) {
-            if (doc.exists && doc.data().fullName) {
-              document.getElementById("welcomeMsg").innerText = "Welcome, " + doc.data().fullName + "!";
-            } else {
-              document.getElementById("welcomeMsg").innerText = "Welcome, User!";
-            }
+            const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
+            document.getElementById("welcomeMsg").innerText = "Welcome, " + name + "!";
+            document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
           })
           .catch(function(error) {
             console.error("Error fetching user data:", error);
             document.getElementById("welcomeMsg").innerText = "Welcome, User!";
+            document.getElementById("profileGreeting").innerText = "Hi, User!";
           });
       } else {
         window.location.href = "index.html";
@@ -364,6 +399,30 @@
     const sidebar = document.getElementById('sidebar');
     hamburgerBtn.addEventListener('click', function() {
       sidebar.classList.toggle('active');
+    });
+
+    // Profile dropdown toggle
+    const profile = document.querySelector('.profile');
+    const profileDropdown = document.getElementById('profileDropdown');
+    profile.addEventListener('click', function(e) {
+      e.stopPropagation();
+      profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      if (profileDropdown.style.display === 'block') {
+        profileDropdown.style.display = 'none';
+      }
+    });
+
+    // Logout functionality with redirect to index.html
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      firebase.auth().signOut().then(() => {
+        window.location.href = "index.html";
+      }).catch((error) => {
+        console.error("Sign out error:", error);
+      });
     });
 
     // Register Service Worker for PWA Capabilities
