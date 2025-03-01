@@ -6,11 +6,8 @@
   <title>Edurack</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <style>
-    /* Hide body until authentication check is complete to avoid flickering */
-    body {
-      visibility: hidden;
-    }
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
     * {
       margin: 0;
       padding: 0;
@@ -416,21 +413,6 @@
       emailjs.init("hQ3S3CD8mgGsukftX");
     })();
   </script>
-  
-  <!-- Check if user is logged in and redirect before showing page content -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          // User is logged in so redirect to home.html
-          window.location.href = "home.html";
-        } else {
-          // No user is logged in so show the page content
-          document.body.style.visibility = "visible";
-        }
-      });
-    });
-  </script>
 </head>
 <body>
   <!-- Navbar -->
@@ -654,6 +636,8 @@
     });
 
     document.addEventListener("DOMContentLoaded", function() {
+      // Removed localStorage user check
+
       // Get both "Get Started" buttons (navbar & hero)
       const navGetStarted = document.getElementById("navGetStarted");
       const heroGetStarted = document.getElementById("heroGetStarted");
@@ -758,6 +742,7 @@
             return auth.signInWithEmailAndPassword(email, password);
           })
           .then((userCredential) => {
+            // Removed localStorage saving logic here
             alert("Login successful!");
             window.location.href = "home.html";
           })
