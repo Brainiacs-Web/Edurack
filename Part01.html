@@ -38,46 +38,65 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       padding: 20px 30px;
-      margin-top: 10px; /* reduced margin-top */
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       position: relative;
     }
-    .top-container .left-info {
+    .left-info {
       display: flex;
       flex-direction: column;
       gap: 5px;
     }
-    .top-container .left-info span {
+    .left-info span {
       font-weight: 600;
       font-size: 1rem;
       color: #007adf;
     }
-    .top-container .submit-btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: white;
-      padding: 8px 16px;
-      font-size: 0.9rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
+    /* Right side container for timer & submit button */
+    .top-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
     }
-    .top-container .submit-btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-    }
-    .top-container .timer {
+    .timer {
       font-size: 1rem;
       font-weight: 600;
       display: flex;
       align-items: center;
       color: #333;
     }
-    .top-container .timer img {
+    .timer img {
       width: 20px;
       height: 20px;
       margin-right: 8px;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, #009dff, #006edc);
+      color: white;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #007adf, #005ab5);
+    }
+
+    /* Hamburger Button */
+    .hamburger-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #333;
+      position: absolute;
+      top: 10px;
+      left: 10px;
     }
 
     /* Subject Selector Row */
@@ -89,7 +108,6 @@
       width: 100%;
       max-width: 600px;
     }
-    /* Default subject button style: white background, #56b4ef border and text */
     #subject-buttons button {
       padding: 10px 20px;
       font-size: 1rem;
@@ -100,7 +118,6 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    /* When a subject is active */
     #subject-buttons button.activeSubject {
       background: #56b4ef;
       color: white;
@@ -123,6 +140,7 @@
     /* Question Card */
     .question-card {
       padding: 20px;
+      padding-left: 60px; /* extra padding to prevent hamburger overlap */
       border-radius: 8px;
       background: #f7faff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -337,10 +355,13 @@
       <div><strong>Candidate Name</strong>: <span id="logged-username">Username</span></div>
       <div><strong>Test Name</strong>: <span>Mock Test 02</span></div>
     </div>
-    <button class="submit-btn" onclick="submitTest()">Submit Test</button>
-    <div class="timer" id="timer">
-      <img src="https://i.postimg.cc/Fs22Dm1C/timer-1.png" alt="Timer Icon">
-      <span id="time-left">03:00:00</span>
+    <!-- Right container wrapping timer and submit button -->
+    <div class="top-right">
+      <div class="timer" id="timer">
+        <img src="https://i.postimg.cc/Fs22Dm1C/timer-1.png" alt="Timer Icon">
+        <span id="time-left">03:00:00</span>
+      </div>
+      <button class="submit-btn" onclick="submitTest()">Submit Test</button>
     </div>
   </div>
 
@@ -363,6 +384,7 @@
   <!-- Main Exam Container -->
   <div class="container" id="content">
     <div class="question-card" id="question-card">
+      <!-- Hamburger button with new CSS -->
       <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
       <!-- Question content will be injected here -->
     </div>
@@ -500,7 +522,7 @@
       }
     }
 
-    // "Previous" button: if at first question of current subject and current subject is not the very first, then load previous subject's last question; otherwise, alert if on first question of first subject.
+    // "Previous" button functionality
     window.goToPrevious = function () {
       if (currentQuestionIndex > 0) {
         currentQuestionIndex--;
@@ -511,7 +533,6 @@
         if (currentSubjectIndex > 0) {
           currentSubject = subjects[currentSubjectIndex - 1];
           const prevCount = parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0;
-          // If questions for previous subject are not loaded, fetch them first.
           if (!questionsBySubject[currentSubject]) {
             fetchQuestions(currentSubject).then(() => {
               currentQuestionIndex = (parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0) - 1;
@@ -532,7 +553,6 @@
     };
 
     // Update progress indicators:
-    // If a question is answered or marked for review, use its color; if visited (but not answered), fill red.
     function updateProgress() {
       const progressContainer = document.getElementById("question-progress");
       progressContainer.innerHTML = '';
@@ -549,7 +569,6 @@
           span.style.border = "2px solid " + color;
           span.style.color = "white";
         } else if (localStorage.getItem(`visited_${currentSubject}_${i}`)) {
-          // If visited but not answered, fill red.
           span.style.background = "red";
           span.style.border = "2px solid red";
           span.style.color = "white";
@@ -583,7 +602,7 @@
       }
     };
 
-    // "Save & Next": if at last question of current subject, switch to next subject (or loop back)
+    // "Save & Next" button functionality
     window.saveAndNext = function () {
       const selectedOption = document.querySelector(`input[name="q${currentSubject}_${currentQuestionIndex}"]:checked`);
       if (selectedOption) {
@@ -603,7 +622,6 @@
         displayQuestion();
         updateProgress();
       } else {
-        // Move to next subject
         let currentSubjectIndex = subjects.indexOf(currentSubject);
         let nextSubjectIndex = (currentSubjectIndex + 1) % subjects.length;
         currentSubject = subjects[nextSubjectIndex];
@@ -611,7 +629,7 @@
       }
     };
 
-    // Submit test: For all subjects, include question IDs and selected answers.
+    // Submit test functionality
     window.submitTest = function (autoSubmit = false) {
       if (!autoSubmit) {
         const confirmation = confirm("Are you sure you want to submit the test?");
