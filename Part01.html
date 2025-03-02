@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <!-- Prevent zooming and scale layout properly -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Edurack - Exam</title>
+  <title>Edurack - Part Test 01</title>
   
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -353,13 +353,13 @@
   <div class="top-container">
     <div class="left-info">
       <div><strong>Candidate Name</strong>: <span id="logged-username">Username</span></div>
-      <div><strong>Test Name</strong>: <span>Mock Test 02</span></div>
+      <div><strong>Test Name</strong>: <span>Part test 01</span></div>
     </div>
     <!-- Right container wrapping timer and submit button -->
     <div class="top-right">
       <div class="timer" id="timer">
         <img src="https://i.postimg.cc/Fs22Dm1C/timer-1.png" alt="Timer Icon">
-        <span id="time-left">03:00:00</span>
+        <span id="time-left">01:30:00</span>
       </div>
       <button class="submit-btn" onclick="submitTest()">Submit Test</button>
     </div>
@@ -693,7 +693,7 @@
 
     // Timer functionality
     let timerInterval;
-    let timeLeft = 3 * 60 * 60;
+    let timeLeft = 90 * 60; // 1 hour 30 minutes in seconds
     function updateTimerDisplay() {
       const hours = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
       const minutes = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
