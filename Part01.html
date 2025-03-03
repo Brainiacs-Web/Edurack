@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <!-- Prevent zooming and scale layout properly -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Edurack - Part Test 01</title>
+  <title>Edurack - Paart Test 01</title>
   
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -18,334 +18,387 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
 
   <style>
-    /* Base Reset & Fonts */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-    body {
-      background: linear-gradient(to bottom, #e0f2ff, #f7faff);
-      color: #333;
-      overflow-x: hidden;
-    }
+/* Base Reset & Fonts */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  background: linear-gradient(to bottom, #e0f2ff, #f7faff);
+  color: #333;
+  overflow-x: hidden;
+}
 
-    /* Top Container for Exam Info – shifted upward */
-    .top-container {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 20px 30px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      position: relative;
-    }
-    .left-info {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .left-info span {
-      font-weight: 600;
-      font-size: 1rem;
-      color: #007adf;
-    }
-    /* Right side container for timer & submit button */
-    .top-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-    }
-    .timer {
-      font-size: 1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      color: #333;
-    }
-    .timer img {
-      width: 20px;
-      height: 20px;
-      margin-right: 8px;
-    }
-    .submit-btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: white;
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    .submit-btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-    }
+/* Top Container for Exam Info – shifted upward */
+.top-container {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+.left-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.left-info span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #007adf;
+}
+/* Right side container for timer & submit button */
+.top-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.timer {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  color: #333;
+}
+.timer img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+.submit-btn {
+  background: linear-gradient(135deg, #009dff, #006edc);
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.submit-btn:hover {
+  background: linear-gradient(135deg, #007adf, #005ab5);
+}
 
-    /* Hamburger Button */
-    .hamburger-btn {
-      background: transparent;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #333;
-      position: absolute;
-      top: 10px;
-      left: 10px;
-    }
+/* Hamburger Button */
+.hamburger-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  position: absolute;
+  top: 15x;
+  left: 10px;
+}
 
-    /* Subject Selector Row */
-    #subject-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 20px auto;
-      width: 100%;
-      max-width: 600px;
-    }
-    #subject-buttons button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      border: 2px solid #56b4ef;
-      background: white;
-      color: #56b4ef;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    #subject-buttons button.activeSubject {
-      background: #56b4ef;
-      color: white;
-    }
-    #subject-buttons button:hover {
-      opacity: 0.9;
-    }
+/* Subject Selector Row */
+#subject-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto;
+  width: 100%;
+  max-width: 600px;
+}
+#subject-buttons button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: 2px solid #56b4ef;
+  background: white;
+  color: #56b4ef;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#subject-buttons button.activeSubject {
+  background: #56b4ef;
+  color: white;
+}
+#subject-buttons button:hover {
+  opacity: 0.9;
+}
 
-    /* Main Exam Container */
-    .container {
-      width: 100%;
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 20px;
-      min-height: 500px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-    /* Question Card */
-    .question-card {
-      padding: 20px;
-      padding-left: 60px; /* extra padding to prevent hamburger overlap */
-      border-radius: 8px;
-      background: #f7faff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      margin-bottom: 20px;
-      position: relative;
-    }
-    .question-card .question-number {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .question-card .question-text {
-      font-size: 1.3rem;
-      margin-bottom: 20px;
-    }
-    /* Option Styling */
-    .option-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .image-option {
-      display: flex;
-      align-items: center;
-      padding: 12px;
-      border-radius: 6px;
-      background: white;
-      border: 2px solid transparent;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .image-option:hover,
-    .image-option.selected {
-      border: 2px solid #007adf;
-    }
-    .image-option label {
-      width: 100%;
-      cursor: pointer;
-    }
-    .option-content {
-      font-size: 1rem;
-    }
-    /* Review Checkbox */
-    .review-container {
-      margin: 15px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .review-container label {
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-    /* Button Container */
-    .button-container {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .button-container button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: white;
-      transition: background 0.3s ease;
-    }
-    .button-container button:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-    }
+/* Main Exam Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  min-height: 500px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+/* Question Card */
+.question-card {
+  padding: 20px;
+  padding-left: 60px; /* extra padding to prevent hamburger overlap */
+  border-radius: 8px;
+  background: #f7faff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  position: relative;
+}
+.question-card .question-number {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.question-card .question-text {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
 
-    /* Progress Modal for Question Navigation */
-    .progress-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 260px;
-      height: 100vh;
-      background: white;
-      box-shadow: -4px 0 12px rgba(0,0,0,0.1);
-      padding: 20px;
-      overflow-y: auto;
-      z-index: 1000;
-    }
-    .progress-modal header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .progress-modal header h3 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #007adf;
-    }
-    .progress-modal .close-btn {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #333;
-    }
-    #question-progress {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 15px;
-    }
-    #question-progress span {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border: 2px solid black;
-      border-radius: 50%;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
-    }
-    #question-progress span:hover {
-      transform: scale(1.1);
-    }
+/* Responsive Image Styles */
+.question-image {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+.option-image {
+  width: 100%;     /* Make option images scale as well */
+  max-width: 120px; /* Option images can have a max-width limit */
+  height: auto;
+  display: block;
+}
 
-    /* Modal Overlay for Username */
-    .modal-overlay {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1100;
-      opacity: 0;
-      animation: fadeIn 0.3s forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-    .modal {
-      background: white;
-      width: 90%;
-      max-width: 500px;
-      padding: 30px 40px;
-      border-radius: 10px;
-      position: relative;
-      text-align: center;
-    }
-    .modal h2 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      color: #007adf;
-      font-weight: 600;
-    }
-    .modal input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-    .continue-btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: white;
-      padding: 12px 30px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.3s ease;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    .continue-btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-      transform: scale(1.05);
-    }
+/* Option Styling */
+.option-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.image-option {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 6px;
+  background: white;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.image-option:hover,
+.image-option.selected {
+  border: 2px solid #007adf;
+}
+.image-option label {
+  width: 100%;
+  cursor: pointer;
+}
+.option-content {
+  font-size: 1rem;
+}
 
-    /* Media Query for Big Screens */
-    @media (min-width: 1024px) {
-      .container {
-        padding: 30px;
-      }
-      .question-card .question-text {
-        font-size: 1.5rem;
-      }
-      .button-container button {
-        font-size: 1.1rem;
-      }
-      #subject-buttons button {
-        font-size: 1.1rem;
-        padding: 12px 24px;
-      }
-    }
+/* Review Checkbox */
+.review-container {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.review-container label {
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+.button-container button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #009dff, #006edc);
+  color: white;
+  transition: background 0.3s ease;
+}
+.button-container button:hover {
+  background: linear-gradient(135deg, #007adf, #005ab5);
+}
+
+/* Progress Modal for Question Navigation */
+.progress-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.progress-modal header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.progress-modal header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #007adf;
+}
+.progress-modal .close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+#question-progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 15px;
+}
+#question-progress span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid black;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
+}
+#question-progress span:hover {
+  transform: scale(1.1);
+}
+
+/* Modal Overlay for Username */
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+.modal {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px 40px;
+  border-radius: 10px;
+  position: relative;
+  text-align: center;
+}
+.modal h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #007adf;
+  font-weight: 600;
+}
+.modal input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.continue-btn {
+  background: linear-gradient(135deg, #009dff, #006edc);
+  color: white;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+.continue-btn:hover {
+  background: linear-gradient(135deg, #007adf, #005ab5);
+  transform: scale(1.05);
+}
+
+/* Media Query for Big Screens */
+@media (min-width: 1024px) {
+  .container {
+    padding: 30px;
+  }
+  .question-card .question-text {
+    font-size: 1.5rem;
+  }
+  .button-container button {
+    font-size: 1.1rem;
+  }
+  #subject-buttons button {
+    font-size: 1.1rem;
+    padding: 12px 24px;
+  }
+}
+
+/* Override container max-width on smaller screens
+   so the question image can fill the screen width */
+   @media (max-width: 768px) {
+  .container {
+    max-width: 100% !important;
+    margin: 0 10px;
+    padding: 10px;
+  }
+  .question-card {
+    padding: 15px;
+    padding-left: 15px; /* reduce left padding */
+  }
+}
+
+/* Additional adjustments for smaller devices */
+@media (max-width: 600px) {
+  .container {
+    margin: 5px;
+    padding: 10px;
+  }
+  .question-image {
+    width: 100%;  /* Already set, but repeated for clarity */
+  }
+  .option-image {
+    max-width: 80px;
+  }
+}
+
+@media (max-width: 400px) {
+  .option-image {
+    max-width: 60px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -474,43 +527,44 @@
       }
 
       questionCard.innerHTML = `
-        <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
-        <p class="question-number">Question ${currentQuestionIndex + 1}</p>
-        <div class="question-text">
-          ${isURL(questionData.question)
-            ? `<img src="${questionData.question}" alt="Question Image" style="max-width:90%; height:auto;">`
-            : questionData.question}
-        </div>
-        <!-- Review Checkbox -->
-        <div class="review-container">
-          <input type="checkbox" id="review-checkbox" ${reviewChecked ? "checked" : ""}>
-          <label for="review-checkbox">Mark as Review</label>
-        </div>
-        <div class="option-container">
-          ${questionData.options.map((option, index) => `
-            <div class="image-option">
-              <input 
-                type="radio" 
-                name="q${currentSubject}_${currentQuestionIndex}" 
-                id="option${index}" 
-                value="${String.fromCharCode(65 + index)}"
-                onclick="toggleRadio(event, 'q${currentSubject}_${currentQuestionIndex}', ${currentQuestionIndex})"
-              >
-              <label for="option${index}">
-                <div class="option-content">
-                  ${isURL(option)
-                    ? `<img src="${option}" alt="Option Image" style="max-width:100px; height:auto;">`
-                    : option}
-                </div>
-              </label>
+    <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
+    <p class="question-number">Question ${currentQuestionIndex + 1}</p>
+    <div class="question-text">
+      ${isURL(questionData.question)
+        ? `<img src="${questionData.question}" alt="Question Image" class="question-image">`
+        : questionData.question}
+    </div>
+    <!-- Review Checkbox -->
+    <div class="review-container">
+      <input type="checkbox" id="review-checkbox" ${reviewChecked ? "checked" : ""}>
+      <label for="review-checkbox">Mark as Review</label>
+    </div>
+    <div class="option-container">
+      ${questionData.options.map((option, index) => `
+        <div class="image-option">
+          <input 
+            type="radio" 
+            name="q${currentSubject}_${currentQuestionIndex}" 
+            id="option${index}" 
+            value="${String.fromCharCode(65 + index)}"
+            onclick="toggleRadio(event, 'q${currentSubject}_${currentQuestionIndex}', ${currentQuestionIndex})"
+          >
+          <label for="option${index}">
+            <div class="option-content">
+              ${isURL(option)
+                ? `<img src="${option}" alt="Option Image" class="option-image">`
+                : option}
             </div>
-          `).join('')}
+          </label>
         </div>
-        <div class="button-container">
-          <button onclick="goToPrevious()">Previous</button>
-          <button onclick="saveAndNext()">Save & Next</button>
-        </div>
-      `;
+      `).join('')}
+    </div>
+    <div class="button-container">
+      <button onclick="goToPrevious()">Previous</button>
+      <button onclick="saveAndNext()">Save & Next</button>
+    </div>
+  `;
+
 
       // Restore previously selected answer if exists
       if (savedAnswer) {
