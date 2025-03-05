@@ -64,6 +64,20 @@
       font-size: 1rem;
       color: #333;
     }
+    /* Flex layout for options */
+    .options-row {
+      display: flex;
+      gap: 20px;
+    }
+    .option {
+      flex: 1;
+    }
+    /* Button container */
+    #button-container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
     button {
       background: linear-gradient(135deg, #009dff, #006edc);
       color: white;
@@ -72,16 +86,48 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      width: 100%;
+      flex: 1;
       transition: background 0.3s;
+      min-width: 100px;
     }
     button:hover {
       background: linear-gradient(135deg, #007adf, #005ab5);
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
     }
     @media screen and (max-width: 600px) {
       form {
         padding: 20px;
         width: 90%;
+      }
+      .options-row {
+        flex-direction: column;
       }
     }
   </style>
@@ -108,6 +154,66 @@
     document.addEventListener("DOMContentLoaded", () => {
       const questionForm = document.getElementById("question-form");
 
+      // Helper function to safely retrieve form values
+      const getValue = (id) => {
+        const element = document.getElementById(id);
+        return element ? element.value.trim() : "";
+      };
+
+      // Preview Modal Elements
+      const previewBtn = document.getElementById("previewBtn");
+      const previewModal = document.getElementById("previewModal");
+      const previewContent = document.getElementById("previewContent");
+      const closeModal = document.querySelector(".close");
+
+      previewBtn.addEventListener("click", () => {
+        const questionText = getValue("question");
+        const questionImageURL = getValue("questionImageURL");
+        const optionA = getValue("optionA");
+        const optionB = getValue("optionB");
+        const optionC = getValue("optionC");
+        const optionD = getValue("optionD");
+        const solutionText = getValue("solution");
+        const solutionImageURL = getValue("solutionImageURL");
+
+        let previewHtml = "";
+        // Display Question
+        previewHtml += "<p><strong>Question:</strong></p>";
+        if (questionText) {
+          previewHtml += `<p>${questionText}</p>`;
+        } else if (questionImageURL) {
+          previewHtml += `<img src="${questionImageURL}" alt="Question Image" style="max-width:100%;">`;
+        }
+        // Display Options
+        previewHtml += "<p><strong>Options:</strong></p><ol type='A'>";
+        previewHtml += `<li>${optionA || "<em>No text</em>"}</li>`;
+        previewHtml += `<li>${optionB || "<em>No text</em>"}</li>`;
+        previewHtml += `<li>${optionC || "<em>No text</em>"}</li>`;
+        previewHtml += `<li>${optionD || "<em>No text</em>"}</li>`;
+        previewHtml += "</ol>";
+        // Display Solution
+        previewHtml += "<p><strong>Solution:</strong></p>";
+        if (solutionText) {
+          previewHtml += `<p>${solutionText}</p>`;
+        } else if (solutionImageURL) {
+          previewHtml += `<img src="${solutionImageURL}" alt="Solution Image" style="max-width:100%;">`;
+        } else {
+          previewHtml += `<p><em>No solution provided</em></p>`;
+        }
+        previewContent.innerHTML = previewHtml;
+        previewModal.style.display = "block";
+      });
+
+      closeModal.addEventListener("click", () => {
+        previewModal.style.display = "none";
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target == previewModal) {
+          previewModal.style.display = "none";
+        }
+      });
+
       questionForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -123,25 +229,13 @@
           return;
         }
 
-        // Helper function to safely retrieve form values
-        const getValue = (id) => {
-          const element = document.getElementById(id);
-          return element ? element.value.trim() : "";
-        };
-
         const questionText = getValue("question");
         const questionImageURL = getValue("questionImageURL");
         const optionA = getValue("optionA");
-        const optionAImageURL = getValue("optionAImageURL");
         const optionB = getValue("optionB");
-        const optionBImageURL = getValue("optionBImageURL");
         const optionC = getValue("optionC");
-        const optionCImageURL = getValue("optionCImageURL");
         const optionD = getValue("optionD");
-        const optionDImageURL = getValue("optionDImageURL");
         const correctAnswer = getValue("correctAnswer");
-
-        // New solution fields
         const solutionText = getValue("solution");
         const solutionImageURL = getValue("solutionImageURL");
 
@@ -151,18 +245,12 @@
         }
 
         try {
-          // Store question under "Questions/Part01/{section}"
-          await addDoc(collection(db, "Questions", "Part01", section), {
+          // Store question under "Questions/Part02/{section}"
+          await addDoc(collection(db, "Questions", "Part02", section), {
             question: questionText || questionImageURL,
             questionImage: questionText ? "" : questionImageURL,
-            options: [
-              optionA || optionAImageURL,
-              optionB || optionBImageURL,
-              optionC || optionCImageURL,
-              optionD || optionDImageURL
-            ],
+            options: [optionA, optionB, optionC, optionD],
             correctAnswer: correctAnswer,
-            // New solution fields added below
             solution: solutionText || solutionImageURL,
             solutionImage: solutionText ? "" : solutionImageURL,
             addedAt: serverTimestamp()
@@ -192,43 +280,32 @@
     </div>
     <div>
       <label for="question">Question:</label>
-      <input type="text" id="question" name="question" placeholder="Enter question text">
+      <input type="text" id="question" name="question" placeholder="Enter question text" autofocus>
     </div>
     <div>
       <label for="questionImageURL">Question Image URL (if no text):</label>
       <input type="text" id="questionImageURL" name="questionImageURL" placeholder="Paste image URL">
     </div>
-    <div>
-      <label for="optionA">Option A:</label>
-      <input type="text" id="optionA" name="optionA" placeholder="Enter Option A">
+    <!-- Options arranged in two columns -->
+    <div class="options-row">
+      <div class="option">
+        <label for="optionA">Option A:</label>
+        <input type="text" id="optionA" name="optionA" placeholder="Enter Option A">
+      </div>
+      <div class="option">
+        <label for="optionB">Option B:</label>
+        <input type="text" id="optionB" name="optionB" placeholder="Enter Option B">
+      </div>
     </div>
-    <div>
-      <label for="optionAImageURL">Option A Image URL (if no text):</label>
-      <input type="text" id="optionAImageURL" name="optionAImageURL" placeholder="Paste image URL">
-    </div>
-    <div>
-      <label for="optionB">Option B:</label>
-      <input type="text" id="optionB" name="optionB" placeholder="Enter Option B">
-    </div>
-    <div>
-      <label for="optionBImageURL">Option B Image URL (if no text):</label>
-      <input type="text" id="optionBImageURL" name="optionBImageURL" placeholder="Paste image URL">
-    </div>
-    <div>
-      <label for="optionC">Option C:</label>
-      <input type="text" id="optionC" name="optionC" placeholder="Enter Option C">
-    </div>
-    <div>
-      <label for="optionCImageURL">Option C Image URL (if no text):</label>
-      <input type="text" id="optionCImageURL" name="optionCImageURL" placeholder="Paste image URL">
-    </div>
-    <div>
-      <label for="optionD">Option D:</label>
-      <input type="text" id="optionD" name="optionD" placeholder="Enter Option D">
-    </div>
-    <div>
-      <label for="optionDImageURL">Option D Image URL (if no text):</label>
-      <input type="text" id="optionDImageURL" name="optionDImageURL" placeholder="Paste image URL">
+    <div class="options-row">
+      <div class="option">
+        <label for="optionC">Option C:</label>
+        <input type="text" id="optionC" name="optionC" placeholder="Enter Option C">
+      </div>
+      <div class="option">
+        <label for="optionD">Option D:</label>
+        <input type="text" id="optionD" name="optionD" placeholder="Enter Option D">
+      </div>
     </div>
     <div>
       <label for="correctAnswer">Correct Answer:</label>
@@ -248,7 +325,21 @@
       <label for="solutionImageURL">Solution Image URL (if no text):</label>
       <input type="text" id="solutionImageURL" name="solutionImageURL" placeholder="Paste solution image URL">
     </div>
-    <button type="submit">Add Question</button>
+    <!-- Button Container -->
+    <div id="button-container">
+      <button type="button" id="previewBtn">Preview</button>
+      <button type="reset">Clear</button>
+      <button type="submit">Add Question</button>
+    </div>
   </form>
+
+  <!-- Preview Modal -->
+  <div id="previewModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Preview Question</h2>
+      <div id="previewContent"></div>
+    </div>
+  </div>
 </body>
 </html>
