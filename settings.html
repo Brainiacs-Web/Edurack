@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Settings - Edurack</title>
+  <!-- Manifest for PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Google Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- Firebase SDKs (Firebase Storage not used) -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <style>
+    /* Base Variables for Light Mode */
+    :root {
+      --primary-color: #007adf;
+      --secondary-color: #0056b3;
+      --accent-color: #ff6f61;
+      --light-bg: #f4f7fb;
+      --white: #fff;
+      --text-color: #333;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --hover-bg: rgba(0, 122, 223, 0.1);
+      --modal-bg: rgba(0, 0, 0, 0.6);
+    }
+    /* Dark Mode Variables */
+    body.dark-mode {
+      --primary-color: #4da6ff;
+      --secondary-color: #1a75ff;
+      --accent-color: #ff8a80;
+      --light-bg: #1e1e1e;
+      --white: #2c2c2c;
+      --text-color: #ddd;
+      --card-shadow: rgba(0, 0, 0, 0.6);
+      --hover-bg: rgba(77, 166, 255, 0.15);
+      --modal-bg: rgba(0, 0, 0, 0.8);
+    }
+    /* Global Resets & Typography */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: var(--light-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    a {
+      text-decoration: none;
+      color: var(--primary-color);
+    }
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--white);
+      box-shadow: 0 4px 10px var(--card-shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 300;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+    .search-input {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .dark-toggle {
+      font-size: 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .dark-toggle:hover {
+      color: var(--primary-color);
+    }
+    /* Profile with Circular Image */
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .navbar-profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: var(--white);
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px var(--card-shadow);
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 400;
+      min-width: 150px;
+    }
+    .profile-dropdown p,
+    .profile-dropdown a {
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-color);
+      font-size: 0.95rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .profile-dropdown a:hover {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+    .profile-dropdown a i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    /* Sidebar Styling */
+    .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 220px;
+      height: calc(100% - 70px);
+      background: var(--white);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 200;
+    }
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar ul li {
+      margin-bottom: 15px;
+    }
+    .sidebar ul li a {
+      color: var(--text-color);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: var(--hover-bg);
+    }
+    /* Main Content */
+    .main-content {
+      margin: 90px 20px 20px 260px; /* Shifts content to right, leaving space for sidebar */
+      max-width: 1100px;
+    }
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+    /* Back to Home button */
+    .back-home-btn {
+      display: inline-block;
+      margin-bottom: 20px;
+      background: var(--primary-color);
+      color: var(--white);
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+    }
+    .back-home-btn:hover {
+      background: var(--secondary-color);
+    }
+    /* Settings Card */
+    .settings-card {
+      background: var(--white);
+      box-shadow: 0 2px 6px var(--card-shadow);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    .settings-card h2 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    .settings-card p {
+      color: var(--text-color);
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text-color);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .form-group input:disabled {
+      background: #f0f0f0;
+      cursor: not-allowed;
+    }
+    /* Profile Picture Preview */
+    .profile-pic-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: none;
+      margin-bottom: 10px;
+    }
+    /* Buttons */
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .save-btn {
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .save-btn:hover {
+      background: var(--secondary-color);
+    }
+    /* Alert Messages */
+    .alert {
+      margin-top: 10px;
+      font-size: 0.9rem;
+    }
+    .alert.success {
+      color: green;
+    }
+    .alert.error {
+      color: red;
+    }
+    /* Logout Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--modal-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal {
+      background: var(--white);
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .modal h3 {
+      margin-bottom: 20px;
+      font-size: 1.4em;
+      color: var(--text-color);
+    }
+    .modal .modal-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .modal button {
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .modal button.yes {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+    .modal button.yes:hover {
+      background: var(--secondary-color);
+    }
+    .modal button.no {
+      background: #ccc;
+      color: var(--text-color);
+    }
+    .modal button.no:hover {
+      background: #b3b3b3;
+    }
+    @media (max-width: 480px) {
+      .settings-card { padding: 15px; }
+      .save-btn, .back-home-btn { width: 100%; }
+      .main-content { margin: 90px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Edurack</div>
+    <div class="nav-right">
+      <!-- Optional search input -->
+      <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
+        <i class="fas fa-moon"></i>
+      </button>
+      <div class="profile">
+        <img id="navbarProfilePic" src="default-profile.png" alt="Profile" class="navbar-profile-pic">
+        <div class="profile-dropdown" id="profileDropdown">
+          <p id="profileGreeting">Hi, User!</p>
+          <a href="home.html"><i class="fas fa-home"></i> Home</a>
+          <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="pyqs.html"><i class="fas fa-question-circle"></i> PYQs</a></li>
+      <li><a href="test-series.html"><i class="fas fa-pen-square"></i> Test Series</a></li>
+      <li><a href="chapter-growth.html"><i class="fas fa-chart-line"></i> Chapter Growth</a></li>
+      <li><a href="leaderboard.html"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="settings.html" class="active"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <a href="home.html" class="back-home-btn">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+    <h1 class="page-title">Profile Settings</h1>
+    <div class="settings-card">
+      <h2>Your Account</h2>
+      <p>Update your profile details. You cannot change your email address.</p>
+      <form id="profileForm">
+        <!-- Profile Picture Preview -->
+        <img id="profilePicPreview" class="profile-pic-preview" src="" alt="Profile Picture" />
+        <!-- Profile Picture Upload -->
+        <div class="form-group">
+          <label for="profilePic">Profile Picture</label>
+          <input type="file" id="profilePic" accept="image/*" />
+        </div>
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="Your Name" />
+        </div>
+        <!-- Email (disabled) -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" disabled />
+        </div>
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phone" placeholder="Your phone number" />
+        </div>
+        <!-- Bio -->
+        <div class="form-group">
+          <label for="bio">About / Bio</label>
+          <textarea id="bio" rows="3" placeholder="Short description or bio"></textarea>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="save-btn" id="saveProfileBtn">Save Changes</button>
+        </div>
+        <div id="profileAlert" class="alert" style="display: none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Logout Modal -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal">
+      <h3 id="modalMessage">Are you sure you want to log out?</h3>
+      <div class="modal-buttons">
+        <button class="yes" id="confirmLogout">Yes</button>
+        <button class="no" id="cancelLogout">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Firebase Initialization
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015",
+    };
+    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    
+    // Auth Check and Fetch User Data
+    let currentUser = null;
+    let selectedFile = null;
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) {
+        window.location.href = "index.html";
+      } else {
+        currentUser = user;
+        try {
+          const docSnap = await db.collection("users").doc(user.uid).get();
+          if (docSnap.exists) {
+            const data = docSnap.data();
+            populateProfileForm(data, user.email);
+          } else {
+            console.log("No user data found in Firestore.");
+          }
+        } catch (err) {
+          console.error("Error fetching user data:", err);
+        }
+      }
+    });
+    
+    function populateProfileForm(data, userEmail) {
+      document.getElementById("fullName").value = data.fullName || "";
+      document.getElementById("email").value = userEmail || "";
+      document.getElementById("phone").value = data.phoneNumber || "";
+      document.getElementById("bio").value = data.bio || "";
+      
+      // Update preview image if photoURL exists
+      if (data.photoURL) {
+        const preview = document.getElementById("profilePicPreview");
+        preview.src = data.photoURL;
+        preview.style.display = "block";
+        // Also update navbar profile picture
+        document.getElementById("navbarProfilePic").src = data.photoURL;
+      }
+      document.getElementById("profileGreeting").innerText = "Hi, " + (data.fullName || "User") + "!";
+    }
+    
+    // Handle Profile Picture Selection with Validation
+    const profilePicInput = document.getElementById("profilePic");
+    profilePicInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const allowedExtensions = /(\.jpg|\.png)$/i;
+        if (!allowedExtensions.exec(file.name)) {
+          alert("Invalid file type. Please select a .png or .jpg file.");
+          e.target.value = "";
+          selectedFile = null;
+          return;
+        }
+        selectedFile = file;
+      }
+    });
+    
+    // Save Changes to Firestore using FileReader for Image URL
+    const saveProfileBtn = document.getElementById("saveProfileBtn");
+    const profileAlert = document.getElementById("profileAlert");
+    
+    saveProfileBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+      profileAlert.style.display = "none";
+    
+      const updatedData = {
+        fullName: document.getElementById("fullName").value.trim(),
+        phoneNumber: document.getElementById("phone").value.trim(),
+        bio: document.getElementById("bio").value.trim(),
+        email: currentUser.email
+      };
+    
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          updatedData.photoURL = e.target.result;
+          try {
+            await db.collection("users").doc(currentUser.uid).update(updatedData);
+            profileAlert.textContent = "Profile updated successfully!";
+            profileAlert.className = "alert success";
+            profileAlert.style.display = "block";
+    
+            const preview = document.getElementById("profilePicPreview");
+            preview.src = updatedData.photoURL;
+            preview.style.display = "block";
+            document.getElementById("navbarProfilePic").src = updatedData.photoURL;
+    
+            selectedFile = null;
+            profilePicInput.value = "";
+          } catch (err) {
+            console.error("Error updating profile:", err);
+            profileAlert.textContent = "Error updating profile. Check console for details.";
+            profileAlert.className = "alert error";
+            profileAlert.style.display = "block";
+          }
+        };
+        reader.readAsDataURL(selectedFile);
+      } else {
+        try {
+          await db.collection("users").doc(currentUser.uid).update(updatedData);
+          profileAlert.textContent = "Profile updated successfully!";
+          profileAlert.className = "alert success";
+          profileAlert.style.display = "block";
+        } catch (err) {
+          console.error("Error updating profile:", err);
+          profileAlert.textContent = "Error updating profile. Check console for details.";
+          profileAlert.className = "alert error";
+          profileAlert.style.display = "block";
+        }
+      }
+    });
+    
+    // Profile Dropdown Toggle
+    const profile = document.querySelector(".profile");
+    const profileDropdown = document.getElementById("profileDropdown");
+    profile.addEventListener("click", function (e) {
+      e.stopPropagation();
+      profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+    });
+    document.addEventListener("click", function () {
+      if (profileDropdown.style.display === "block") {
+        profileDropdown.style.display = "none";
+      }
+    });
+    
+    // Logout Modal
+    const logoutBtn = document.getElementById("logoutBtn");
+    const logoutModal = document.getElementById("logoutModal");
+    const confirmLogout = document.getElementById("confirmLogout");
+    const cancelLogout = document.getElementById("cancelLogout");
+    const modalMessage = document.getElementById("modalMessage");
+    
+    logoutBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      const userEmail = user && user.email ? user.email : "your account";
+      modalMessage.innerText = "Are you sure you want to log out of " + userEmail + "?";
+      logoutModal.classList.add("active");
+    });
+    
+    cancelLogout.addEventListener("click", function () {
+      logoutModal.classList.remove("active");
+    });
+    
+    confirmLogout.addEventListener("click", function () {
+      localStorage.clear();
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      }).catch((error) => {
+        console.error("Sign out error:", error);
+      });
+    });
+    
+    // Register Service Worker for PWA
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/sw.js").then(
+          function (registration) {
+            console.log("Service Worker registered with scope:", registration.scope);
+          },
+          function (err) {
+            console.error("Service Worker registration failed:", err);
+          }
+        );
+      });
+    }
+  </script>
+</body>
+</html>
