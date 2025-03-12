@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us - Coming Soon</title>
+  <link rel="manifest" href="manifest.json" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Google Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Base Variables for Light Mode */
+    :root {
+      --primary-color: #007adf;
+      --secondary-color: #0056b3;
+      --light-bg: #f4f7fb;
+      --white: #fff;
+      --text-color: #333;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --hover-bg: rgba(0, 122, 223, 0.1);
+      --modal-bg: rgba(0, 0, 0, 0.6);
+    }
+    /* Global Resets & Typography */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: var(--light-bg);
+      color: var(--text-color);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    a {
+      text-decoration: none;
+      color: var(--primary-color);
+    }
+    /* Navbar Styling */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--white);
+      box-shadow: 0 4px 10px var(--card-shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 300;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      position: relative;
+    }
+    .search-input {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .dark-toggle {
+      font-size: 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .dark-toggle:hover {
+      color: var(--primary-color);
+    }
+    /* Profile with Circular Image */
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .navbar-profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .profile-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: var(--white);
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px var(--card-shadow);
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 400;
+      min-width: 150px;
+    }
+    .profile-dropdown p,
+    .profile-dropdown a {
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-color);
+      font-size: 0.95rem;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .profile-dropdown a:hover {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+    .profile-dropdown a i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
+    /* Sidebar Styling */
+    .sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 220px;
+      height: calc(100% - 70px);
+      background: var(--white);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 200;
+    }
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar ul li {
+      margin-bottom: 15px;
+    }
+    .sidebar ul li a {
+      color: var(--text-color);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: var(--hover-bg);
+    }
+    /* Main Content Layout */
+    .main-content {
+      margin: 90px 20px 20px 260px;
+    }
+    /* Coming Soon Animation */
+    .coming-soon-container {
+      text-align: center;
+      margin-top: 100px;
+    }
+    .coming-soon-container h1 {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+      animation: fadeInOut 2s ease-in-out infinite;
+    }
+    .coming-soon-container p {
+      font-size: 1.2rem;
+      color: var(--text-color);
+      animation: fadeInOut 2s ease-in-out infinite alternate;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { opacity: 0.2; }
+    }
+    .back-btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .back-btn:hover {
+      background: var(--secondary-color);
+    }
+    /* Responsive Styles */
+    @media (max-width: 480px) {
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        margin: 90px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Edurack</div>
+    <div class="nav-right">
+      <input type="text" placeholder="Search courses..." class="search-input">
+      <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
+        <i class="fas fa-moon"></i>
+      </button>
+      <div class="profile">
+        <img id="navbarProfilePic" src="default-profile.png" alt="Profile" class="navbar-profile-pic">
+        <div class="profile-dropdown" id="profileDropdown">
+          <p id="profileGreeting">Hi, User!</p>
+          <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar Navigation -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="pyqs.html"><i class="fas fa-question-circle"></i> PYQs</a></li>
+      <li><a href="test-series.html"><i class="fas fa-pen-square"></i> Test Series</a></li>
+      <li><a href="chapter-growth.html"><i class="fas fa-chart-line"></i> Chapter Growth</a></li>
+      <li><a href="leaderboard.html"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+      <li><a href="settings.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="contact.html" class="active"><i class="fas fa-envelope"></i> Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="coming-soon-container">
+      <h1>Coming Soon</h1>
+      <p>Stay tuned for updates.</p>
+      <button class="back-btn" onclick="window.history.back()">Back</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015",
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    
+    // Update user info in navbar if authenticated
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        firebase.firestore().collection("users").doc(user.uid).get()
+          .then(function(doc) {
+            const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
+            document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
+            if (doc.exists && doc.data().photoURL) {
+              document.getElementById("navbarProfilePic").src = doc.data().photoURL;
+            }
+          })
+          .catch(function(error) {
+            console.error("Error fetching user data:", error);
+          });
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+    
+    // Profile Dropdown Toggle
+    const profile = document.querySelector(".profile");
+    const profileDropdown = document.getElementById("profileDropdown");
+    profile.addEventListener("click", function(e) {
+      e.stopPropagation();
+      profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+    });
+    document.addEventListener("click", function() {
+      if (profileDropdown.style.display === "block") {
+        profileDropdown.style.display = "none";
+      }
+    });
+    
+    // Dark Mode Toggle
+    const darkToggle = document.getElementById("darkToggle");
+    darkToggle.addEventListener("click", function() {
+      document.body.classList.toggle("dark-mode");
+      darkToggle.innerHTML = document.body.classList.contains("dark-mode") 
+        ? '<i class="fas fa-sun"></i>' 
+        : '<i class="fas fa-moon"></i>';
+    });
+    
+    // Logout Modal (Assuming you have similar logout logic)
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        firebase.auth().signOut().then(() => {
+          window.location.href = "index.html";
+        }).catch((error) => {
+          console.error("Sign out error:", error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
