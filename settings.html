@@ -56,10 +56,11 @@
       text-decoration: none;
       color: var(--primary-color);
     }
+
     /* Navbar */
     .navbar {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start; /* Align items to the left */
       align-items: center;
       padding: 15px 20px;
       background: var(--white);
@@ -70,22 +71,34 @@
       z-index: 300;
       border-bottom: 1px solid #e0e0e0;
     }
-    .navbar .logo {
+    /* Hamburger Button (hidden on larger screens) */
+    .mobile-menu-toggle {
+      display: none;
+      font-size: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-color);
+      margin-right: 8px; /* Small gap before "Edurack" */
+    }
+    @media (max-width: 480px) {
+      .mobile-menu-toggle {
+        display: inline-block;
+      }
+    }
+    /* Navbar Logo */
+    .logo {
       font-size: 24px;
       font-weight: 700;
       color: var(--primary-color);
     }
+    /* Push right-side items to the far right */
     .nav-right {
       display: flex;
       align-items: center;
       gap: 15px;
+      margin-left: auto;
       position: relative;
-    }
-    .search-input {
-      padding: 5px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem;
     }
     .dark-toggle {
       font-size: 20px;
@@ -140,6 +153,7 @@
       margin-right: 8px;
       font-size: 16px;
     }
+
     /* Sidebar Styling */
     .sidebar {
       position: fixed;
@@ -152,6 +166,7 @@
       padding: 20px;
       overflow-y: auto;
       z-index: 200;
+      transition: left 0.3s ease; /* for slide effect on mobile */
     }
     .sidebar ul {
       list-style: none;
@@ -173,6 +188,7 @@
     .sidebar ul li a.active {
       background: var(--hover-bg);
     }
+
     /* Main Content */
     .main-content {
       margin: 90px 20px 20px 260px; /* Shifts content to right, leaving space for sidebar */
@@ -280,6 +296,7 @@
     .alert.error {
       color: red;
     }
+
     /* Logout Modal */
     .modal-overlay {
       position: fixed;
@@ -341,19 +358,41 @@
     .modal button.no:hover {
       background: #b3b3b3;
     }
+
+    /* Responsive Styles */
     @media (max-width: 480px) {
-      .settings-card { padding: 15px; }
-      .save-btn, .back-home-btn { width: 100%; }
-      .main-content { margin: 90px 20px; }
+      /* Hamburger & Navbar Adjustments */
+      .navbar {
+        padding: 10px 15px;
+      }
+      .sidebar {
+        left: -240px; /* Hide sidebar off-canvas on mobile */
+        width: 240px;
+      }
+      .sidebar.active {
+        left: 0; /* Slide in when active */
+      }
+      .main-content {
+        margin: 90px 20px; /* No left margin for sidebar on mobile */
+      }
+      .settings-card {
+        padding: 15px;
+      }
+      .save-btn, .back-home-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
+    <!-- Hamburger menu for mobile -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
+      <i class="fas fa-bars"></i>
+    </button>
     <div class="logo">Edurack</div>
     <div class="nav-right">
-      <!-- Optional search input -->
       <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
         <i class="fas fa-moon"></i>
       </button>
@@ -369,7 +408,7 @@
   </nav>
 
   <!-- Sidebar Navigation -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <ul>
       <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
       <li><a href="pyqs.html"><i class="fas fa-question-circle"></i> PYQs</a></li>
@@ -588,11 +627,9 @@
       modalMessage.innerText = "Are you sure you want to log out of " + userEmail + "?";
       logoutModal.classList.add("active");
     });
-    
     cancelLogout.addEventListener("click", function () {
       logoutModal.classList.remove("active");
     });
-    
     confirmLogout.addEventListener("click", function () {
       localStorage.clear();
       auth.signOut().then(() => {
@@ -600,6 +637,28 @@
       }).catch((error) => {
         console.error("Sign out error:", error);
       });
+    });
+    
+    // Mobile Sidebar Toggle via Hamburger
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    const sidebar = document.getElementById("sidebar");
+    mobileMenuToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle("active");
+    });
+    document.addEventListener("click", function(e) {
+      if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        sidebar.classList.remove("active");
+      }
+    });
+    
+    // Dark Mode Toggle
+    const darkToggle = document.getElementById("darkToggle");
+    darkToggle.addEventListener("click", function() {
+      document.body.classList.toggle("dark-mode");
+      darkToggle.innerHTML = document.body.classList.contains("dark-mode") 
+        ? '<i class="fas fa-sun"></i>' 
+        : '<i class="fas fa-moon"></i>';
     });
     
     // Register Service Worker for PWA
