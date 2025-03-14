@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Series - Edurack</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PYQs - Edurack</title>
+  <link rel="manifest" href="manifest.json" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Google Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <!-- Firebase SDKs will be loaded later -->
   <style>
-    /* Common CSS */
+    /* Base Variables for Light Mode */
     :root {
       --primary-color: #007adf;
       --secondary-color: #0056b3;
-      --accent-color: #ff6f61;
       --light-bg: #f4f7fb;
       --white: #fff;
       --text-color: #333;
@@ -20,10 +22,10 @@
       --hover-bg: rgba(0, 122, 223, 0.1);
       --modal-bg: rgba(0, 0, 0, 0.6);
     }
+    /* Dark Mode Variables */
     body.dark-mode {
       --primary-color: #4da6ff;
       --secondary-color: #1a75ff;
-      --accent-color: #ff8a80;
       --light-bg: #1e1e1e;
       --white: #2c2c2c;
       --text-color: #ddd;
@@ -31,16 +33,38 @@
       --hover-bg: rgba(77, 166, 255, 0.15);
       --modal-bg: rgba(0, 0, 0, 0.8);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
-    body { background: var(--light-bg); color: var(--text-color); line-height: 1.6; transition: background 0.3s, color 0.3s; }
-    a { text-decoration: none; color: var(--primary-color); }
+    /* Global Resets & Typography */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: var(--light-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    a {
+      text-decoration: none;
+      color: var(--primary-color);
+    }
     /* Navbar */
     .navbar {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 15px 20px; background: var(--white);
-      box-shadow: 0 4px 10px var(--card-shadow); position: fixed;
-      width: 100%; top: 0; z-index: 300; border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 15px 20px;
+      background: var(--white);
+      box-shadow: 0 4px 10px var(--card-shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 300;
+      border-bottom: 1px solid #e0e0e0;
     }
+    /* Hamburger Button (visible on mobile) */
     .mobile-menu-toggle {
       display: none;
       font-size: 24px;
@@ -50,12 +74,36 @@
       color: var(--text-color);
       margin-right: 8px;
     }
-    .navbar .logo { font-size: 24px; font-weight: 700; color: var(--primary-color); }
-    .nav-right { display: flex; align-items: center; gap: 15px; position: relative; }
-    .search-wrapper {
+    @media (max-width: 480px) {
+      .mobile-menu-toggle {
+        display: inline-block;
+      }
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-left: auto;
       position: relative;
     }
-    .search-input { padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
+    /* Search Wrapper & Toggle */
+    .search-wrapper {
+      display: flex;         /* Ensures input and icon are aligned */
+      align-items: center;
+      gap: 6px;              /* Small gap between input and search icon */
+      position: relative;
+    }
+    .search-input {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
     .search-toggle {
       display: none;
       background: none;
@@ -64,73 +112,151 @@
       color: var(--text-color);
       cursor: pointer;
     }
-    .dark-toggle { font-size: 20px; cursor: pointer; border: none; background: none; color: var(--text-color); transition: color 0.3s; }
-    .dark-toggle:hover { color: var(--primary-color); }
+    @media (max-width: 480px) {
+      .search-input { display: none; }
+      .search-toggle { display: inline-block; }
+    }
+    .dark-toggle {
+      font-size: 20px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+    .dark-toggle:hover {
+      color: var(--primary-color);
+    }
     /* Profile */
-    .profile { display: flex; align-items: center; cursor: pointer; position: relative; }
-    .navbar-profile-pic { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .navbar-profile-pic {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
     .profile-dropdown {
-      position: absolute; top: 50px; right: 0; background: var(--white);
-      border: 1px solid #e0e0e0; box-shadow: 0 4px 10px var(--card-shadow);
-      border-radius: 6px; padding: 10px; display: none; z-index: 400; min-width: 150px;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: var(--white);
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 4px 10px var(--card-shadow);
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 400;
+      min-width: 150px;
     }
     .profile-dropdown p,
     .profile-dropdown a {
-      display: block; padding: 8px 12px; color: var(--text-color);
-      font-size: 0.95rem; transition: background 0.3s, color 0.3s;
+      display: block;
+      padding: 8px 12px;
+      color: var(--text-color);
+      font-size: 0.95rem;
+      transition: background 0.3s ease, color 0.3s ease;
     }
-    .profile-dropdown a:hover { background: var(--primary-color); color: var(--white); }
-    .profile-dropdown a i { margin-right: 8px; font-size: 16px; }
+    .profile-dropdown a:hover {
+      background: var(--primary-color);
+      color: var(--white);
+    }
+    .profile-dropdown a i {
+      margin-right: 8px;
+      font-size: 16px;
+    }
     /* Sidebar */
     .sidebar {
-      position: fixed; top: 70px; left: 0; width: 220px;
-      height: calc(100% - 70px); background: var(--white);
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1); padding: 20px;
-      overflow-y: auto; z-index: 200;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 220px;
+      height: calc(100% - 70px);
+      background: var(--white);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 200;
       transition: left 0.3s ease;
     }
-    .sidebar ul { list-style: none; }
-    .sidebar ul li { margin-bottom: 15px; }
-    .sidebar ul li a {
-      color: var(--text-color); font-size: 1rem;
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 12px; border-radius: 4px; transition: background 0.3s;
+    .sidebar ul {
+      list-style: none;
     }
-    .sidebar ul li a:hover, .sidebar ul li a.active { background: var(--hover-bg); }
+    .sidebar ul li {
+      margin-bottom: 15px;
+    }
+    .sidebar ul li a {
+      color: var(--text-color);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    .sidebar ul li a:hover,
+    .sidebar ul li a.active {
+      background: var(--hover-bg);
+    }
     /* Main Content */
-    .main-content { margin: 90px 20px 20px 260px; }
-    /* Test Series Specific */
-    .test-card {
+    .main-content {
+      margin: 90px 20px 20px 260px;
+      max-width: 1100px;
+    }
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+    /* PYQs Specific */
+    .chapters-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .chapter-card {
       background: var(--white);
       box-shadow: 0 2px 6px var(--card-shadow);
-      padding: 15px; border-radius: 8px;
-      margin-bottom: 15px;
-      display: flex; justify-content: space-between; align-items: center;
-      transition: transform 0.3s; cursor: pointer;
+      padding: 15px;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
     }
-    .test-card:hover { transform: translateY(-4px); }
+    .chapter-card:hover {
+      transform: translateY(-4px);
+    }
     @media (max-width: 768px) {
       .sidebar { width: 180px; }
       .main-content { margin-left: 200px; }
     }
     @media (max-width: 480px) {
-      .mobile-menu-toggle { display: inline-block; }
-      .navbar { flex-direction: row; }
-      .nav-right { width: 100%; justify-content: space-between; }
-      .search-input { display: none; }
-      .search-toggle { display: inline-block; }
+      /* On mobile, slide sidebar off-canvas */
       .sidebar {
         left: -240px;
         width: 240px;
       }
-      .sidebar.active { left: 0; }
+      .sidebar.active {
+        left: 0;
+      }
       .main-content { margin: 90px 20px; }
+      /* Keep navbar horizontal */
+      .navbar { flex-direction: row; }
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
+    <!-- Hamburger menu for mobile -->
     <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
       <i class="fas fa-bars"></i>
     </button>
@@ -155,45 +281,52 @@
       </div>
     </div>
   </nav>
-  <!-- Sidebar -->
+  
+  <!-- Sidebar Navigation -->
   <div class="sidebar" id="sidebar">
     <ul>
       <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
-      <li><a href="pyqs.html"><i class="fas fa-question-circle"></i> PYQs</a></li>
-      <li><a href="test-series.html" class="active"><i class="fas fa-pen-square"></i> Test Series</a></li>
+      <li><a href="pyqs.html" class="active"><i class="fas fa-question-circle"></i> PYQs</a></li>
+      <li><a href="test-series.html"><i class="fas fa-pen-square"></i> Test Series</a></li>
       <li><a href="chapter-growth.html"><i class="fas fa-chart-line"></i> Chapter Growth</a></li>
       <li><a href="leaderboard.html"><i class="fas fa-trophy"></i> Leaderboard</a></li>
       <li><a href="settings.html"><i class="fas fa-user"></i> Profile</a></li>
       <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
     </ul>
   </div>
+  
   <!-- Main Content -->
   <div class="main-content">
-    <h1>Test Series</h1>
-    <div id="testSeriesContainer"></div>
+    <h1 class="page-title">Past Year Questions (PYQs)</h1>
+    <div id="chaptersContainer" class="chapters-grid">
+      <!-- Chapter cards will be dynamically inserted here -->
+    </div>
   </div>
+  
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script>
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
       authDomain: "arena-b8996.firebaseapp.com",
       projectId: "arena-b8996",
       storageBucket: "arena-b8996.firebasestorage.app",
       messagingSenderId: "188106766480",
-      appId: "1:188106766480:web:801e701f00151448090015",
+      appId: "1:188106766480:web:801e701f00151448090015"
     };
-    if (!firebase.apps.length) { 
-      firebase.initializeApp(firebaseConfig); 
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
     }
     
+    // Check authentication state and fetch PYQs chapters
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         window.location.href = "index.html";
       } else {
-        // Update user profile info
+        // Update navbar with user data
         firebase.firestore().collection("users").doc(user.uid).get()
           .then(function(doc) {
             const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
@@ -202,61 +335,33 @@
               document.getElementById("navbarProfilePic").src = doc.data().photoURL;
             }
           })
-          .catch(function(error) { console.error("Error fetching user data:", error); });
-        
-        // Retrieve test series data
-        const container = document.getElementById("testSeriesContainer");
-        firebase.firestore().collection("test_series").get()
+          .catch(function(error) {
+            console.error("Error fetching user data:", error);
+          });
+          
+        // Fetch chapters for PYQs from Firestore (assume collection "pyqs_chapters")
+        const chaptersContainer = document.getElementById("chaptersContainer");
+        firebase.firestore().collection("pyqs_chapters").get()
           .then(function(snapshot) {
-            if (snapshot.empty) {
-              // If no test series, add sample test series
-              const sampleTestSeries = [
-                { id: "sample1", title: "Mock Test Series 1", startDate: "2025-04-10" },
-                { id: "sample2", title: "Mock Test Series 2", startDate: "2025-05-20" },
-                { id: "sample3", title: "Mock Test Series 3", startDate: "2025-06-15" }
-              ];
-              sampleTestSeries.forEach(function(data) {
-                const card = document.createElement("div");
-                card.classList.add("test-card");
-                card.innerHTML = `
-                  <div>
-                    <h3>${data.title}</h3>
-                    <p>Starts on: ${data.startDate}</p>
-                  </div>
-                  <div>
-                    <i class="fas fa-arrow-right"></i>
-                  </div>`;
-                card.addEventListener("click", function() {
-                  window.location.href = `test_series_detail.html?testId=${data.id}`;
-                });
-                container.appendChild(card);
+            snapshot.forEach(function(doc) {
+              const data = doc.data();
+              const chapterDiv = document.createElement("div");
+              chapterDiv.classList.add("chapter-card");
+              chapterDiv.innerHTML = `<h3>${data.chapterName}</h3><p>Click to view PYQs</p>`;
+              // Redirect to chapter-specific PYQs page using query parameter "chapterId"
+              chapterDiv.addEventListener("click", function() {
+                window.location.href = `pyqs_chapter.html?chapterId=${doc.id}`;
               });
-            } else {
-              // Loop through and display test series from Firestore
-              snapshot.forEach(function(doc) {
-                const data = doc.data();
-                const card = document.createElement("div");
-                card.classList.add("test-card");
-                card.innerHTML = `
-                  <div>
-                    <h3>${data.title}</h3>
-                    <p>Starts on: ${data.startDate}</p>
-                  </div>
-                  <div>
-                    <i class="fas fa-arrow-right"></i>
-                  </div>`;
-                card.addEventListener("click", function() {
-                  window.location.href = `test_series_detail.html?testId=${doc.id}`;
-                });
-                container.appendChild(card);
-              });
-            }
+              chaptersContainer.appendChild(chapterDiv);
+            });
           })
-          .catch(function(error) { console.error("Error fetching test series:", error); });
+          .catch(function(error) {
+            console.error("Error fetching chapters:", error);
+          });
       }
     });
     
-    // Profile dropdown
+    // Profile Dropdown Toggle
     const profile = document.querySelector(".profile");
     const profileDropdown = document.getElementById("profileDropdown");
     profile.addEventListener("click", function(e) {
@@ -264,29 +369,29 @@
       profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
     });
     document.addEventListener("click", function() {
-      if (profileDropdown.style.display === "block") { 
-        profileDropdown.style.display = "none"; 
+      if (profileDropdown.style.display === "block") {
+        profileDropdown.style.display = "none";
       }
     });
     
-    // Dark mode toggle
+    // Dark Mode Toggle
     const darkToggle = document.getElementById("darkToggle");
     darkToggle.addEventListener("click", function() {
       document.body.classList.toggle("dark-mode");
-      darkToggle.innerHTML = document.body.classList.contains("dark-mode")
-        ? '<i class="fas fa-sun"></i>'
+      darkToggle.innerHTML = document.body.classList.contains("dark-mode") 
+        ? '<i class="fas fa-sun"></i>' 
         : '<i class="fas fa-moon"></i>';
     });
     
-    // Logout
+    // Logout functionality
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", function(e) {
         e.preventDefault();
-        firebase.auth().signOut().then(() => { 
-          window.location.href = "index.html"; 
-        }).catch((error) => { 
-          console.error("Sign out error:", error); 
+        firebase.auth().signOut().then(() => {
+          window.location.href = "index.html";
+        }).catch((error) => {
+          console.error("Sign out error:", error);
         });
       });
     }
@@ -302,18 +407,6 @@
       const sidebar = document.getElementById("sidebar");
       if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
         sidebar.classList.remove("active");
-      }
-    });
-    
-    // Mobile Search Toggle
-    const searchToggle = document.getElementById("searchToggle");
-    const searchInput = document.querySelector(".search-input");
-    searchToggle.addEventListener("click", function() {
-      if (searchInput.style.display === "block") {
-        searchInput.style.display = "none";
-      } else {
-        searchInput.style.display = "block";
-        searchInput.focus();
       }
     });
   </script>
