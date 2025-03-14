@@ -1,8 +1,11 @@
-o<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Enable app-like experience on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="icon-192.png">
   <title>Dashboard - Edurack</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#007adf" />
@@ -55,9 +58,9 @@ o<!DOCTYPE html>
     /* Navbar */
     .navbar {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start; /* So items line up from left to right */
       align-items: center;
-      padding: 15px 20px;
+      padding: 10px 15px;
       background: var(--white);
       box-shadow: 0 4px 10px var(--card-shadow);
       position: fixed;
@@ -66,15 +69,29 @@ o<!DOCTYPE html>
       z-index: 300;
       border-bottom: 1px solid #e0e0e0;
     }
-    .navbar .logo {
+    .mobile-menu-toggle {
+      display: none; /* Shown only on small screens */
+      font-size: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-color);
+      margin-right: 15px; /* Space after the hamburger icon */
+    }
+    .logo {
       font-size: 24px;
       font-weight: 700;
       color: var(--primary-color);
+      margin-right: auto; /* Pushes nav-right to the far right */
     }
     .nav-right {
       display: flex;
       align-items: center;
       gap: 15px;
+      position: relative;
+    }
+    /* Search Wrapper */
+    .search-wrapper {
       position: relative;
     }
     .search-input {
@@ -83,6 +100,15 @@ o<!DOCTYPE html>
       border-radius: 4px;
       font-size: 0.9rem;
     }
+    .search-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+    /* Dark Mode Toggle */
     .dark-toggle {
       font-size: 20px;
       cursor: pointer;
@@ -139,15 +165,16 @@ o<!DOCTYPE html>
     /* Sidebar */
     .sidebar {
       position: fixed;
-      top: 70px;
+      top: 50px;
       left: 0;
       width: 220px;
-      height: calc(100% - 70px);
+      height: calc(100% - 50px);
       background: var(--white);
       box-shadow: 2px 0 5px rgba(0,0,0,0.1);
       padding: 20px;
       overflow-y: auto;
       z-index: 200;
+      transition: left 0.3s ease;
     }
     .sidebar ul {
       list-style: none;
@@ -171,7 +198,7 @@ o<!DOCTYPE html>
     }
     /* Main Content */
     .main-content {
-      margin: 90px 20px 20px 260px;
+      margin: 60px 20px 20px 260px;
     }
     .welcome-section {
       margin-bottom: 30px;
@@ -410,19 +437,27 @@ o<!DOCTYPE html>
       }
     }
     @media (max-width: 480px) {
-      .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      .nav-right {
-        width: 100%;
-        justify-content: space-between;
-      }
+      /* Sidebar becomes off-canvas on mobile */
       .sidebar {
-        display: none;
+        left: -240px;
+        width: 240px;
+      }
+      .sidebar.active {
+        left: 0;
       }
       .main-content {
-        margin: 90px 20px;
+        margin: 60px 20px;
+      }
+      /* Hide search input and show search icon on mobile */
+      .search-input {
+        display: none;
+      }
+      .search-toggle {
+        display: inline-block;
+      }
+      /* Show hamburger menu */
+      .mobile-menu-toggle {
+        display: block;
       }
     }
   </style>
@@ -430,9 +465,18 @@ o<!DOCTYPE html>
 <body>
   <!-- Navbar -->
   <header class="navbar">
+    <!-- Hamburger comes first -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
+      <i class="fas fa-bars"></i>
+    </button>
     <div class="logo">Edurack</div>
     <div class="nav-right">
-      <input type="text" placeholder="Search courses..." class="search-input">
+      <div class="search-wrapper">
+        <input type="text" placeholder="Search courses..." class="search-input">
+        <button id="searchToggle" class="search-toggle" title="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
       <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
         <i class="fas fa-moon"></i>
       </button>
@@ -510,7 +554,7 @@ o<!DOCTYPE html>
       <h2>Join Test Series</h2>
       <div class="test-card">
         <div>
-          <h3>NEET Test Series</h3>
+          <h3>NEET Test Series - Batch A</h3>
           <p>Starts on 10th Aug</p>
         </div>
         <div>
@@ -605,14 +649,14 @@ o<!DOCTYPE html>
       projectId: "arena-b8996",
       storageBucket: "arena-b8996.firebasestorage.app",
       messagingSenderId: "188106766480",
-      appId: "1:188106766480:web:801e701f00151448090015",
+      appId: "1:188106766480:web:801e701f00151448090015"
     };
 
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
     
-    // Cache DOM elements for better performance
+    // Cache DOM elements
     const welcomeNameEl = document.getElementById("welcomeName");
     const profileGreetingEl = document.getElementById("profileGreeting");
     const navbarProfilePic = document.getElementById("navbarProfilePic");
@@ -654,6 +698,21 @@ o<!DOCTYPE html>
       darkToggle.innerHTML = document.body.classList.contains("dark-mode") 
         ? '<i class="fas fa-sun"></i>' 
         : '<i class="fas fa-moon"></i>';
+    });
+    
+    // Mobile Sidebar Toggle
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    const sidebar = document.querySelector(".sidebar");
+    
+    mobileMenuToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle("active");
+    });
+    
+    document.addEventListener("click", (e) => {
+      if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        sidebar.classList.remove("active");
+      }
     });
     
     // Logout Modal Logic
