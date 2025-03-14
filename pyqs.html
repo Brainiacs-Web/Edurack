@@ -53,7 +53,7 @@
     /* Navbar */
     .navbar {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       padding: 15px 20px;
       background: var(--white);
@@ -64,7 +64,22 @@
       z-index: 300;
       border-bottom: 1px solid #e0e0e0;
     }
-    .navbar .logo {
+    /* Hamburger Button (visible on mobile) */
+    .mobile-menu-toggle {
+      display: none;
+      font-size: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-color);
+      margin-right: 8px;
+    }
+    @media (max-width: 480px) {
+      .mobile-menu-toggle {
+        display: inline-block;
+      }
+    }
+    .logo {
       font-size: 24px;
       font-weight: 700;
       color: var(--primary-color);
@@ -73,6 +88,11 @@
       display: flex;
       align-items: center;
       gap: 15px;
+      margin-left: auto;
+      position: relative;
+    }
+    /* Search Wrapper & Toggle */
+    .search-wrapper {
       position: relative;
     }
     .search-input {
@@ -80,6 +100,18 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 0.9rem;
+    }
+    .search-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      .search-input { display: none; }
+      .search-toggle { display: inline-block; }
     }
     .dark-toggle {
       font-size: 20px;
@@ -92,7 +124,7 @@
     .dark-toggle:hover {
       color: var(--primary-color);
     }
-    /* Profile with Circular Image */
+    /* Profile */
     .profile {
       display: flex;
       align-items: center;
@@ -146,6 +178,7 @@
       padding: 20px;
       overflow-y: auto;
       z-index: 200;
+      transition: left 0.3s ease;
     }
     .sidebar ul {
       list-style: none;
@@ -203,19 +236,35 @@
       .main-content { margin-left: 200px; }
     }
     @media (max-width: 480px) {
-      .navbar { flex-direction: column; align-items: flex-start; }
-      .nav-right { width: 100%; justify-content: space-between; }
-      .sidebar { display: none; }
+      /* On mobile, slide sidebar off-canvas */
+      .sidebar {
+        left: -240px;
+        width: 240px;
+      }
+      .sidebar.active {
+        left: 0;
+      }
       .main-content { margin: 90px 20px; }
+      /* Keep navbar horizontal */
+      .navbar { flex-direction: row; }
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
+    <!-- Hamburger menu for mobile -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
+      <i class="fas fa-bars"></i>
+    </button>
     <div class="logo">Edurack</div>
     <div class="nav-right">
-      <input type="text" placeholder="Search courses..." class="search-input">
+      <div class="search-wrapper">
+        <input type="text" placeholder="Search courses..." class="search-input">
+        <button id="searchToggle" class="search-toggle" title="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
       <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
         <i class="fas fa-moon"></i>
       </button>
@@ -231,7 +280,7 @@
   </nav>
   
   <!-- Sidebar Navigation -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <ul>
       <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
       <li><a href="pyqs.html" class="active"><i class="fas fa-question-circle"></i> PYQs</a></li>
@@ -331,7 +380,7 @@
         : '<i class="fas fa-moon"></i>';
     });
     
-    // Logout Modal (assuming similar logic as in other pages)
+    // Logout functionality
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", function(e) {
@@ -343,6 +392,20 @@
         });
       });
     }
+    
+    // Mobile Sidebar Toggle via Hamburger
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    mobileMenuToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("active");
+    });
+    document.addEventListener("click", function(e) {
+      const sidebar = document.getElementById("sidebar");
+      if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        sidebar.classList.remove("active");
+      }
+    });
   </script>
 </body>
 </html>
