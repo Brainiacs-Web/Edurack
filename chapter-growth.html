@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <!-- Google Font: Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
   <style>
     /* Base Variables for Light Mode */
     :root {
@@ -34,6 +35,7 @@
       --hover-bg: rgba(77, 166, 255, 0.15);
       --modal-bg: rgba(0, 0, 0, 0.8);
     }
+
     /* Global Resets & Typography */
     * {
       margin: 0;
@@ -51,11 +53,12 @@
       text-decoration: none;
       color: var(--primary-color);
     }
+
     /* Navbar */
     .navbar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: flex-start; /* hamburger + logo on left */
       padding: 15px 20px;
       background: var(--white);
       box-shadow: 0 4px 10px var(--card-shadow);
@@ -65,15 +68,42 @@
       z-index: 300;
       border-bottom: 1px solid #e0e0e0;
     }
-    .navbar .logo {
+    /* Hamburger button (mobile) */
+    .mobile-menu-toggle {
+      display: none;
+      font-size: 24px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-color);
+      margin-right: 8px;
+    }
+    @media (max-width: 480px) {
+      .mobile-menu-toggle {
+        display: inline-block;
+      }
+    }
+
+    .logo {
       font-size: 24px;
       font-weight: 700;
       color: var(--primary-color);
     }
+
+    /* Right side of navbar */
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 15px; /* Spacing between search, dark mode, profile */
+      margin-left: auto; /* push to the right */
+      position: relative;
+    }
+
+    /* Search wrapper with icon & input */
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px; /* small gap between input & search icon */
       position: relative;
     }
     .search-input {
@@ -82,6 +112,20 @@
       border-radius: 4px;
       font-size: 0.9rem;
     }
+    .search-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: var(--text-color);
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      .search-input { display: none; }
+      .search-toggle { display: inline-block; }
+    }
+
+    /* Dark mode toggle */
     .dark-toggle {
       font-size: 20px;
       cursor: pointer;
@@ -93,7 +137,8 @@
     .dark-toggle:hover {
       color: var(--primary-color);
     }
-    /* Profile with Circular Image */
+
+    /* Profile */
     .profile {
       display: flex;
       align-items: center;
@@ -135,6 +180,7 @@
       margin-right: 8px;
       font-size: 16px;
     }
+
     /* Sidebar */
     .sidebar {
       position: fixed;
@@ -147,6 +193,7 @@
       padding: 20px;
       overflow-y: auto;
       z-index: 200;
+      transition: left 0.3s ease;
     }
     .sidebar ul {
       list-style: none;
@@ -168,9 +215,10 @@
     .sidebar ul li a.active {
       background: var(--hover-bg);
     }
+
     /* Main Content */
     .main-content {
-      margin: 90px 20px 20px 260px; /* Leave space for sidebar */
+      margin: 90px 20px 20px 260px;
       max-width: 1100px;
     }
     .page-title {
@@ -179,6 +227,7 @@
       margin-bottom: 20px;
       color: var(--text-color);
     }
+
     /* Chapter Growth Section */
     .growth-cards {
       display: flex;
@@ -203,6 +252,7 @@
       font-size: 0.95rem;
       color: var(--text-color);
     }
+
     /* Back to Home button */
     .back-home-btn {
       display: inline-block;
@@ -217,6 +267,7 @@
     .back-home-btn:hover {
       background: var(--secondary-color);
     }
+
     /* Logout Modal */
     .modal-overlay {
       position: fixed;
@@ -278,24 +329,51 @@
     .modal button.no:hover {
       background: #b3b3b3;
     }
+
+    /* Media Queries */
     @media (max-width: 768px) {
       .sidebar { width: 180px; }
       .main-content { margin-left: 200px; }
     }
     @media (max-width: 480px) {
-      .navbar { flex-direction: column; align-items: flex-start; }
-      .nav-right { width: 100%; justify-content: space-between; }
-      .sidebar { display: none; }
-      .main-content { margin: 90px 20px; }
+      /* Keep navbar in a single row on mobile */
+      .navbar {
+        flex-direction: row;
+        align-items: center;
+      }
+      /* Let .nav-right push icons to the far right */
+      .nav-right {
+        margin-left: auto;
+      }
+      .sidebar { 
+        left: -240px;
+        width: 240px;
+        display: block; /* hidden off-canvas by default */
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .main-content {
+        margin: 90px 20px;
+      }
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
+    <!-- Mobile Hamburger Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
+      <i class="fas fa-bars"></i>
+    </button>
     <div class="logo">Edurack</div>
     <div class="nav-right">
-      <input type="text" placeholder="Search courses..." class="search-input">
+      <div class="search-wrapper">
+        <input type="text" placeholder="Search courses..." class="search-input">
+        <button id="searchToggle" class="search-toggle" title="Search">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
       <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
         <i class="fas fa-moon"></i>
       </button>
@@ -311,9 +389,9 @@
   </nav>
   
   <!-- Sidebar Navigation -->
-  <div class="sidebar">
+  <div class="sidebar" id="sidebar">
     <ul>
-      <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
       <li><a href="pyqs.html"><i class="fas fa-question-circle"></i> PYQs</a></li>
       <li><a href="test-series.html"><i class="fas fa-pen-square"></i> Test Series</a></li>
       <li><a href="chapter-growth.html" class="active"><i class="fas fa-chart-line"></i> Chapter Growth</a></li>
@@ -357,11 +435,12 @@
       projectId: "arena-b8996",
       storageBucket: "arena-b8996.firebasestorage.app",
       messagingSenderId: "188106766480",
-      appId: "1:188106766480:web:801e701f00151448090015",
+      appId: "1:188106766480:web:801e701f00151448090015"
     };
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
+    
     const auth = firebase.auth();
     const db = firebase.firestore();
     
@@ -370,7 +449,7 @@
       if (!user) {
         window.location.href = "index.html";
       } else {
-        firebase.firestore().collection("users").doc(user.uid).get()
+        db.collection("users").doc(user.uid).get()
           .then(function(doc) {
             const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
             document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
@@ -381,9 +460,9 @@
           .catch(function(error) {
             console.error("Error fetching user data:", error);
           });
-        // Fetch Chapter Growth Data from Firestore (assume collection "chapter_growth")
+        // Fetch Chapter Growth Data
         const container = document.getElementById("growthCardsContainer");
-        firebase.firestore().collection("chapter_growth").get()
+        db.collection("chapter_growth").get()
           .then(function(snapshot) {
             snapshot.forEach(function(doc) {
               const data = doc.data();
@@ -405,7 +484,7 @@
     const profileDropdown = document.getElementById("profileDropdown");
     profile.addEventListener("click", function(e) {
       e.stopPropagation();
-      profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+      profileDropdown.style.display = (profileDropdown.style.display === "block") ? "none" : "block";
     });
     document.addEventListener("click", function() {
       if (profileDropdown.style.display === "block") {
@@ -445,6 +524,32 @@
       }).catch((error) => {
         console.error("Sign out error:", error);
       });
+    });
+    
+    // Mobile Sidebar Toggle via Hamburger
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    mobileMenuToggle.addEventListener("click", function(e) {
+      e.stopPropagation();
+      const sidebar = document.getElementById("sidebar");
+      sidebar.classList.toggle("active");
+    });
+    document.addEventListener("click", function(e) {
+      const sidebar = document.getElementById("sidebar");
+      if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+        sidebar.classList.remove("active");
+      }
+    });
+    
+    // Mobile Search Toggle
+    const searchToggle = document.getElementById("searchToggle");
+    const searchInput = document.querySelector(".search-input");
+    searchToggle.addEventListener("click", function() {
+      if (searchInput.style.display === "block") {
+        searchInput.style.display = "none";
+      } else {
+        searchInput.style.display = "block";
+        searchInput.focus();
+      }
     });
     
     // Register Service Worker for PWA
