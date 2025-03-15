@@ -18,387 +18,136 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
 
   <style>
-/* Base Reset & Fonts */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-body {
-  background: linear-gradient(to bottom, #e0f2ff, #f7faff);
-  color: #333;
-  overflow-x: hidden;
-}
-
-/* Top Container for Exam Info – shifted upward */
-.top-container {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px 30px;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  position: relative;
-}
-.left-info {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.left-info span {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #007adf;
-}
-/* Right side container for timer & submit button */
-.top-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
-}
-.timer {
-  font-size: 1rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  color: #333;
-}
-.timer img {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-}
-.submit-btn {
-  background: linear-gradient(135deg, #009dff, #006edc);
-  color: white;
-  padding: 6px 12px;
-  font-size: 0.8rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-.submit-btn:hover {
-  background: linear-gradient(135deg, #007adf, #005ab5);
-}
-
-/* Hamburger Button */
-.hamburger-btn {
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #333;
-  position: absolute;
-  top: 15x;
-  left: 10px;
-}
-
-/* Subject Selector Row */
-#subject-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin: 20px auto;
-  width: 100%;
-  max-width: 600px;
-}
-#subject-buttons button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: 2px solid #56b4ef;
-  background: white;
-  color: #56b4ef;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-#subject-buttons button.activeSubject {
-  background: #56b4ef;
-  color: white;
-}
-#subject-buttons button:hover {
-  opacity: 0.9;
-}
-
-/* Main Exam Container */
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 20px;
-  min-height: 500px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-/* Question Card */
-.question-card {
-  padding: 20px;
-  padding-left: 60px; /* extra padding to prevent hamburger overlap */
-  border-radius: 8px;
-  background: #f7faff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 20px;
-  position: relative;
-}
-.question-card .question-number {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-.question-card .question-text {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-}
-
-/* Responsive Image Styles */
-.question-image {
-  width: 100% !important;
-  max-width: 100% !important;
-  height: auto !important;
-  display: block;
-  margin: 0 auto;
-}
-.option-image {
-  width: 100%;     /* Make option images scale as well */
-  max-width: 120px; /* Option images can have a max-width limit */
-  height: auto;
-  display: block;
-}
-
-/* Option Styling */
-.option-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.image-option {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-  border-radius: 6px;
-  background: white;
-  border: 2px solid transparent;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.image-option:hover,
-.image-option.selected {
-  border: 2px solid #007adf;
-}
-.image-option label {
-  width: 100%;
-  cursor: pointer;
-}
-.option-content {
-  font-size: 1rem;
-}
-
-/* Review Checkbox */
-.review-container {
-  margin: 15px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.review-container label {
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-/* Button Container */
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 20px;
-}
-.button-container button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  background: linear-gradient(135deg, #009dff, #006edc);
-  color: white;
-  transition: background 0.3s ease;
-}
-.button-container button:hover {
-  background: linear-gradient(135deg, #007adf, #005ab5);
-}
-
-/* Progress Modal for Question Navigation */
-.progress-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 260px;
-  height: 100vh;
-  background: white;
-  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-y: auto;
-  z-index: 1000;
-}
-.progress-modal header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-.progress-modal header h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #007adf;
-}
-.progress-modal .close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #333;
-}
-#question-progress {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-top: 15px;
-}
-#question-progress span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 2px solid black;
-  border-radius: 50%;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
-}
-#question-progress span:hover {
-  transform: scale(1.1);
-}
-
-/* Modal Overlay for Username */
-.modal-overlay {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1100;
-  opacity: 0;
-  animation: fadeIn 0.3s forwards;
-}
-@keyframes fadeIn {
-  to { opacity: 1; }
-}
-.modal {
-  background: white;
-  width: 90%;
-  max-width: 500px;
-  padding: 30px 40px;
-  border-radius: 10px;
-  position: relative;
-  text-align: center;
-}
-.modal h2 {
-  font-size: 1.8rem;
-  margin-bottom: 20px;
-  color: #007adf;
-  font-weight: 600;
-}
-.modal input[type="text"] {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-.continue-btn {
-  background: linear-gradient(135deg, #009dff, #006edc);
-  color: white;
-  padding: 12px 30px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-.continue-btn:hover {
-  background: linear-gradient(135deg, #007adf, #005ab5);
-  transform: scale(1.05);
-}
-
-/* Media Query for Big Screens */
-@media (min-width: 1024px) {
-  .container {
-    padding: 30px;
-  }
-  .question-card .question-text {
-    font-size: 1.5rem;
-  }
-  .button-container button {
-    font-size: 1.1rem;
-  }
-  #subject-buttons button {
-    font-size: 1.1rem;
-    padding: 12px 24px;
-  }
-}
-
-/* Override container max-width on smaller screens
-   so the question image can fill the screen width */
-   @media (max-width: 768px) {
-  .container {
-    max-width: 100% !important;
-    margin: 0 10px;
-    padding: 10px;
-  }
-  .question-card {
-    padding: 15px;
-    padding-left: 15px; /* reduce left padding */
-  }
-}
-
-/* Additional adjustments for smaller devices */
-@media (max-width: 600px) {
-  .container {
-    margin: 5px;
-    padding: 10px;
-  }
-  .question-image {
-    width: 100%;  /* Already set, but repeated for clarity */
-  }
-  .option-image {
-    max-width: 80px;
-  }
-}
-
-@media (max-width: 400px) {
-  .option-image {
-    max-width: 60px;
-  }
-}
-
+    /* Base Reset & Fonts */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body { background: linear-gradient(to bottom, #e0f2ff, #f7faff); color: #333; overflow-x: hidden; }
+    /* Top Container for Exam Info */
+    .top-container {
+      width: 100%; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); padding: 20px 30px; margin-top: 10px;
+      display: flex; justify-content: space-between; align-items: flex-start; position: relative;
+    }
+    .left-info { display: flex; flex-direction: column; gap: 5px; }
+    .left-info span { font-weight: 600; font-size: 1rem; color: #007adf; }
+    .top-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .timer { font-size: 1rem; font-weight: 600; display: flex; align-items: center; color: #333; }
+    .timer img { width: 20px; height: 20px; margin-right: 8px; }
+    .submit-btn {
+      background: linear-gradient(135deg, #009dff, #006edc); color: white;
+      padding: 6px 12px; font-size: 0.8rem; border: none; border-radius: 6px;
+      cursor: pointer; transition: background 0.3s ease;
+    }
+    .submit-btn:hover { background: linear-gradient(135deg, #007adf, #005ab5); }
+    /* Subject & Chapter Buttons */
+    #subject-buttons, #chapter-buttons {
+      display: flex; justify-content: center; gap: 10px;
+      margin: 20px auto; width: 100%; max-width: 600px;
+    }
+    #subject-buttons button, #chapter-buttons button {
+      padding: 10px 20px; font-size: 1rem; border: 2px solid #56b4ef;
+      background: white; color: #56b4ef; border-radius: 6px; cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #subject-buttons button.activeSubject, #chapter-buttons button.activeChapter {
+      background: #56b4ef; color: white;
+    }
+    #subject-buttons button:hover, #chapter-buttons button:hover { opacity: 0.9; }
+    /* Main Exam Container */
+    .container {
+      width: 100%; max-width: 1200px; margin: 20px auto;
+      padding: 20px; min-height: 500px; background: white;
+      border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    /* Question Card */
+    .question-card {
+      padding: 20px; padding-left: 60px; border-radius: 8px;
+      background: #f7faff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 20px; position: relative;
+    }
+    .question-card .question-number { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+    .question-card .question-text { font-size: 1.3rem; margin-bottom: 20px; }
+    /* Responsive Image Styles */
+    .question-image { width: 100% !important; max-width: 100% !important; height: auto !important; display: block; margin: 0 auto; }
+    .option-image { width: 100%; max-width: 120px; height: auto; display: block; }
+    /* Option Styling */
+    .option-container { display: flex; flex-direction: column; gap: 10px; }
+    .image-option {
+      display: flex; align-items: center; padding: 12px; border-radius: 6px;
+      background: white; border: 2px solid transparent;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .image-option:hover, .image-option.selected { border: 2px solid #007adf; }
+    .image-option label { width: 100%; cursor: pointer; }
+    .option-content { font-size: 1rem; }
+    /* Input Answer Styling */
+    .input-answer { margin: 10px 0; }
+    .input-answer label { font-size: 1rem; margin-right: 5px; }
+    .input-answer input { padding: 8px; font-size: 1rem; width: 100%; max-width: 200px; }
+    /* Review Checkbox */
+    .review-container { margin: 15px 0; display: flex; align-items: center; gap: 8px; }
+    .review-container label { font-size: 0.95rem; cursor: pointer; }
+    /* Button Container */
+    .button-container {
+      display: flex; justify-content: space-between; gap: 10px; margin-top: 20px;
+    }
+    .button-container button {
+      flex: 1; padding: 10px; border: none; border-radius: 6px; font-size: 1rem;
+      cursor: pointer; background: linear-gradient(135deg, #009dff, #006edc); color: white;
+      transition: background 0.3s ease;
+    }
+    .button-container button:hover { background: linear-gradient(135deg, #007adf, #005ab5); }
+    /* Progress Modal */
+    .progress-modal {
+      display: none; position: fixed; top: 0; right: 0;
+      width: 260px; height: 100vh; background: white;
+      box-shadow: -4px 0 12px rgba(0,0,0,0.1); padding: 20px;
+      overflow-y: auto; z-index: 1000;
+    }
+    .progress-modal header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
+    }
+    .progress-modal header h3 { font-size: 1.2rem; font-weight: 600; color: #007adf; }
+    .progress-modal .close-btn {
+      background: none; border: none; font-size: 20px; cursor: pointer; color: #333;
+    }
+    #question-progress {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      gap: 8px; margin-top: 15px;
+    }
+    #question-progress span {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border: 2px solid black; border-radius: 50%;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
+    }
+    #question-progress span:hover { transform: scale(1.1); }
+    /* Modal Overlay for Username */
+    .modal-overlay {
+      display: flex; align-items: center; justify-content: center;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.5); z-index: 1100; opacity: 0;
+      animation: fadeIn 0.3s forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .modal {
+      background: white; width: 90%; max-width: 500px;
+      padding: 30px 40px; border-radius: 10px; position: relative;
+      text-align: center;
+    }
+    .modal h2 { font-size: 1.8rem; margin-bottom: 20px; color: #007adf; font-weight: 600; }
+    .modal input[type="text"] {
+      width: 100%; padding: 12px; margin-bottom: 20px;
+      border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;
+    }
+    .continue-btn {
+      background: linear-gradient(135deg, #009dff, #006edc);
+      color: white; padding: 12px 30px; font-size: 1rem;
+      border: none; border-radius: 6px; cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+      font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .continue-btn:hover { background: linear-gradient(135deg, #007adf, #005ab5); transform: scale(1.05); }
   </style>
 </head>
 <body>
@@ -406,9 +155,14 @@ body {
   <div class="top-container">
     <div class="left-info">
       <div><strong>Candidate Name</strong>: <span id="logged-username">Username</span></div>
-      <div><strong>Test Name</strong>: <span>Part test 01</span></div>
+      <div><strong>Test Name</strong>: <span id="test-name">--</span></div>
+      <div><strong>Subject</strong>: <span id="current-subject">--</span></div>
+      <div><strong>Chapter</strong>: <span id="current-chapter">--</span></div>
+      <div>
+        <strong>Question</strong>: 
+        <span id="current-question-index">0</span>/<span id="total-questions">0</span>
+      </div>
     </div>
-    <!-- Right container wrapping timer and submit button -->
     <div class="top-right">
       <div class="timer" id="timer">
         <img src="https://i.postimg.cc/Fs22Dm1C/timer-1.png" alt="Timer Icon">
@@ -418,12 +172,11 @@ body {
     </div>
   </div>
 
-  <!-- Subject Selector Row -->
-  <div id="subject-buttons">
-    <button id="subject-Physics" onclick="loadSubject('Physics')">Physics</button>
-    <button id="subject-Chemistry" onclick="loadSubject('Chemistry')">Chemistry</button>
-    <button id="subject-Biology" onclick="loadSubject('Biology')">Biology</button>
-  </div>
+  <!-- Subject Selector Row (Dynamically generated) -->
+  <div id="subject-buttons"></div>
+  
+  <!-- Chapter Selector Row (Dynamically generated if available) -->
+  <div id="chapter-buttons"></div>
 
   <!-- Modal Overlay for Username -->
   <div class="modal-overlay" id="modal-overlay">
@@ -437,7 +190,6 @@ body {
   <!-- Main Exam Container -->
   <div class="container" id="content">
     <div class="question-card" id="question-card">
-      <!-- Hamburger button with new CSS -->
       <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
       <!-- Question content will be injected here -->
     </div>
@@ -454,7 +206,9 @@ body {
   </div>
 
   <script type="module">
-    // Firebase configuration
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
       authDomain: "arena-b8996.firebaseapp.com",
@@ -463,166 +217,238 @@ body {
       messagingSenderId: "188106766480",
       appId: "1:188106766480:web:801e701f00151448090015"
     };
-
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const params = new URLSearchParams(window.location.search);
+    const testID = params.get("test") || "DefaultTest";
+
     // Global variables
     let username = "";
-    let currentSubject = "Physics"; // default subject
+    let testData = {};
+    let currentSubject = "";
+    let currentChapter = "";
+    let subjectsArray = [];
+    let questions = [];
     let currentQuestionIndex = 0;
-    let questions = []; // holds currently loaded subject questions
-    let questionsBySubject = {}; // stores fetched questions for each subject
-    const subjects = ["Physics", "Chemistry", "Biology"];
+    let timerInterval;
+    let timeLeft = 90 * 60; // default 90 minutes
 
-    // Update subject selector buttons styling based on current subject
-    function updateSubjectButtons() {
-      subjects.forEach(subject => {
-        const btn = document.getElementById("subject-" + subject);
-        if (subject === currentSubject) {
-          btn.classList.add("activeSubject");
+    // Load test series data
+    async function loadTestSeriesData() {
+      try {
+        const testDocRef = doc(db, "Questions", testID);
+        const testDocSnap = await getDoc(testDocRef);
+        if (testDocSnap.exists()) {
+          testData = testDocSnap.data();
+          document.getElementById("test-name").textContent = testData.testName || testID;
+          subjectsArray = testData.subjects || [];
+          const subjectContainer = document.getElementById("subject-buttons");
+          subjectContainer.innerHTML = "";
+          if (subjectsArray.length > 0) {
+            subjectsArray.forEach((sub) => {
+              const btn = document.createElement("button");
+              btn.textContent = sub;
+              btn.id = "subject-" + sub;
+              btn.onclick = () => loadSubject(sub);
+              subjectContainer.appendChild(btn);
+            });
+            // For default subject, check if chapters exist
+            currentSubject = subjectsArray[0];
+            updateSubjectButtons();
+            if (testData.chapters && testData.chapters[currentSubject] && testData.chapters[currentSubject].length > 0) {
+              loadChapters(currentSubject);
+            } else {
+              currentChapter = "";
+              document.getElementById("chapter-buttons").innerHTML = "";
+              updateNavInfo();
+              loadQuestions();
+            }
+          } else {
+            subjectContainer.innerHTML = "<p>No subjects found.</p>";
+          }
+          if (testData.testDuration) {
+            timeLeft = testData.testDuration * 60;
+          }
+          updateTimerDisplay();
+          startTimer();
         } else {
-          btn.classList.remove("activeSubject");
+          alert("Test series not found.");
         }
-      });
+      } catch (error) {
+        console.error("Error loading test series data:", error);
+      }
     }
 
-    // Load questions for a given subject and store them globally
-    async function fetchQuestions(subject) {
-      const questionsSnapshot = await getDocs(collection(db, "Questions", "Part01", subject));
-      questions = [];
-      questionsSnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        questions.push({ ...data, id: docSnap.id });
-      });
-      // Store questions for this subject globally
-      questionsBySubject[subject] = questions;
-      localStorage.setItem(`questionCount_${subject}`, questions.length);
-      currentQuestionIndex = 0;
-      displayQuestion();
-      updateProgress();
-      updateSubjectButtons();
+    // Load chapters for a given subject
+    function loadChapters(subject) {
+      const chapterContainer = document.getElementById("chapter-buttons");
+      chapterContainer.innerHTML = "";
+      if (testData.chapters && testData.chapters[subject] && testData.chapters[subject].length > 0) {
+        const chapters = testData.chapters[subject];
+        chapters.forEach(chap => {
+          const btn = document.createElement("button");
+          btn.textContent = chap;
+          btn.id = "chapter-" + chap;
+          btn.onclick = () => loadChapter(chap);
+          chapterContainer.appendChild(btn);
+        });
+        // Set first chapter as default
+        currentChapter = testData.chapters[subject][0];
+        updateChapterButtons();
+      } else {
+        currentChapter = "";
+      }
+      updateNavInfo();
+      loadQuestions();
     }
 
-    // Called when a subject button is clicked
-    window.loadSubject = function(subject) {
-      currentSubject = subject;
-      fetchQuestions(subject);
-    };
+    function updateChapterButtons() {
+      const chapterContainer = document.getElementById("chapter-buttons");
+      const buttons = chapterContainer.children;
+      for (const btn of buttons) {
+        if (btn.textContent === currentChapter) {
+          btn.classList.add("activeChapter");
+        } else {
+          btn.classList.remove("activeChapter");
+        }
+      }
+    }
 
-    // Display the current question from the loaded questions array
+    function loadChapter(chap) {
+      currentChapter = chap;
+      updateChapterButtons();
+      loadQuestions();
+    }
+
+    // Load questions for the selected subject (and chapter if defined)
+    async function loadQuestions() {
+      try {
+        let qSnapshot;
+        if (currentChapter) {
+          qSnapshot = await getDocs(collection(db, "Questions", testID, currentSubject, currentChapter));
+        } else {
+          qSnapshot = await getDocs(collection(db, "Questions", testID, currentSubject));
+        }
+        questions = [];
+        qSnapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          data.id = docSnap.id;
+          questions.push(data);
+        });
+        // Reset currentQuestionIndex to 0 for the new subject/chapter
+        currentQuestionIndex = 0;
+        displayQuestion();
+        updateNavInfo();
+        updateProgress();
+      } catch (error) {
+        console.error("Error loading questions:", error);
+      }
+    }
+
+    // Display the current question; if no options, display a number input field.
     function displayQuestion() {
       const questionData = questions[currentQuestionIndex];
+      if (!questionData) {
+        document.getElementById("question-card").innerHTML = "<p>No question available.</p>";
+        return;
+      }
+      const options = Array.isArray(questionData.options) ? questionData.options : [];
       const questionCard = document.getElementById("question-card");
-      const savedAnswer = localStorage.getItem(`response_${currentSubject}_${currentQuestionIndex}`);
-      const reviewChecked = localStorage.getItem(`review_${currentSubject}_${currentQuestionIndex}`) === "true";
-      // Mark this question as visited
-      localStorage.setItem(`visited_${currentSubject}_${currentQuestionIndex}`, "true");
+      const savedAnswer = localStorage.getItem(`response_${currentSubject}_${currentChapter}_${currentQuestionIndex}`);
+      const reviewChecked = localStorage.getItem(`review_${currentSubject}_${currentChapter}_${currentQuestionIndex}`) === "true";
+      localStorage.setItem(`visited_${currentSubject}_${currentChapter}_${currentQuestionIndex}`, "true");
 
       function isURL(str) {
         return /^(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg))$/i.test(str);
       }
 
       questionCard.innerHTML = `
-    <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
-    <p class="question-number">Question ${currentQuestionIndex + 1}</p>
-    <div class="question-text">
-      ${isURL(questionData.question)
-        ? `<img src="${questionData.question}" alt="Question Image" class="question-image">`
-        : questionData.question}
-    </div>
-    <!-- Review Checkbox -->
-    <div class="review-container">
-      <input type="checkbox" id="review-checkbox" ${reviewChecked ? "checked" : ""}>
-      <label for="review-checkbox">Mark as Review</label>
-    </div>
-    <div class="option-container">
-      ${questionData.options.map((option, index) => `
-        <div class="image-option">
-          <input 
-            type="radio" 
-            name="q${currentSubject}_${currentQuestionIndex}" 
-            id="option${index}" 
-            value="${String.fromCharCode(65 + index)}"
-            onclick="toggleRadio(event, 'q${currentSubject}_${currentQuestionIndex}', ${currentQuestionIndex})"
-          >
-          <label for="option${index}">
-            <div class="option-content">
-              ${isURL(option)
-                ? `<img src="${option}" alt="Option Image" class="option-image">`
-                : option}
-            </div>
-          </label>
+        <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
+        <p class="question-number">Question ${currentQuestionIndex + 1}</p>
+        <div class="question-text">
+          ${isURL(questionData.question)
+            ? `<img src="${questionData.question}" alt="Question Image" class="question-image">`
+            : questionData.question || ""}
         </div>
-      `).join('')}
-    </div>
-    <div class="button-container">
-      <button onclick="goToPrevious()">Previous</button>
-      <button onclick="saveAndNext()">Save & Next</button>
-    </div>
-  `;
+        <div class="review-container">
+          <input type="checkbox" id="review-checkbox" ${reviewChecked ? "checked" : ""}>
+          <label for="review-checkbox">Mark as Review</label>
+        </div>
+        <div class="option-container">
+          ${
+            options.length > 0 ?
+              options.map((option, index) => `
+                <div class="image-option">
+                  <input 
+                    type="radio" 
+                    name="q${currentSubject}_${currentChapter}_${currentQuestionIndex}" 
+                    id="option${index}" 
+                    value="${String.fromCharCode(65 + index)}"
+                    onclick="toggleRadio(event, 'q${currentSubject}_${currentChapter}_${currentQuestionIndex}', ${currentQuestionIndex})"
+                  >
+                  <label for="option${index}">
+                    <div class="option-content">
+                      ${isURL(option)
+                        ? `<img src="${option}" alt="Option Image" class="option-image">`
+                        : option}
+                    </div>
+                  </label>
+                </div>
+              `).join('') :
+              `<div class="input-answer">
+                  <label for="answer-input">Your Answer:</label>
+                  <input type="number" id="answer-input" placeholder="Enter your answer" />
+               </div>`
+          }
+        </div>
+        <div class="button-container">
+          <button onclick="goToPrevious()">Previous</button>
+          <button onclick="saveAndNext()">Save & Next</button>
+        </div>
+      `;
 
-
-      // Restore previously selected answer if exists
       if (savedAnswer) {
-        const radioBtn = document.querySelector(`input[name="q${currentSubject}_${currentQuestionIndex}"][value="${savedAnswer}"]`);
-        if (radioBtn) {
-          radioBtn.checked = true;
-          radioBtn.dataset.waschecked = "true";
+        if (options.length > 0) {
+          const radioBtn = document.querySelector(`input[name="q${currentSubject}_${currentChapter}_${currentQuestionIndex}"][value="${savedAnswer}"]`);
+          if (radioBtn) {
+            radioBtn.checked = true;
+            radioBtn.dataset.waschecked = "true";
+          }
+        } else {
+          const answerInput = document.getElementById("answer-input");
+          if (answerInput) {
+            answerInput.value = savedAnswer;
+          }
         }
       }
     }
 
-    // "Previous" button functionality
-    window.goToPrevious = function () {
-      if (currentQuestionIndex > 0) {
-        currentQuestionIndex--;
-        displayQuestion();
-        updateProgress();
-      } else {
-        let currentSubjectIndex = subjects.indexOf(currentSubject);
-        if (currentSubjectIndex > 0) {
-          currentSubject = subjects[currentSubjectIndex - 1];
-          const prevCount = parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0;
-          if (!questionsBySubject[currentSubject]) {
-            fetchQuestions(currentSubject).then(() => {
-              currentQuestionIndex = (parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0) - 1;
-              displayQuestion();
-              updateProgress();
-            });
-            return;
-          } else {
-            currentQuestionIndex = (questionsBySubject[currentSubject].length) - 1;
-          }
-          displayQuestion();
-          updateProgress();
-          updateSubjectButtons();
-        } else {
-          alert("This is the first question!");
-        }
-      }
-    };
+    // Update header info using the current questions array length
+    function updateNavInfo() {
+      document.getElementById("current-subject").textContent = currentSubject;
+      document.getElementById("current-chapter").textContent = currentChapter || "--";
+      document.getElementById("current-question-index").textContent = currentQuestionIndex + 1;
+      document.getElementById("total-questions").textContent = questions.length;
+    }
 
-    // Update progress indicators:
+    // Update the progress container using the questions array length
     function updateProgress() {
       const progressContainer = document.getElementById("question-progress");
       progressContainer.innerHTML = '';
-      const questionCount = parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0;
+      const questionCount = questions.length;
       for (let i = 0; i < questionCount; i++) {
         const span = document.createElement("span");
         span.textContent = i + 1;
         span.onclick = () => goToQuestion(i);
-        const selectedAnswer = localStorage.getItem(`response_${currentSubject}_${i}`);
-        const isMarkedForReview = localStorage.getItem(`review_${currentSubject}_${i}`) === "true";
+        const selectedAnswer = localStorage.getItem(`response_${currentSubject}_${currentChapter}_${i}`);
+        const isMarkedForReview = localStorage.getItem(`review_${currentSubject}_${currentChapter}_${i}`) === "true";
         if (selectedAnswer || isMarkedForReview) {
           let color = selectedAnswer ? (isMarkedForReview ? "gray" : "#3f8e58") : "#b907ff";
           span.style.background = color;
           span.style.border = "2px solid " + color;
           span.style.color = "white";
-        } else if (localStorage.getItem(`visited_${currentSubject}_${i}`)) {
+        } else if (localStorage.getItem(`visited_${currentSubject}_${currentChapter}_${i}`)) {
           span.style.background = "red";
           span.style.border = "2px solid red";
           span.style.color = "white";
@@ -638,8 +464,39 @@ body {
     function goToQuestion(index) {
       currentQuestionIndex = index;
       displayQuestion();
+      updateNavInfo();
       updateProgress();
     }
+
+    window.goToPrevious = function () {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion();
+        updateNavInfo();
+        updateProgress();
+      } else {
+        let currentSubjectIndex = subjectsArray.indexOf(currentSubject);
+        if (currentSubjectIndex > 0) {
+          currentSubject = subjectsArray[currentSubjectIndex - 1];
+          updateSubjectButtons();
+          if (testData.chapters && testData.chapters[currentSubject] && testData.chapters[currentSubject].length > 0) {
+            loadChapters(currentSubject);
+          } else {
+            currentChapter = "";
+            document.getElementById("chapter-buttons").innerHTML = "";
+            loadQuestions();
+          }
+          setTimeout(() => {
+            currentQuestionIndex = questions.length - 1;
+            displayQuestion();
+            updateNavInfo();
+            updateProgress();
+          }, 500);
+        } else {
+          alert("This is the first question!");
+        }
+      }
+    };
 
     window.toggleRadio = function(event, groupName, questionIndex) {
       const clickedRadio = event.target;
@@ -647,61 +504,74 @@ body {
       if (clickedRadio.checked && clickedRadio.dataset.waschecked === "true") {
         clickedRadio.checked = false;
         clickedRadio.dataset.waschecked = "false";
-        localStorage.removeItem(`response_${currentSubject}_${questionIndex}`);
+        localStorage.removeItem(`response_${currentSubject}_${currentChapter}_${questionIndex}`);
       } else {
         const radios = document.getElementsByName(groupName);
         radios.forEach(radio => radio.dataset.waschecked = "false");
         clickedRadio.dataset.waschecked = "true";
-        localStorage.setItem(`response_${currentSubject}_${questionIndex}`, clickedRadio.value);
+        localStorage.setItem(`response_${currentSubject}_${currentChapter}_${questionIndex}`, clickedRadio.value);
       }
     };
 
-    // "Save & Next" button functionality
     window.saveAndNext = function () {
-      const selectedOption = document.querySelector(`input[name="q${currentSubject}_${currentQuestionIndex}"]:checked`);
-      if (selectedOption) {
-        localStorage.setItem(`response_${currentSubject}_${currentQuestionIndex}`, selectedOption.value);
+      const radioOption = document.querySelector(`input[name="q${currentSubject}_${currentChapter}_${currentQuestionIndex}"]:checked`);
+      if (radioOption) {
+        localStorage.setItem(`response_${currentSubject}_${currentChapter}_${currentQuestionIndex}`, radioOption.value);
       } else {
-        localStorage.removeItem(`response_${currentSubject}_${currentQuestionIndex}`);
+        const answerInput = document.getElementById("answer-input");
+        if (answerInput && answerInput.value.trim() !== "") {
+          localStorage.setItem(`response_${currentSubject}_${currentChapter}_${currentQuestionIndex}`, answerInput.value);
+        } else {
+          localStorage.removeItem(`response_${currentSubject}_${currentChapter}_${currentQuestionIndex}`);
+        }
       }
       const reviewCheckbox = document.getElementById("review-checkbox");
       if (reviewCheckbox && reviewCheckbox.checked) {
-        localStorage.setItem(`review_${currentSubject}_${currentQuestionIndex}`, "true");
+        localStorage.setItem(`review_${currentSubject}_${currentChapter}_${currentQuestionIndex}`, "true");
       } else {
-        localStorage.removeItem(`review_${currentSubject}_${currentQuestionIndex}`);
+        localStorage.removeItem(`review_${currentSubject}_${currentChapter}_${currentQuestionIndex}`);
       }
-      const questionCount = parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0;
-      if (currentQuestionIndex < questionCount - 1) {
+      if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
         displayQuestion();
+        updateNavInfo();
         updateProgress();
       } else {
-        let currentSubjectIndex = subjects.indexOf(currentSubject);
-        let nextSubjectIndex = (currentSubjectIndex + 1) % subjects.length;
-        currentSubject = subjects[nextSubjectIndex];
-        fetchQuestions(currentSubject);
+        let currentSubjectIndex = subjectsArray.indexOf(currentSubject);
+        let nextSubjectIndex = (currentSubjectIndex + 1) % subjectsArray.length;
+        currentSubject = subjectsArray[nextSubjectIndex];
+        updateSubjectButtons();
+        if (testData.chapters && testData.chapters[currentSubject] && testData.chapters[currentSubject].length > 0) {
+          loadChapters(currentSubject);
+        } else {
+          currentChapter = "";
+          document.getElementById("chapter-buttons").innerHTML = "";
+          loadQuestions();
+        }
       }
     };
 
-    // Submit test functionality
     window.submitTest = function (autoSubmit = false) {
       if (!autoSubmit) {
         const confirmation = confirm("Are you sure you want to submit the test?");
         if (!confirmation) return;
       }
       const promises = [];
-      subjects.forEach(subject => {
-        const subjectQuestions = questionsBySubject[subject] || [];
-        let responses = {};
-        for (let i = 0; i < subjectQuestions.length; i++) {
-          const storedAnswer = localStorage.getItem(`response_${subject}_${i}`) || null;
-          responses[`responses.${i}`] = {
-            questionId: subjectQuestions[i].id,
-            selectedAnswer: storedAnswer
-          };
-        }
-        const subjectDocRef = doc(db, "Tests", "Part01", "usernames", username, "subjects", subject);
-        promises.push(setDoc(subjectDocRef, { ...responses, timestamp: serverTimestamp() }, { merge: true }));
+      subjectsArray.forEach(subject => {
+        const chapters = (testData.chapters && testData.chapters[subject]) ? testData.chapters[subject] : [""];
+        chapters.forEach(chap => {
+          let responses = {};
+          // Loop through the current questions array for that subject/chapter
+          for (let i = 0; i < questions.length; i++) {
+            const storedAnswer = localStorage.getItem(`response_${subject}_${chap}_${i}`) || null;
+            responses[`responses.${i}`] = {
+              questionId: "placeholder",
+              selectedAnswer: storedAnswer
+            };
+          }
+          const subjectDocRef = doc(db, "Tests", testID, "usernames", username, "subjects", subject, chap);
+          promises.push(setDoc(subjectDocRef, { ...responses, timestamp: serverTimestamp() }, { merge: true }));
+        });
       });
       Promise.all(promises)
         .then(() => {
@@ -719,6 +589,30 @@ body {
         });
     };
 
+    function updateSubjectButtons() {
+      const btns = document.getElementById("subject-buttons").children;
+      for (const btn of btns) {
+        if (btn.textContent === currentSubject) {
+          btn.classList.add("activeSubject");
+        } else {
+          btn.classList.remove("activeSubject");
+        }
+      }
+    }
+
+    window.loadSubject = function(subject) {
+      currentSubject = subject;
+      updateSubjectButtons();
+      if (testData.chapters && testData.chapters[subject] && testData.chapters[subject].length > 0) {
+        loadChapters(subject);
+      } else {
+        currentChapter = "";
+        document.getElementById("chapter-buttons").innerHTML = "";
+        updateNavInfo();
+        loadQuestions();
+      }
+    };
+
     window.validateUsername = function () {
       const usernameInput = document.getElementById("username").value.trim();
       const modalOverlay = document.getElementById("modal-overlay");
@@ -727,14 +621,10 @@ body {
       if (usernameInput) {
         document.getElementById("logged-username").textContent = usernameInput;
         username = usernameInput;
-        subjects.forEach(subject => {
-          const subjectDocRef = doc(db, "Tests", "Part01", "usernames", username, "subjects", subject);
-          setDoc(subjectDocRef, { timestamp: serverTimestamp(), responses: {} }, { merge: true });
-        });
         modalOverlay.style.display = "none";
         content.style.filter = "none";
         alert("Welcome, " + username);
-        loadSubject(currentSubject);
+        loadTestSeriesData();
       } else {
         alert("Invalid username. Access denied.");
       }
@@ -745,9 +635,6 @@ body {
       modal.style.display = modal.style.display === "block" ? "none" : "block";
     };
 
-    // Timer functionality
-    let timerInterval;
-    let timeLeft = 90 * 60; // 1 hour 30 minutes in seconds
     function updateTimerDisplay() {
       const hours = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
       const minutes = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
@@ -765,13 +652,6 @@ body {
         }
       }, 1000);
     }
-    window.onload = startTimer;
-
-    // Prevent right-click and text selection
-    document.addEventListener('contextmenu', e => e.preventDefault());
-    document.addEventListener('selectstart', e => e.preventDefault());
-
-    // Auto-submit on excessive tab switching
     let tabSwitchCount = 0;
     const maxTabSwitches = 5;
     document.addEventListener("visibilitychange", () => {
@@ -800,6 +680,9 @@ body {
       `;
       document.body.appendChild(popup);
     }
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+    window.onload = startTimer;
   </script>
 </body>
 </html>
