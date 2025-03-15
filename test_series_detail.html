@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Prevent zooming and scale layout properly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Admin Preview - Test Series Detail</title>
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Import Poppins font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK (Modular version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+  <style>
+    /* Base Reset & Fonts */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+    body { background: linear-gradient(to bottom, #e0f2ff, #f7faff); color: #333; overflow-x: hidden; }
+    /* Top Container: Test Header */
+    .top-container {
+      width: 100%;
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px 30px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .left-info { display: flex; flex-direction: column; gap: 5px; }
+    .left-info span { font-weight: 600; font-size: 1rem; color: #007adf; }
+    /* Subject Selector Row */
+    #subject-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px auto;
+      width: 100%;
+      max-width: 600px;
+    }
+    #subject-buttons button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: 2px solid #56b4ef;
+      background: white;
+      color: #56b4ef;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #subject-buttons button.activeSubject {
+      background: #56b4ef;
+      color: white;
+    }
+    #subject-buttons button:hover { opacity: 0.9; }
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    /* Question Card */
+    .question-card {
+      padding: 20px;
+      padding-left: 60px; /* leave space for inline edit button */
+      border-radius: 8px;
+      background: #f7faff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .question-card .question-number { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+    .question-card .question-text { font-size: 1.3rem; margin-bottom: 20px; }
+    .question-image {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      display: block;
+      margin: 0 auto;
+    }
+    /* Options list styling for MCQ */
+    .options-list {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .options-list li { margin-bottom: 5px; font-size: 1rem; }
+    /* Inline Editing Input Styles */
+    .inline-input, .inline-select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    /* Edit/Save Button */
+    .edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .edit-btn:hover { background: #e68900; }
+    /* Navigation Buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .nav-buttons button {
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #009dff, #006edc);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .nav-buttons button:hover {
+      background: linear-gradient(135deg, #007adf, #005ab5);
+    }
+    @media screen and (max-width: 600px) {
+      .container { padding: 10px; }
+      .question-card { padding: 15px; padding-left: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Container: Test Header -->
+  <div class="top-container">
+    <div class="left-info">
+      <div><strong>Test Name</strong>: <span id="test-name"></span></div>
+      <div><strong>Subject</strong>: <span id="current-subject">Loading...</span></div>
+      <div><strong>Question</strong>: <span id="current-question-index">0</span>/<span id="total-questions">0</span></div>
+    </div>
+    <div class="top-right">
+      <button class="submit-btn" onclick="loadQuestions()">Refresh Questions</button>
+    </div>
+  </div>
+
+  <!-- Subject Selector Row (Dynamically Loaded) -->
+  <div id="subject-buttons">
+    <!-- Subjects will be dynamically injected here -->
+  </div>
+
+  <!-- Main Container: Single Question Preview with Navigation -->
+  <div class="container" id="content">
+    <div id="question-card" class="question-card">
+      <!-- Question details will be rendered here -->
+    </div>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      getDocs,
+      getDoc,
+      updateDoc,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // Firebase configuration and initialization
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Get test series name from URL query parameter (?test=MyTestSeries)
+    const params = new URLSearchParams(window.location.search);
+    const testName = params.get("test") || "DefaultTest";
+    document.getElementById("test-name").textContent = testName;
+
+    let currentSubject = ""; // will be set dynamically
+    let subjectsArray = [];  // subjects fetched from Firestore
+    let questions = [];      // holds questions for selected subject
+    let currentQuestionIndex = 0;
+    let isEditing = false;   // whether current question is in inline edit mode
+
+    // Load subjects from Firestore test series document
+    async function loadSubjects() {
+      try {
+        const testDoc = await getDoc(doc(db, "Questions", testName));
+        if (testDoc.exists()) {
+          subjectsArray = testDoc.data().subjects || [];
+          const subjectContainer = document.getElementById("subject-buttons");
+          subjectContainer.innerHTML = "";
+          subjectsArray.forEach(sub => {
+            const btn = document.createElement("button");
+            btn.textContent = sub;
+            btn.id = "subject-" + sub;
+            btn.onclick = () => loadSubject(sub);
+            subjectContainer.appendChild(btn);
+          });
+          // Set first subject as default if available
+          if (subjectsArray.length > 0) {
+            currentSubject = subjectsArray[0];
+            document.getElementById("current-subject").textContent = currentSubject;
+            updateSubjectButtons();
+            loadQuestions();
+          } else {
+            document.getElementById("subject-buttons").innerHTML = "<p>No subjects found.</p>";
+          }
+        } else {
+          document.getElementById("subject-buttons").innerHTML = "<p>Test series not found.</p>";
+        }
+      } catch (error) {
+        console.error("Error loading subjects:", error);
+      }
+    }
+
+    // Load questions from Firestore for the given test series and subject
+    async function loadQuestions() {
+      try {
+        const qSnapshot = await getDocs(collection(db, "Questions", testName, currentSubject));
+        questions = [];
+        qSnapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          data.id = docSnap.id; // auto-generated document ID
+          questions.push(data);
+        });
+        currentQuestionIndex = 0;
+        isEditing = false;
+        renderQuestion();
+        updateNavInfo();
+      } catch (error) {
+        console.error("Error loading questions:", error);
+      }
+    }
+
+    // Render the current question; if in edit mode, show inline inputs
+    function renderQuestion() {
+      const container = document.getElementById("question-card");
+      if (questions.length === 0) {
+        container.innerHTML = "<p>No questions available in this subject.</p>";
+        updateNavInfo();
+        return;
+      }
+      const question = questions[currentQuestionIndex];
+      let html = `<p class="question-number">Question ${currentQuestionIndex + 1}</p>`;
+      
+      if (isEditing) {
+        // Inline editing mode
+        html += `<div class="question-text">
+                   <input class="inline-input" type="text" id="editInlineQuestion" value="${question.question ? escapeHTML(question.question) : ""}" placeholder="Edit question text">
+                 </div>`;
+        html += `<div>
+                   <label>Question Image URL:</label>
+                   <input class="inline-input" type="text" id="editInlineQuestionImage" value="${question.questionImage || ""}" placeholder="Edit image URL">
+                 </div>`;
+        html += `<div>
+                   <label>Question Type:</label>
+                   <select class="inline-select" id="editInlineQuestionType">
+                     <option value="MCQ" ${question.questionType === "MCQ" ? "selected" : ""}>MCQ</option>
+                     <option value="Integer" ${question.questionType === "Integer" ? "selected" : ""}>Integer</option>
+                   </select>
+                 </div>`;
+        if (question.questionType === "MCQ") {
+          html += `<div id="inlineMCQSection">
+                     <label>Option A:</label>
+                     <input class="inline-input" type="text" id="editInlineOptionA" value="${question.options ? escapeHTML(question.options[0]) : ""}" placeholder="Option A">
+                     <label>Option B:</label>
+                     <input class="inline-input" type="text" id="editInlineOptionB" value="${question.options ? escapeHTML(question.options[1]) : ""}" placeholder="Option B">
+                     <label>Option C:</label>
+                     <input class="inline-input" type="text" id="editInlineOptionC" value="${question.options ? escapeHTML(question.options[2]) : ""}" placeholder="Option C">
+                     <label>Option D:</label>
+                     <input class="inline-input" type="text" id="editInlineOptionD" value="${question.options ? escapeHTML(question.options[3]) : ""}" placeholder="Option D">
+                     <label>Correct Answer:</label>
+                     <select class="inline-select" id="editInlineCorrectAnswer">
+                       <option value="">--Select Answer--</option>
+                       <option value="A" ${question.correctAnswer === "A" ? "selected" : ""}>A</option>
+                       <option value="B" ${question.correctAnswer === "B" ? "selected" : ""}>B</option>
+                       <option value="C" ${question.correctAnswer === "C" ? "selected" : ""}>C</option>
+                       <option value="D" ${question.correctAnswer === "D" ? "selected" : ""}>D</option>
+                     </select>
+                   </div>`;
+        } else if (question.questionType === "Integer") {
+          html += `<div id="inlineIntegerSection">
+                     <label>Integer Answer:</label>
+                     <input class="inline-input" type="number" id="editInlineIntegerAnswer" value="${question.answer || ""}" placeholder="Enter integer answer">
+                   </div>`;
+        }
+        html += `<div>
+                   <label>Solution:</label>
+                   <input class="inline-input" type="text" id="editInlineSolution" value="${question.solution ? escapeHTML(question.solution) : ""}" placeholder="Edit solution text">
+                 </div>`;
+        html += `<div>
+                   <label>Solution Image URL:</label>
+                   <input class="inline-input" type="text" id="editInlineSolutionImage" value="${question.solutionImage || ""}" placeholder="Edit solution image URL">
+                 </div>`;
+        html += `<button class="edit-btn" onclick="saveInlineEdit()">Save</button>`;
+      } else {
+        // Display mode
+        html += `<div class="question-text">
+                   ${question.question || (question.questionImage ? `<img src="${question.questionImage}" alt="Question Image" class="question-image">` : "No question content")}
+                 </div>`;
+        if (question.questionType === "MCQ" && question.options && question.options.length > 0) {
+          html += `<ol class="options-list" type="A">`;
+          question.options.forEach(option => {
+            html += `<li>${option}</li>`;
+          });
+          html += `</ol>`;
+          html += `<p><strong>Correct Answer:</strong> ${question.correctAnswer}</p>`;
+        } else if (question.questionType === "Integer") {
+          html += `<p><strong>Answer:</strong> ${question.answer}</p>`;
+        }
+        html += `<p><strong>Solution:</strong> ${question.solution || (question.solutionImage ? `<img src="${question.solutionImage}" alt="Solution Image" class="question-image">` : "No solution provided")}</p>`;
+        html += `<button class="edit-btn" onclick="enterEditMode()">Edit</button>`;
+      }
+      container.innerHTML = html;
+
+      // Attach change listener for inline question type if in edit mode
+      if (isEditing) {
+        const typeSelect = document.getElementById("editInlineQuestionType");
+        if (typeSelect) {
+          typeSelect.addEventListener("change", function() {
+            const newType = this.value;
+            if (newType === "MCQ") {
+              document.getElementById("inlineMCQSection").style.display = "block";
+              const intSec = document.getElementById("inlineIntegerSection");
+              if (intSec) intSec.style.display = "none";
+            } else if (newType === "Integer") {
+              document.getElementById("inlineMCQSection").style.display = "none";
+              const intSec = document.getElementById("inlineIntegerSection");
+              if (intSec) intSec.style.display = "block";
+            }
+          });
+        }
+      }
+      updateNavInfo();
+    }
+
+    // Helper to escape HTML special characters
+    function escapeHTML(str) {
+      if (!str) return "";
+      return str.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+    }
+
+    // Enter inline edit mode for current question
+    function enterEditMode() {
+      isEditing = true;
+      renderQuestion();
+    }
+
+    // Save inline edits and update Firestore using auto-generated document ID
+    async function saveInlineEdit() {
+      const subject = currentSubject;
+      const question = questions[currentQuestionIndex];
+      const updatedData = {
+        question: document.getElementById("editInlineQuestion").value.trim(),
+        questionImage: document.getElementById("editInlineQuestionImage").value.trim(),
+        questionType: document.getElementById("editInlineQuestionType").value,
+        solution: document.getElementById("editInlineSolution").value.trim(),
+        solutionImage: document.getElementById("editInlineSolutionImage").value.trim(),
+        updatedAt: serverTimestamp()
+      };
+      if (updatedData.questionType === "MCQ") {
+        updatedData.options = [
+          document.getElementById("editInlineOptionA").value.trim(),
+          document.getElementById("editInlineOptionB").value.trim(),
+          document.getElementById("editInlineOptionC").value.trim(),
+          document.getElementById("editInlineOptionD").value.trim()
+        ];
+        updatedData.correctAnswer = document.getElementById("editInlineCorrectAnswer").value;
+      } else if (updatedData.questionType === "Integer") {
+        updatedData.answer = document.getElementById("editInlineIntegerAnswer").value.trim();
+      }
+      try {
+        await updateDoc(doc(db, "Questions", testName, subject, question.id), updatedData);
+        alert("Question updated successfully!");
+        isEditing = false;
+        loadQuestions();
+      } catch (error) {
+        alert("Error updating question: " + error.message);
+      }
+    }
+
+    // Navigation: Previous and Next question
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        isEditing = false; // reset edit mode when navigating
+        renderQuestion();
+      }
+    }
+    function nextQuestion() {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        isEditing = false;
+        renderQuestion();
+      }
+    }
+    function updateNavInfo() {
+      document.getElementById("current-question-index").textContent = currentQuestionIndex + 1;
+      document.getElementById("total-questions").textContent = questions.length;
+      document.getElementById("current-subject").textContent = currentSubject;
+    }
+
+    // Update active state for subject buttons (dynamically loaded)
+    function updateSubjectButtons() {
+      const btns = document.getElementById("subject-buttons").children;
+      for (const btn of btns) {
+        if (btn.textContent === currentSubject) {
+          btn.classList.add("activeSubject");
+        } else {
+          btn.classList.remove("activeSubject");
+        }
+      }
+    }
+
+    // Called when a subject button is clicked
+    function loadSubject(subject) {
+      currentSubject = subject;
+      updateSubjectButtons();
+      loadQuestions();
+    }
+
+    // On page load, load subjects then questions
+    document.addEventListener("DOMContentLoaded", () => {
+      updateSubjectButtons();
+      loadSubjects();
+    });
+
+    // Expose functions to the global scope for inline event handlers
+    window.loadSubject = loadSubject;
+    window.enterEditMode = enterEditMode;
+    window.prevQuestion = prevQuestion;
+    window.nextQuestion = nextQuestion;
+    window.saveInlineEdit = saveInlineEdit;
+  </script>
+</body>
+</html>
