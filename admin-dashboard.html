@@ -4,12 +4,11 @@
   <meta charset="UTF-8" />
   <!-- Ensure proper scaling on mobile devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Edurack Admin Dashboard</title>
+  <title>Edurack Admin</title>
   
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (for Firestore) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js"></script>
   
   <!-- Google Fonts and Font Awesome -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,130 +25,228 @@
       font-family: 'Poppins', sans-serif;
     }
     body {
-      background: #f4f7f9;
+      background: #f4f7fa;
       color: #333;
       line-height: 1.6;
-      overflow-x: hidden;
+      font-size: 16px;
     }
     
-    /* Sidebar */
+    /* Login Section */
+    #login-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f4f7fa;
+      padding: 20px;
+    }
+    #login-section form {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    #login-section h2 {
+      margin-bottom: 20px;
+      color: #009dff;
+    }
+    #login-section input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    #login-section button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 4px;
+      background: #009dff;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 100%;
+      font-size: 1rem;
+    }
+    #login-section button:hover {
+      background: #006edc;
+    }
+    #login-error {
+      color: #e74c3c;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    
+    /* Sidebar (visible on larger screens only) */
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
       height: 100%;
-      width: 250px;
-      background: linear-gradient(180deg, #1f2a40 0%, #121926 100%);
-      color: #fff;
-      padding: 30px 20px;
+      width: 260px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 40px 25px;
       overflow-y: auto;
-      transition: all 0.3s ease;
+      transition: transform 0.5s ease-out;
+      transform: translateX(-100%);
+      animation: slideIn 0.5s ease-out forwards;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
     }
     .sidebar h2 {
-      font-size: 1.8rem;
+      font-size: 1.9rem;
       text-align: center;
       margin-bottom: 40px;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
     .sidebar nav a {
       display: block;
-      padding: 12px 20px;
-      margin-bottom: 10px;
-      color: #cfd8dc;
+      padding: 14px 20px;
+      margin-bottom: 12px;
+      color: #bdc3c7;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 4px;
       transition: background 0.3s, color 0.3s;
-    }
-    .sidebar nav a i {
-      margin-right: 10px;
     }
     .sidebar nav a:hover,
     .sidebar nav a.active {
-      background: #007adf;
-      color: #fff;
+      background: #009dff;
+      color: #ecf0f1;
     }
-    
-    /* Hamburger Toggle for Mobile */
-    .sidebar-toggle {
-      display: none;
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      font-size: 1.8rem;
-      color: #007adf;
-      cursor: pointer;
-      z-index: 1100;
-    }
-    @media screen and (max-width: 480px) {
-      .sidebar-toggle {
-        display: block;
-      }
-    }
-    
-    /* Mobile Header (only on small screens) */
-    .mobile-header {
-      display: none;
-      background: #fff;
-      padding: 15px;
-      text-align: center;
-      font-size: 1.8rem;
-      color: #007adf;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    @media screen and (max-width: 480px) {
-      .mobile-header {
-        display: block;
-      }
+    /* Extra margin for Syllabus tab */
+    .sidebar nav a.syllabus {
+      margin-top: 30px;
+      border-top: 1px solid #444;
+      padding-top: 20px;
     }
     
     /* Main Content */
     .main-content {
-      margin-left: 250px;
-      padding: 30px 20px;
+      margin-left: 260px;
+      padding: 40px;
       min-height: 100vh;
+      background: #f4f7fa;
       transition: margin 0.3s ease;
+    }
+    @media screen and (max-width: 768px) {
+      .main-content {
+        margin-left: 220px;
+        padding: 30px;
+      }
+    }
+    @media screen and (max-width: 480px) {
+      .main-content {
+        margin-left: 0;
+        padding: 20px;
+      }
+    }
+    
+    /* Bottom Navigation (only on small screens, icons only) */
+    .bottom-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      z-index: 1100;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0;
+      animation: slideUp 0.4s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .bottom-nav a {
+      text-decoration: none;
+      color: #666;
+      flex: 1;
+      text-align: center;
+      transition: transform 0.3s ease, text-shadow 0.3s ease;
+    }
+    .bottom-nav a.active {
+      color: #009dff;
+    }
+    .bottom-nav a i {
+      font-size: 1.5rem;
+    }
+    .bottom-nav a:active {
+      animation: glowPulse 0.4s ease;
+    }
+    @keyframes glowPulse {
+      0% { transform: scale(1); text-shadow: none; }
+      50% { transform: scale(1.2); text-shadow: 0 0 8px rgba(0,157,255,0.8); }
+      100% { transform: scale(1); text-shadow: none; }
+    }
+    @media screen and (max-width: 480px) {
+      .bottom-nav {
+        display: flex;
+      }
+    }
+    /* Hide Sidebar on small screens */
+    @media screen and (max-width: 480px) {
+      .sidebar { display: none; }
     }
     
     /* Card Styles */
     .card {
       background: #fff;
       border-radius: 8px;
-      padding: 25px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
     }
     .card h2 {
-      color: #007adf;
-      margin-bottom: 20px;
+      color: #009dff;
+      margin-bottom: 25px;
       text-align: center;
+      font-weight: 600;
     }
     
     /* Form & Table Styles */
     form label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-weight: 600;
       color: #555;
     }
     form input, form select, form textarea {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       margin-bottom: 20px;
-      border: 1px solid #ccc;
+      border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 1rem;
-      color: #333;
+      transition: border-color 0.3s;
+      background: #fff;
+    }
+    form input:focus, form select:focus, form textarea:focus {
+      border-color: #009dff;
+      outline: none;
     }
     form button {
       background: #009dff;
       color: #fff;
       border: none;
-      padding: 12px 20px;
+      padding: 14px 22px;
       border-radius: 4px;
       cursor: pointer;
+      transition: background 0.3s;
+      font-size: 1rem;
     }
     form button:hover {
-      background: #007adf;
+      background: #006edc;
     }
     table {
       width: 100%;
@@ -157,20 +254,21 @@
       margin-top: 20px;
     }
     table th, table td {
-      padding: 14px;
-      border: 1px solid #ddd;
+      padding: 16px;
+      border: 1px solid #eee;
       text-align: left;
     }
     table th {
-      background: #f0f0f0;
+      background: #f9f9f9;
+      font-weight: 600;
     }
     
-    /* Test Preview Card */
+    /* Test Card */
     .test-card {
       background: #fff;
-      padding: 18px;
+      padding: 20px;
       border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
@@ -181,30 +279,31 @@
       flex-direction: column;
     }
     .test-card h3 {
-      font-size: 1.2rem;
-      color: #007adf;
-      margin-bottom: 5px;
+      font-size: 1.3rem;
+      color: #009dff;
+      margin-bottom: 8px;
     }
     .test-card p {
-      font-size: 0.9rem;
-      color: #555;
-      margin-bottom: 5px;
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 6px;
     }
     .btn-group {
       display: flex;
-      gap: 10px;
+      gap: 12px;
     }
     .btn-group button {
-      padding: 8px 12px;
-      font-size: 0.9rem;
+      padding: 10px 14px;
+      font-size: 0.95rem;
       border: none;
       border-radius: 4px;
       background: #009dff;
       color: #fff;
       cursor: pointer;
+      transition: background 0.3s;
     }
     .btn-group button:hover {
-      background: #007adf;
+      background: #006edc;
     }
     
     /* Modal Styles */
@@ -217,220 +316,292 @@
       width: 100%;
       height: 100%;
       background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
     }
     .modal-content {
       background: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid #888;
+      padding: 30px;
       width: 90%;
       max-width: 600px;
-      border-radius: 6px;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+      position: relative;
     }
     .modal-content h2 {
-      color: #007adf;
+      color: #009dff;
       margin-bottom: 20px;
+      text-align: center;
     }
-    .modal-content label {
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    .modal-content input, .modal-content select {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
-    .modal-content button {
-      background: #009dff;
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 4px;
+    .modal-content .close {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      font-size: 1.5rem;
       cursor: pointer;
+      color: #aaa;
     }
-    .modal-content button:hover {
-      background: #007adf;
+    .modal-content .close:hover {
+      color: #666;
     }
     
-    /* Responsive Adjustments */
-    @media screen and (max-width: 768px) {
-      .sidebar { width: 200px; }
-      .main-content { margin-left: 200px; padding: 20px; }
-    }
+    /* Responsive Adjustments for Small Screens */
     @media screen and (max-width: 480px) {
-      .sidebar { display: none; }
-      .main-content { margin-left: 0; }
-      form input, form select, form textarea { font-size: 1.1rem; padding: 14px; }
-      form button { font-size: 1.1rem; padding: 14px 24px; }
-      table th, table td { font-size: 0.9rem; padding: 12px; }
-      .btn-group button { font-size: 1rem; padding: 10px 14px; }
+      form input, form select, form textarea {
+        font-size: 1.1rem;
+        padding: 16px;
+      }
+      form button {
+        font-size: 1.1rem;
+        padding: 16px 28px;
+      }
+      table th, table td {
+        font-size: 1rem;
+        padding: 14px;
+      }
+      .btn-group button {
+        font-size: 1rem;
+        padding: 12px 16px;
+      }
+    }
+    
+    /* Search Bar */
+    .search-bar {
+      margin-bottom: 20px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
     }
   </style>
 </head>
 <body>
-  <!-- Hamburger Toggle for Mobile -->
-  <div class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></div>
-  
-  <!-- Mobile Header (only for small screens) -->
-  <div class="mobile-header">Admin Dashboard</div>
-  
-  <!-- Sidebar Navigation -->
-  <div class="sidebar" id="sidebar">
-    <h2>Edurack Panel</h2>
-    <nav>
-      <a href="#" data-tab="test-setup" class="active"><i class="fas fa-cogs"></i> Test Setup</a>
-      <a href="#" data-tab="add-question"><i class="fas fa-plus-circle"></i> Add Questions</a>
-      <a href="#" data-tab="test-preview"><i class="fas fa-eye"></i> Test Preview &amp; Send</a>
-      <a href="#" data-tab="user-submissions"><i class="fas fa-users"></i> User Submissions</a>
-    </nav>
+  <!-- Login Section -->
+  <div id="login-section">
+    <h2>Admin Login</h2>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Email" required />
+      <input type="password" id="login-password" placeholder="Password" required />
+      <button type="submit">Login</button>
+      <div id="login-error"></div>
+    </form>
   </div>
 
-  <!-- Main Content Area -->
-  <div class="main-content">
-    <div id="content-area">
-      <!-- Test Setup Section -->
-      <section id="test-setup-section" class="card">
-        <h2>Test Setup</h2>
-        <form id="test-setup-form">
-          <label for="testName">Test Name:</label>
-          <input type="text" id="testName" name="testName" placeholder="Enter Test Name" required>
-          <label for="testDuration">Test Duration (in minutes):</label>
-          <input type="number" id="testDuration" name="testDuration" placeholder="Enter Duration" required>
-          <label for="subjects">Subjects (comma separated):</label>
-          <input type="text" id="subjects" name="subjects" placeholder="e.g., Physics, Chemistry, Biology" required>
-          <button type="submit">Create Test Series</button>
-        </form>
-      </section>
+  <!-- Admin Dashboard -->
+  <div id="admin-dashboard" style="display:none;">
+    <!-- Sidebar (larger screens) -->
+    <div class="sidebar" id="sidebar">
+      <h2>Edurack</h2>
+      <nav>
+        <a href="#" data-tab="test-setup" class="active">
+          <i class="fas fa-cogs"></i> Setup
+        </a>
+        <a href="#" data-tab="add-question">
+          <i class="fas fa-plus-circle"></i> Add Qs
+        </a>
+        <a href="#" data-tab="test-preview">
+          <i class="fas fa-eye"></i> Preview
+        </a>
+        <a href="#" data-tab="user-submissions">
+          <i class="fas fa-users"></i> Subs
+        </a>
+        <a href="#" data-tab="syllabus" class="syllabus">
+          <i class="fas fa-upload"></i> Syllabus
+        </a>
+      </nav>
+    </div>
 
-      <!-- Add Questions Section -->
-      <section id="add-question-section" class="card" style="display:none;">
-        <h2>Add Questions</h2>
-        <form id="question-form">
-          <!-- Select Test Series and Subject -->
-          <div>
-            <label for="testSeries">Select Test Series:</label>
-            <select id="testSeries" required>
-              <option value="">--Select Test Series--</option>
-            </select>
-          </div>
-          <div>
-            <label for="subject">Select Subject:</label>
-            <select id="subject" required>
-              <option value="">--Select Subject--</option>
-            </select>
-          </div>
-          <!-- Basic Question Details -->
-          <div>
-            <label for="question">Question:</label>
-            <input type="text" id="question" name="question" placeholder="Enter question text">
-          </div>
-          <div>
-            <label for="questionImageURL">Question Image URL (if no text):</label>
-            <input type="text" id="questionImageURL" name="questionImageURL" placeholder="Paste image URL">
-          </div>
-          <!-- Question Type Selection -->
-          <div>
-            <label for="questionType">Question Type:</label>
-            <select id="questionType" name="questionType" required>
-              <option value="">--Select Question Type--</option>
-              <option value="MCQ">MCQ</option>
-              <option value="Integer">Integer</option>
-            </select>
-          </div>
-          <!-- MCQ Options Section -->
-          <div id="mcq-section" style="display:none;">
-            <div class="options-row">
-              <div class="option">
-                <label for="optionA">Option A:</label>
-                <input type="text" id="optionA" name="optionA" placeholder="Enter Option A">
-              </div>
-              <div class="option">
-                <label for="optionB">Option B:</label>
-                <input type="text" id="optionB" name="optionB" placeholder="Enter Option B">
-              </div>
-            </div>
-            <div class="options-row">
-              <div class="option">
-                <label for="optionC">Option C:</label>
-                <input type="text" id="optionC" name="optionC" placeholder="Enter Option C">
-              </div>
-              <div class="option">
-                <label for="optionD">Option D:</label>
-                <input type="text" id="optionD" name="optionD" placeholder="Enter Option D">
-              </div>
-            </div>
+    <!-- Bottom Nav (icons only, small screens) -->
+    <div class="bottom-nav" id="bottomNav">
+      <a href="#" data-tab="test-setup" class="active">
+        <i class="fas fa-cogs"></i>
+      </a>
+      <a href="#" data-tab="add-question">
+        <i class="fas fa-plus-circle"></i>
+      </a>
+      <a href="#" data-tab="test-preview">
+        <i class="fas fa-eye"></i>
+      </a>
+      <a href="#" data-tab="user-submissions">
+        <i class="fas fa-users"></i>
+      </a>
+      <a href="#" data-tab="syllabus">
+        <i class="fas fa-upload"></i>
+      </a>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div id="content-area">
+        <!-- Setup Section -->
+        <section id="test-setup-section" class="card">
+          <h2>Setup</h2>
+          <form id="test-setup-form">
+            <label for="testName">Test Name</label>
+            <input type="text" id="testName" required />
+            <label for="testDuration">Duration (min)</label>
+            <input type="number" id="testDuration" required />
+            <label for="subjects">Subjects</label>
+            <input type="text" id="subjects" placeholder="Ex: Physics, Chem, Bio" required />
+            <label for="scheduledDate">Schedule</label>
+            <input type="datetime-local" id="scheduledDate" required />
+            <button type="submit">Create Test</button>
+          </form>
+        </section>
+        
+        <!-- Add Qs Section -->
+        <section id="add-question-section" class="card" style="display:none;">
+          <h2>Add Qs</h2>
+          <form id="question-form">
             <div>
-              <label for="correctAnswer">Correct Answer:</label>
-              <select id="correctAnswer" name="correctAnswer">
-                <option value="">--Select Answer--</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
-                <option value="D">D</option>
+              <label for="testSeries">Series</label>
+              <select id="testSeries" required>
+                <option value="">--Select Series--</option>
               </select>
             </div>
+            <div>
+              <label for="subject">Subject</label>
+              <select id="subject" required>
+                <option value="">--Select Subject--</option>
+              </select>
+            </div>
+            <div>
+              <label for="question">Question</label>
+              <input type="text" id="question" placeholder="Enter question" />
+            </div>
+            <div>
+              <label for="questionImageURL">Image URL</label>
+              <input type="text" id="questionImageURL" placeholder="Paste image URL" />
+            </div>
+            <div>
+              <label for="questionType">Type</label>
+              <select id="questionType" required>
+                <option value="">--Select Type--</option>
+                <option value="MCQ">MCQ</option>
+                <option value="Integer">Integer</option>
+              </select>
+            </div>
+            <!-- MCQ Options -->
+            <div id="mcq-section" style="display:none;">
+              <div style="display: flex; gap: 12px;">
+                <div style="flex:1;">
+                  <label for="optionA">A</label>
+                  <input type="text" id="optionA" placeholder="Option A" />
+                </div>
+                <div style="flex:1;">
+                  <label for="optionB">B</label>
+                  <input type="text" id="optionB" placeholder="Option B" />
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px;">
+                <div style="flex:1;">
+                  <label for="optionC">C</label>
+                  <input type="text" id="optionC" placeholder="Option C" />
+                </div>
+                <div style="flex:1;">
+                  <label for="optionD">D</label>
+                  <input type="text" id="optionD" placeholder="Option D" />
+                </div>
+              </div>
+              <div>
+                <label for="correctAnswer">Answer</label>
+                <select id="correctAnswer">
+                  <option value="">--Select--</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                </select>
+              </div>
+            </div>
+            <!-- Integer Answer -->
+            <div id="integer-section" style="display:none;">
+              <label for="integerAnswer">Answer</label>
+              <input type="number" id="integerAnswer" placeholder="Enter answer" />
+            </div>
+            <div>
+              <label for="solution">Solution</label>
+              <input type="text" id="solution" placeholder="Enter solution" />
+            </div>
+            <div>
+              <label for="solutionImageURL">Solution URL</label>
+              <input type="text" id="solutionImageURL" placeholder="Paste solution URL" />
+            </div>
+            <div style="text-align: center;">
+              <button type="button" id="previewBtn">Preview</button>
+              <button type="reset">Clear</button>
+              <button type="submit">Add Q</button>
+            </div>
+          </form>
+          <!-- Preview Modal -->
+          <div id="previewModal" class="modal">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Preview</h2>
+              <div id="previewContent"></div>
+            </div>
           </div>
-          <!-- Integer Answer Section -->
-          <div id="integer-section" style="display:none;">
-            <label for="integerAnswer">Answer (Integer):</label>
-            <input type="number" id="integerAnswer" name="integerAnswer" placeholder="Enter the integer answer">
+        </section>
+        
+        <!-- Preview Section -->
+        <section id="test-preview-section" class="card" style="display:none;">
+          <h2>Preview</h2>
+          <div id="testPreviewContainer"></div>
+        </section>
+        
+        <!-- Subs Section -->
+        <section id="user-submissions-section" class="card" style="display:none;">
+          <h2>Subs</h2>
+          <div class="search-bar">
+            <input type="text" id="submissionSearch" placeholder="Search by name..." />
           </div>
-          <!-- Common Solution Fields -->
-          <div>
-            <label for="solution">Solution:</label>
-            <input type="text" id="solution" name="solution" placeholder="Enter solution text">
-          </div>
-          <div>
-            <label for="solutionImageURL">Solution Image URL (if no text):</label>
-            <input type="text" id="solutionImageURL" name="solutionImageURL" placeholder="Paste solution image URL">
-          </div>
-          <!-- Buttons -->
-          <div id="button-container">
-            <button type="button" id="previewBtn">Preview</button>
-            <button type="reset">Clear</button>
-            <button type="submit">Add Question</button>
-          </div>
-        </form>
-
-        <!-- Preview Modal for Question -->
-        <div id="previewModal" class="modal">
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Preview Question</h2>
-            <div id="previewContent"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Test Preview & Send Section -->
-      <section id="test-preview-section" class="card" style="display:none;">
-        <h2>Test Preview &amp; Send</h2>
-        <div id="testPreviewContainer"></div>
-      </section>
-
-      <!-- User Submissions Section -->
-      <section id="user-submissions-section" class="card" style="display:none;">
-        <h2>User Submissions</h2>
-        <table id="submissionsTable">
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Solution</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Submissions will be populated here -->
-          </tbody>
-        </table>
-      </section>
+          <table id="submissionsTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Solution</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Data will be populated here -->
+            </tbody>
+          </table>
+        </section>
+        
+        <!-- Syllabus Section (chapters only, no file upload) -->
+        <section id="syllabus-section" class="card" style="display:none;">
+          <h2>Syllabus</h2>
+          <form id="syllabus-form">
+            <div>
+              <label for="syllabusTestSeries">Test Series</label>
+              <select id="syllabusTestSeries" required>
+                <option value="">--Select Series--</option>
+              </select>
+            </div>
+            <div>
+              <label for="syllabusSubject">Subject</label>
+              <select id="syllabusSubject" required>
+                <option value="">--Select Subject--</option>
+              </select>
+            </div>
+            <div>
+              <label for="syllabusChapters">Chapters</label>
+              <textarea id="syllabusChapters" rows="4" placeholder="Write chapters here, comma-separated"></textarea>
+            </div>
+            <button type="submit">Save Chapters</button>
+          </form>
+        </section>
+      </div>
     </div>
   </div>
-
+  
   <script type="module">
-    // Firebase Configuration
+    /***********************************
+     *  FIREBASE + FIRESTORE SETUP
+     ***********************************/
     const firebaseConfig = {
       apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
       authDomain: "arena-b8996.firebaseapp.com",
@@ -449,6 +620,7 @@
       setDoc,
       doc,
       getDocs,
+      getDoc,
       updateDoc,
       deleteDoc,
       serverTimestamp
@@ -457,103 +629,157 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Helper to switch sections/tabs using sidebar navigation
-    const switchTab = (tabName) => {
+    /***********************************
+     *  LOGIN CHECK
+     ***********************************/
+    if (localStorage.getItem("isAdmin") === "true") {
+      document.getElementById("login-section").style.display = "none";
+      document.getElementById("admin-dashboard").style.display = "block";
+    }
+
+    document.getElementById("login-form").addEventListener("submit", async e => {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value.trim();
+      try {
+        const adminDocRef = doc(db, "Admin", "Admin Data");
+        const adminDocSnap = await getDoc(adminDocRef);
+        if (!adminDocSnap.exists()) {
+          document.getElementById("login-error").textContent = "Admin data not found.";
+          document.getElementById("login-error").style.display = "block";
+          return;
+        }
+        const adminData = adminDocSnap.data();
+        if (adminData.email === email && adminData.password === password) {
+          localStorage.setItem("isAdmin", "true");
+          document.getElementById("login-error").style.display = "none";
+          document.getElementById("login-section").style.display = "none";
+          document.getElementById("admin-dashboard").style.display = "block";
+        } else {
+          document.getElementById("login-error").textContent = "Invalid credentials. Please try again.";
+          document.getElementById("login-error").style.display = "block";
+        }
+      } catch (error) {
+        console.error("Error logging in:", error);
+        document.getElementById("login-error").textContent = "Error during login. Please try again.";
+        document.getElementById("login-error").style.display = "block";
+      }
+    });
+
+    /***********************************
+     *  TAB SWITCHING
+     ***********************************/
+    function switchTab(tabName) {
       document.querySelectorAll("section").forEach(sec => {
         sec.style.display = (sec.id === tabName + "-section") ? "block" : "none";
       });
       document.querySelectorAll(".sidebar nav a").forEach(a => {
         a.classList.toggle("active", a.getAttribute("data-tab") === tabName);
       });
-    };
-
-    // Toggle sidebar for mobile view – attach to global scope
-    window.toggleSidebar = function(){
-      const sidebar = document.getElementById("sidebar");
-      if(sidebar.style.display === "none" || sidebar.style.display === ""){
-        sidebar.style.display = "block";
-      } else {
-        sidebar.style.display = "none";
+      document.querySelectorAll(".bottom-nav a").forEach(a => {
+        a.classList.toggle("active", a.getAttribute("data-tab") === tabName);
+      });
+      if (tabName === "syllabus") {
+        loadTestSeriesForSyllabus();
       }
-    };
+    }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      // Sidebar navigation event handling
+    document.addEventListener("DOMContentLoaded", () => {
+      // Navigation events
       document.querySelectorAll(".sidebar nav a").forEach(a => {
-        a.addEventListener("click", (e) => {
+        a.addEventListener("click", e => {
           e.preventDefault();
           const tab = a.getAttribute("data-tab");
           switchTab(tab);
-          if(tab === "add-question"){
+          if (tab === "add-question") {
             loadTestSeries();
           }
-          if(tab === "user-submissions"){
+          if (tab === "user-submissions") {
             loadSubmissions();
           }
-          if(tab === "test-preview"){
+          if (tab === "test-preview") {
+            loadTestPreview();
+          }
+        });
+      });
+      document.querySelectorAll(".bottom-nav a").forEach(a => {
+        a.addEventListener("click", e => {
+          e.preventDefault();
+          const tab = a.getAttribute("data-tab");
+          switchTab(tab);
+          if (tab === "add-question") {
+            loadTestSeries();
+          }
+          if (tab === "user-submissions") {
+            loadSubmissions();
+          }
+          if (tab === "test-preview") {
             loadTestPreview();
           }
         });
       });
 
-      // ------------------------
-      // Test Setup Form Handler
-      // ------------------------
+      /***********************************
+       *  CREATE TEST (SETUP TAB)
+       ***********************************/
       const testSetupForm = document.getElementById("test-setup-form");
       testSetupForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const testName = document.getElementById("testName").value.trim();
         const testDuration = document.getElementById("testDuration").value.trim();
         const subjectsInput = document.getElementById("subjects").value.trim();
-
-        if(!testName || !testDuration || !subjectsInput){
+        const scheduledDateInput = document.getElementById("scheduledDate").value;
+        
+        if (!testName || !testDuration || !subjectsInput || !scheduledDateInput) {
           alert("All fields are required!");
           return;
         }
         const subjectsArray = subjectsInput.split(",").map(s => s.trim()).filter(s => s);
+        const scheduledAt = new Date(scheduledDateInput);
 
         try {
+          // Store doc in "Questions" collection with doc ID = testName
           await setDoc(doc(db, "Questions", testName), {
             testName,
             testDuration,
             subjects: subjectsArray,
+            scheduledAt,
+            published: false,
             createdAt: serverTimestamp()
           });
-          alert("Test Series created successfully!");
+          alert("Test created successfully!");
           testSetupForm.reset();
-        } catch(error) {
-          console.error("Error creating test series:", error);
+        } catch (error) {
+          console.error("Error creating test:", error);
           alert("Error: " + error.message);
         }
       });
 
-      // ------------------------
-      // Load Test Series for Add Questions Form
-      // ------------------------
-      async function loadTestSeries(){
+      /***********************************
+       *  ADD Qs TAB - load test series
+       ***********************************/
+      async function loadTestSeries() {
         const testSeriesSelect = document.getElementById("testSeries");
-        testSeriesSelect.innerHTML = `<option value="">--Select Test Series--</option>`;
+        testSeriesSelect.innerHTML = `<option value="">--Select Series--</option>`;
         try {
           const querySnapshot = await getDocs(collection(db, "Questions"));
           querySnapshot.forEach(docSnap => {
             const data = docSnap.data();
             const option = document.createElement("option");
-            option.value = data.testName;
+            option.value = data.testName;  // e.g. "JEE Main #1"
             option.textContent = data.testName;
             option.setAttribute("data-subjects", JSON.stringify(data.subjects || []));
             testSeriesSelect.appendChild(option);
           });
-        } catch(error){
-          console.error("Error loading test series:", error);
+        } catch (error) {
+          console.error("Error loading series:", error);
         }
       }
-
-      // Populate subjects based on selected test series
-      document.getElementById("testSeries").addEventListener("change", function(){
+      document.getElementById("testSeries").addEventListener("change", function() {
         const selectedOption = this.options[this.selectedIndex];
         const subjectsDropdown = document.getElementById("subject");
         subjectsDropdown.innerHTML = `<option value="">--Select Subject--</option>`;
-        if(selectedOption && selectedOption.getAttribute("data-subjects")){
+        if (selectedOption && selectedOption.getAttribute("data-subjects")) {
           const subjects = JSON.parse(selectedOption.getAttribute("data-subjects"));
           subjects.forEach(subject => {
             const opt = document.createElement("option");
@@ -564,15 +790,50 @@
         }
       });
 
-      // ------------------------
-      // Toggle Fields Based on Question Type
-      // ------------------------
-      document.getElementById("questionType").addEventListener("change", function(){
+      /***********************************
+       *  SYLLABUS TAB - load test series
+       ***********************************/
+      async function loadTestSeriesForSyllabus() {
+        const syllabusTestSeriesSelect = document.getElementById("syllabusTestSeries");
+        syllabusTestSeriesSelect.innerHTML = `<option value="">--Select Series--</option>`;
+        try {
+          const querySnapshot = await getDocs(collection(db, "Questions"));
+          querySnapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const option = document.createElement("option");
+            option.value = data.testName;  // e.g. "JEE Main #1"
+            option.textContent = data.testName;
+            option.setAttribute("data-subjects", JSON.stringify(data.subjects || []));
+            syllabusTestSeriesSelect.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error loading series for syllabus:", error);
+        }
+      }
+      document.getElementById("syllabusTestSeries").addEventListener("change", function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const syllabusSubjectDropdown = document.getElementById("syllabusSubject");
+        syllabusSubjectDropdown.innerHTML = `<option value="">--Select Subject--</option>`;
+        if (selectedOption && selectedOption.getAttribute("data-subjects")) {
+          const subjects = JSON.parse(selectedOption.getAttribute("data-subjects"));
+          subjects.forEach(subject => {
+            const opt = document.createElement("option");
+            opt.value = subject;
+            opt.textContent = subject;
+            syllabusSubjectDropdown.appendChild(opt);
+          });
+        }
+      });
+
+      /***********************************
+       *  TOGGLE QUESTION TYPE
+       ***********************************/
+      document.getElementById("questionType").addEventListener("change", function() {
         const type = this.value;
-        if(type === "MCQ"){
+        if (type === "MCQ") {
           document.getElementById("mcq-section").style.display = "block";
           document.getElementById("integer-section").style.display = "none";
-        } else if(type === "Integer"){
+        } else if (type === "Integer") {
           document.getElementById("mcq-section").style.display = "none";
           document.getElementById("integer-section").style.display = "block";
         } else {
@@ -581,12 +842,11 @@
         }
       });
 
-      // ------------------------
-      // Question Form Handler & Preview
-      // ------------------------
+      /***********************************
+       *  PREVIEW QUESTION
+       ***********************************/
       const questionForm = document.getElementById("question-form");
       const getValue = id => document.getElementById(id).value.trim();
-
       const previewBtn = document.getElementById("previewBtn");
       const previewModal = document.getElementById("previewModal");
       const previewContent = document.getElementById("previewContent");
@@ -596,69 +856,64 @@
         const questionText = getValue("question");
         const questionImageURL = getValue("questionImageURL");
         const questionType = getValue("questionType");
-
         let previewHtml = "<p><strong>Question:</strong></p>";
         previewHtml += questionText 
           ? `<p>${questionText}</p>` 
           : questionImageURL 
-            ? `<img src="${questionImageURL}" alt="Question Image" style="max-width:100%;">`
-            : "<p><em>No question content provided</em></p>";
-
+            ? `<img src="${questionImageURL}" alt="Image" style="max-width:100%;">`
+            : "<p><em>No content</em></p>";
         previewHtml += `<p><strong>Type:</strong> ${questionType}</p>`;
-
-        if(questionType === "MCQ"){
+        if (questionType === "MCQ") {
           const optionA = getValue("optionA");
           const optionB = getValue("optionB");
           const optionC = getValue("optionC");
           const optionD = getValue("optionD");
           const correctAnswer = getValue("correctAnswer");
           previewHtml += "<p><strong>Options:</strong></p><ol type='A'>";
-          previewHtml += `<li>${optionA || "<em>No text</em>"}</li>`;
-          previewHtml += `<li>${optionB || "<em>No text</em>"}</li>`;
-          previewHtml += `<li>${optionC || "<em>No text</em>"}</li>`;
-          previewHtml += `<li>${optionD || "<em>No text</em>"}</li>`;
+          previewHtml += `<li>${optionA || "<em>Not set</em>"}</li>`;
+          previewHtml += `<li>${optionB || "<em>Not set</em>"}</li>`;
+          previewHtml += `<li>${optionC || "<em>Not set</em>"}</li>`;
+          previewHtml += `<li>${optionD || "<em>Not set</em>"}</li>`;
           previewHtml += "</ol>";
-          previewHtml += `<p><strong>Correct Answer:</strong> ${correctAnswer || "<em>Not set</em>"}</p>`;
-        } else if(questionType === "Integer"){
+          previewHtml += `<p><strong>Answer:</strong> ${correctAnswer || "<em>Not set</em>"}</p>`;
+        } else if (questionType === "Integer") {
           const integerAnswer = getValue("integerAnswer");
-          previewHtml += `<p><strong>Answer (Integer):</strong> ${integerAnswer || "<em>Not set</em>"}</p>`;
+          previewHtml += `<p><strong>Answer:</strong> ${integerAnswer || "<em>Not set</em>"}</p>`;
         }
-
         const solutionText = getValue("solution");
         const solutionImageURL = getValue("solutionImageURL");
         previewHtml += "<p><strong>Solution:</strong></p>";
         previewHtml += solutionText 
           ? `<p>${solutionText}</p>` 
           : solutionImageURL 
-            ? `<img src="${solutionImageURL}" alt="Solution Image" style="max-width:100%;">`
-            : "<p><em>No solution provided</em></p>";
-
+            ? `<img src="${solutionImageURL}" alt="Solution" style="max-width:100%;">`
+            : "<p><em>No solution</em></p>";
         previewContent.innerHTML = previewHtml;
-        previewModal.style.display = "block";
+        previewModal.style.display = "flex";
       });
-
       closeModal.addEventListener("click", () => {
         previewModal.style.display = "none";
       });
-
       window.addEventListener("click", (event) => {
         if (event.target === previewModal) {
           previewModal.style.display = "none";
         }
       });
 
+      /***********************************
+       *  ADD QUESTION SUBMIT
+       ***********************************/
       questionForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const testSeries = getValue("testSeries");
         const subject = getValue("subject");
         if (!testSeries || !subject) {
-          alert("Please select both a test series and a subject!");
+          alert("Please select series and subject!");
           return;
         }
         const questionText = getValue("question");
         const questionImageURL = getValue("questionImageURL");
         const questionType = getValue("questionType");
-
         const solutionText = getValue("solution");
         const solutionImageURL = getValue("solutionImageURL");
 
@@ -672,44 +927,74 @@
             addedAt: serverTimestamp()
           };
 
-          if(questionType === "MCQ"){
+          if (questionType === "MCQ") {
             const optionA = getValue("optionA");
             const optionB = getValue("optionB");
             const optionC = getValue("optionC");
             const optionD = getValue("optionD");
             const correctAnswer = getValue("correctAnswer");
-
-            if(!correctAnswer){
-              alert("Please select a correct answer for the MCQ type!");
+            if (!correctAnswer) {
+              alert("Select an answer for MCQ!");
               return;
             }
             docData.options = [optionA, optionB, optionC, optionD];
             docData.correctAnswer = correctAnswer;
-          } else if(questionType === "Integer"){
+          } else if (questionType === "Integer") {
             const integerAnswer = getValue("integerAnswer");
-            if(!integerAnswer){
-              alert("Please provide the integer answer!");
+            if (!integerAnswer) {
+              alert("Provide the integer answer!");
               return;
             }
             docData.answer = integerAnswer;
           } else {
-            alert("Invalid question type selected!");
+            alert("Invalid type!");
             return;
           }
 
+          // Add doc to "Questions/testSeries/subject" subcollection
           await addDoc(collection(db, "Questions", testSeries, subject), docData);
-          alert("Question added successfully!");
+          alert("Question added!");
           questionForm.reset();
         } catch (error) {
-          console.error("Error adding question:", error);
+          console.error("Error:", error);
           alert("Error: " + error.message);
         }
       });
 
-      // ------------------------
-      // Load User Submissions
-      // ------------------------
-      async function loadSubmissions(){
+      /***********************************
+       *  SYLLABUS: CHAPTERS ONLY
+       ***********************************/
+      document.getElementById("syllabus-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const testSeries = document.getElementById("syllabusTestSeries").value;
+        const subject = document.getElementById("syllabusSubject").value;
+        const chaptersInput = document.getElementById("syllabusChapters").value.trim();
+        if (!testSeries || !subject || !chaptersInput) {
+          alert("All fields are required!");
+          return;
+        }
+        const chaptersArray = chaptersInput.split(",").map(ch => ch.trim()).filter(ch => ch);
+
+        try {
+          // Save chapters to "Syllabus/testSeries_subject"
+          await setDoc(doc(db, "Syllabus", testSeries + "_" + subject), {
+            testSeries,
+            subject,
+            chapters: chaptersArray,
+            updatedAt: serverTimestamp()
+          });
+          alert("Syllabus chapters saved successfully!");
+          document.getElementById("syllabus-form").reset();
+        } catch (error) {
+          console.error("Error saving syllabus chapters:", error);
+          alert("Error saving syllabus: " + error.message);
+        }
+      });
+
+      /***********************************
+       *  LOAD SUBMISSIONS
+       ***********************************/
+      async function loadSubmissions() {
         const submissionsTableBody = document.querySelector("#submissionsTable tbody");
         submissionsTableBody.innerHTML = "";
         try {
@@ -717,23 +1002,27 @@
           querySnapshot.forEach(docSnap => {
             const data = docSnap.data();
             const row = document.createElement("tr");
-            const usernameCell = document.createElement("td");
-            usernameCell.textContent = data.username || "Anonymous";
-            const solutionCell = document.createElement("td");
-            solutionCell.textContent = data.solution || "No solution provided";
-            row.appendChild(usernameCell);
-            row.appendChild(solutionCell);
+            row.innerHTML = `<td>${data.username || "Anon"}</td><td>${data.solution || "No sol"}</td>`;
             submissionsTableBody.appendChild(row);
           });
         } catch (error) {
           console.error("Error loading submissions:", error);
         }
       }
+      const submissionSearch = document.getElementById("submissionSearch");
+      submissionSearch.addEventListener("input", () => {
+        const filter = submissionSearch.value.toLowerCase();
+        const rows = document.querySelectorAll("#submissionsTable tbody tr");
+        rows.forEach(row => {
+          const username = row.cells[0].textContent.toLowerCase();
+          row.style.display = username.includes(filter) ? "" : "none";
+        });
+      });
 
-      // ------------------------
-      // Test Preview & Send Section
-      // ------------------------
-      async function loadTestPreview(){
+      /***********************************
+       *  LOAD TEST PREVIEW
+       ***********************************/
+      async function loadTestPreview() {
         const container = document.getElementById("testPreviewContainer");
         container.innerHTML = "";
         try {
@@ -742,52 +1031,77 @@
             const data = docSnap.data();
             const card = document.createElement("div");
             card.classList.add("test-card");
+
+            let scheduledInfo = "";
+            if (data.scheduledAt) {
+              const scheduledDate = data.scheduledAt.seconds 
+                ? new Date(data.scheduledAt.seconds * 1000)
+                : new Date(data.scheduledAt);
+              scheduledInfo = `<p>Schedule: ${scheduledDate.toLocaleString()}</p>`;
+            }
+
+            let statusLabel = "";
+            let actionButton = "";
+            if (data.published) {
+              statusLabel = `<p style="color:green; font-weight:600;">Pub</p>`;
+              actionButton = `<button onclick="deleteTest('${data.testName}')">Delete</button>`;
+            } else {
+              // Check if test is scheduled for future or ready
+              const now = new Date();
+              const testDate = data.scheduledAt?.seconds
+                ? new Date(data.scheduledAt.seconds * 1000)
+                : new Date(data.scheduledAt);
+              if (testDate && now < testDate) {
+                statusLabel = `<p style="color:orange; font-weight:600;">Sched</p>`;
+                actionButton = `<button onclick="sendTest('${data.testName}')" disabled>Not Live</button>`;
+              } else {
+                statusLabel = `<p style="color:blue; font-weight:600;">Ready</p>`;
+                actionButton = `<button onclick="sendTest('${data.testName}')">Send</button>`;
+              }
+            }
+
             card.innerHTML = `
               <div>
                 <h3>${data.testName}</h3>
-                <p>Duration: ${data.testDuration} minutes</p>
-                <p>Subjects: ${data.subjects.join(', ')}</p>
-                ${data.published ? '<p style="color:green; font-weight:600;">Published</p>' : ''}
+                <p>Dur: ${data.testDuration} min</p>
+                <p>Sub: ${data.subjects.join(', ')}</p>
+                ${scheduledInfo}
+                ${statusLabel}
               </div>
               <div class="btn-group">
                 <button onclick="previewTest('${data.testName}')">Preview</button>
-                ${
-                  data.published 
-                    ? `<button onclick="deleteTest('${data.testName}')">Delete Test</button>` 
-                    : `<button onclick="sendTest('${data.testName}')">Send Test</button>`
-                }
+                ${actionButton}
               </div>
             `;
             container.appendChild(card);
           });
         } catch (error) {
-          console.error("Error loading test preview:", error);
+          console.error("Error loading preview:", error);
         }
       }
 
+      // Helper for test actions
       window.previewTest = function(testId) {
         window.location.href = `test_series_detail.html?test=${testId}`;
       };
-
       window.sendTest = async function(testId) {
-        if (!confirm("Are you sure you want to send (publish) this test?")) return;
+        if (!confirm("Send this test?")) return;
         try {
           await updateDoc(doc(db, "Questions", testId), {
             published: true,
             publishedAt: serverTimestamp()
           });
-          alert("Test has been sent (published) successfully!");
+          alert("Test sent!");
           loadTestPreview();
         } catch (error) {
           alert("Error sending test: " + error.message);
         }
       };
-
       window.deleteTest = async function(testId) {
-        if (!confirm("Are you sure you want to delete this published test? This action cannot be undone.")) return;
+        if (!confirm("Delete this test? This cannot be undone.")) return;
         try {
           await deleteDoc(doc(db, "Questions", testId));
-          alert("Test deleted successfully!");
+          alert("Test deleted!");
           loadTestPreview();
         } catch (error) {
           alert("Error deleting test: " + error.message);
