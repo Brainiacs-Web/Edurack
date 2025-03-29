@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PYQS Admin Panel - Edurack</title>
+  <!-- Google Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Global Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #eef2f7, #d1e0f2);
+      color: #333;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    header {
+      background: linear-gradient(135deg, #007adf, #0056b3);
+      padding: 30px;
+      text-align: center;
+    }
+    header h1 {
+      color: #fff;
+      font-size: 2rem;
+      letter-spacing: 1px;
+    }
+    /* Tabs */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background: #f7f9fc;
+      padding: 15px;
+      border-bottom: 1px solid #e0e6ed;
+    }
+    .tabs button {
+      background: transparent;
+      border: none;
+      font-size: 1rem;
+      padding: 10px 20px;
+      border-radius: 6px;
+      color: #007adf;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    }
+    .tabs button.active,
+    .tabs button:hover {
+      background: #007adf;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    /* Card Form */
+    .card {
+      padding: 30px;
+      background: #fff;
+      border-radius: 12px;
+      margin: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+    .card h2 {
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      color: #333;
+      border-bottom: 2px solid #e0e6ed;
+      padding-bottom: 10px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #555;
+    }
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccd6e0;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border 0.3s ease;
+    }
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #007adf;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    .btn {
+      background: linear-gradient(135deg, #007adf, #0056b3);
+      color: #fff;
+      border: none;
+      padding: 14px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      margin-top: 10px;
+    }
+    .btn:hover {
+      background: linear-gradient(135deg, #0056b3, #003f73);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    /* Responsive */
+    @media (max-width: 480px) {
+      .tabs {
+        flex-direction: column;
+      }
+      .card {
+        margin: 20px;
+        padding: 20px;
+      }
+      header h1 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>PYQS Admin Panel</h1>
+    </header>
+    <div class="tabs">
+      <button id="tabChapter" class="active">Add Chapter</button>
+      <button id="tabQuestion">Add Question</button>
+    </div>
+    
+    <!-- Add Chapter Card -->
+    <div id="chapterCard" class="card">
+      <h2>Add Chapter</h2>
+      <form id="addChapterForm">
+        <div class="form-group">
+          <label for="chapterExamType">Exam Type</label>
+          <select id="chapterExamType" required>
+            <option value="JEE">JEE</option>
+            <option value="NEET">NEET</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="chapterSubject">Subject</label>
+          <select id="chapterSubject" required>
+            <!-- Subjects will load based on exam type -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="chapterName">Chapter Name</label>
+          <input type="text" id="chapterName" placeholder="e.g. Mechanics" required />
+        </div>
+        <button type="submit" class="btn">Add Chapter</button>
+      </form>
+    </div>
+    
+    <!-- Add Question Card -->
+    <div id="questionCard" class="card" style="display:none;">
+      <h2>Add Question</h2>
+      <form id="addQuestionForm">
+        <div class="form-group">
+          <label for="questionExamType">Exam Type</label>
+          <select id="questionExamType" required>
+            <option value="JEE">JEE</option>
+            <option value="NEET">NEET</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="questionSubject">Subject</label>
+          <select id="questionSubject" required>
+            <!-- Subjects load based on exam type -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="questionChapterSelect">Select Chapter</label>
+          <select id="questionChapterSelect" required>
+            <!-- Chapters will load dynamically from Firestore -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="questionText">Question Text / URL</label>
+          <textarea id="questionText" placeholder="Enter question text or paste image URL" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="questionImage">Question Image URL (Optional)</label>
+          <input type="text" id="questionImage" placeholder="Image URL" />
+        </div>
+        <div class="form-group">
+          <label>Options</label>
+          <input type="text" id="option0" placeholder="Option A" required />
+          <input type="text" id="option1" placeholder="Option B" required style="margin-top:8px;"/>
+          <input type="text" id="option2" placeholder="Option C" required style="margin-top:8px;"/>
+          <input type="text" id="option3" placeholder="Option D" required style="margin-top:8px;"/>
+        </div>
+        <div class="form-group">
+          <label for="correctAnswer">Correct Answer (A, B, C, or D)</label>
+          <input type="text" id="correctAnswer" placeholder="e.g. B" required />
+        </div>
+        <div class="form-group">
+          <label for="solutionText">Solution</label>
+          <textarea id="solutionText" placeholder="Enter explanation or solution" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="solutionImage">Solution Image URL (Optional)</label>
+          <input type="text" id="solutionImage" placeholder="Image URL" />
+        </div>
+        <button type="submit" class="btn">Add Question</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    // Firebase configuration – replace with your actual config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    
+    // Predefined subjects based on exam type
+    const subjects = {
+      "JEE": ["Physics", "Chemistry", "Maths"],
+      "NEET": ["Physics", "Chemistry", "Botany", "Zoology"]
+    };
+    
+    // Utility to update subject dropdowns
+    function updateSubjectDropdown(dropdownId, examType) {
+      const dropdown = document.getElementById(dropdownId);
+      dropdown.innerHTML = "";
+      subjects[examType].forEach(sub => {
+        const opt = document.createElement("option");
+        opt.value = sub;
+        opt.textContent = sub;
+        dropdown.appendChild(opt);
+      });
+    }
+    
+    // Load subjects for Add Chapter form
+    updateSubjectDropdown("chapterSubject", document.getElementById("chapterExamType").value);
+    document.getElementById("chapterExamType").addEventListener("change", function() {
+      updateSubjectDropdown("chapterSubject", this.value);
+    });
+    
+    // Load subjects for Add Question form
+    updateSubjectDropdown("questionSubject", document.getElementById("questionExamType").value);
+    document.getElementById("questionExamType").addEventListener("change", function() {
+      updateSubjectDropdown("questionSubject", this.value);
+      loadChaptersForQuestion(); // update chapters when exam type changes
+    });
+    document.getElementById("questionSubject").addEventListener("change", loadChaptersForQuestion);
+    
+    // Tab switching logic
+    const tabChapter = document.getElementById("tabChapter");
+    const tabQuestion = document.getElementById("tabQuestion");
+    const chapterCard = document.getElementById("chapterCard");
+    const questionCard = document.getElementById("questionCard");
+    
+    tabChapter.addEventListener("click", () => {
+      tabChapter.classList.add("active");
+      tabQuestion.classList.remove("active");
+      chapterCard.style.display = "block";
+      questionCard.style.display = "none";
+    });
+    tabQuestion.addEventListener("click", () => {
+      tabQuestion.classList.add("active");
+      tabChapter.classList.remove("active");
+      questionCard.style.display = "block";
+      chapterCard.style.display = "none";
+      loadChaptersForQuestion();
+    });
+    
+    // --- Add Chapter Functionality ---
+    document.getElementById("addChapterForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const examType = document.getElementById("chapterExamType").value;
+      const subject = document.getElementById("chapterSubject").value;
+      const chapterName = document.getElementById("chapterName").value;
+      try {
+        await db.collection("PYQS").doc(examType)
+          .collection("subjects").doc(subject)
+          .collection("chapters").add({
+            chapterName,
+            addedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        alert("Chapter added successfully.");
+        document.getElementById("addChapterForm").reset();
+      } catch (error) {
+        console.error("Error adding chapter:", error);
+        alert("Error adding chapter.");
+      }
+    });
+    
+    // --- Add Question Functionality ---
+    async function loadChaptersForQuestion() {
+      const examType = document.getElementById("questionExamType").value;
+      const subject = document.getElementById("questionSubject").value;
+      const chapterSelect = document.getElementById("questionChapterSelect");
+      chapterSelect.innerHTML = "";
+      try {
+        const snapshot = await db.collection("PYQS").doc(examType)
+          .collection("subjects").doc(subject)
+          .collection("chapters").get();
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const opt = document.createElement("option");
+          opt.value = doc.id;
+          opt.textContent = data.chapterName;
+          chapterSelect.appendChild(opt);
+        });
+      } catch (error) {
+        console.error("Error loading chapters:", error);
+      }
+    }
+    
+    document.getElementById("addQuestionForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const examType = document.getElementById("questionExamType").value;
+      const subject = document.getElementById("questionSubject").value;
+      const chapterId = document.getElementById("questionChapterSelect").value;
+      const questionText = document.getElementById("questionText").value;
+      const questionImage = document.getElementById("questionImage").value;
+      const options = [
+        document.getElementById("option0").value,
+        document.getElementById("option1").value,
+        document.getElementById("option2").value,
+        document.getElementById("option3").value
+      ];
+      const correctAnswer = document.getElementById("correctAnswer").value;
+      const solutionText = document.getElementById("solutionText").value;
+      const solutionImage = document.getElementById("solutionImage").value;
+      
+      try {
+        await db.collection("PYQS").doc(examType)
+          .collection("subjects").doc(subject)
+          .collection("chapters").doc(chapterId)
+          .collection("questions").add({
+            question: questionText,
+            questionImage: questionImage,
+            options: options,
+            correctAnswer: correctAnswer,
+            solution: solutionText,
+            solutionImage: solutionImage,
+            addedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        alert("Question added successfully.");
+        document.getElementById("addQuestionForm").reset();
+      } catch (error) {
+        console.error("Error adding question:", error);
+        alert("Error adding question.");
+      }
+    });
+  </script>
+</body>
+  </html>
+  
