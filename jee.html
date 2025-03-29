@@ -210,24 +210,13 @@
       margin-bottom: 20px;
       color: var(--text-color);
     }
-    /* Subject Sections */
-    .subject-section {
-      margin-bottom: 40px;
-    }
-    .subject-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: var(--primary-color);
-      border-bottom: 2px solid var(--hover-bg);
-      padding-bottom: 5px;
-    }
-    .chapters-grid {
+    /* Card styles for subjects, chapters & questions */
+    .card-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
-    .chapter-card {
+    .card {
       background: var(--white);
       box-shadow: 0 2px 6px var(--card-shadow);
       padding: 15px;
@@ -238,9 +227,42 @@
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .chapter-card:hover {
+    .card:hover {
       transform: translateY(-4px);
       box-shadow: 0 4px 10px var(--card-shadow);
+    }
+    .back-btn {
+      margin-bottom: 20px;
+      cursor: pointer;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    /* Modal for question details */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--modal-bg);
+      justify-content: center;
+      align-items: center;
+      z-index: 500;
+    }
+    .modal-content {
+      background: var(--white);
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      text-align: left;
+    }
+    .modal-close {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: bold;
     }
     @media (max-width: 768px) {
       .sidebar { width: 180px; }
@@ -304,9 +326,25 @@
   <!-- Main Content -->
   <div class="main-content">
     <h1 class="page-title">JEE PYQs</h1>
-    <!-- This page displays subjects, chapters and (on click) redirects to questions -->
-    <div id="subjectsContainer">
-      <!-- Dynamically inserted subject sections will appear here -->
+    <!-- Containers for Subjects, Chapters and Questions -->
+    <div id="subjectsContainer" class="card-grid"></div>
+    <div id="chaptersContainer" style="display:none;">
+      <div class="back-btn" id="backToSubjects"><i class="fas fa-arrow-left"></i> Back to Subjects</div>
+      <div id="chaptersGrid" class="card-grid"></div>
+    </div>
+    <div id="questionsContainer" style="display:none;">
+      <div class="back-btn" id="backToChapters"><i class="fas fa-arrow-left"></i> Back to Chapters</div>
+      <div id="questionsGrid" class="card-grid"></div>
+    </div>
+  </div>
+  
+  <!-- Modal for Question Details -->
+  <div id="questionModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" id="modalClose">&times;</span>
+      <div id="questionDetail">
+        <!-- Question detail will be dynamically inserted here. Replace this markup with your desired layout. -->
+      </div>
     </div>
   </div>
   
@@ -328,12 +366,11 @@
       firebase.initializeApp(firebaseConfig);
     }
     
-    // Check authentication state and then load the JEE subjects, chapters, etc.
+    // Check authentication state and then load the JEE subjects
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         window.location.href = "index.html";
       } else {
-        // Update navbar with user data
         firebase.firestore().collection("users").doc(user.uid).get()
           .then(function(doc) {
             const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
@@ -353,53 +390,116 @@
     // Hardcoded subjects for JEE
     const subjects = ["Physics", "Chemistry", "Maths"];
     
-    // Function to load subjects and their chapters
+    // Load Subjects: display cards for each subject
     function loadSubjects() {
       const container = document.getElementById("subjectsContainer");
       container.innerHTML = "";
       subjects.forEach(subject => {
-        // Create a section for each subject
-        const section = document.createElement("div");
-        section.classList.add("subject-section");
-        const subjectTitle = document.createElement("h2");
-        subjectTitle.classList.add("subject-title");
-        subjectTitle.innerText = subject;
-        section.appendChild(subjectTitle);
-        
-        // Create grid container for chapters
-        const grid = document.createElement("div");
-        grid.classList.add("chapters-grid");
-        section.appendChild(grid);
-        
-        // Query chapters for this subject under PYQS → JEE → subjects → [subject] → chapters
-        firebase.firestore().collection("PYQS").doc("JEE")
-          .collection("subjects").doc(subject)
-          .collection("chapters").orderBy("addedAt", "desc").get()
-          .then(snapshot => {
-            if (snapshot.empty) {
-              const msg = document.createElement("p");
-              msg.innerText = "No chapters found for " + subject;
-              grid.appendChild(msg);
-            }
-            snapshot.forEach(doc => {
-              const data = doc.data();
-              const card = document.createElement("div");
-              card.classList.add("chapter-card");
-              card.innerHTML = `<h3>${data.chapterName}</h3><p>View Questions</p>`;
-              // On click, redirect to a chapter-specific page (e.g., jee_chapter.html)
-              card.addEventListener("click", function() {
-                window.location.href = `jee_chapter.html?subject=${subject}&chapterId=${doc.id}`;
-              });
-              grid.appendChild(card);
-            });
-          })
-          .catch(error => {
-            console.error("Error loading chapters for subject " + subject + ":", error);
-          });
-        
-        container.appendChild(section);
+        const card = document.createElement("div");
+        card.classList.add("card");
+        card.innerHTML = `<h3>${subject}</h3><p>Click to view Chapters</p>`;
+        card.addEventListener("click", function() {
+          // When subject is clicked, hide subjects view and load chapters
+          document.getElementById("subjectsContainer").style.display = "none";
+          document.getElementById("chaptersContainer").style.display = "block";
+          loadChapters(subject);
+        });
+        container.appendChild(card);
       });
     }
+    
+    // Load Chapters for a subject from Firestore
+    function loadChapters(subject) {
+      const grid = document.getElementById("chaptersGrid");
+      grid.innerHTML = "";
+      firebase.firestore().collection("PYQS").doc("JEE")
+        .collection("subjects").doc(subject)
+        .collection("chapters").orderBy("addedAt", "desc").get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            grid.innerHTML = `<p>No chapters found for ${subject}</p>`;
+          }
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const card = document.createElement("div");
+            card.classList.add("card");
+            card.innerHTML = `<h3>${data.chapterName}</h3><p>View Questions</p>`;
+            card.addEventListener("click", function() {
+              // Hide chapters view and load questions for this chapter
+              document.getElementById("chaptersContainer").style.display = "none";
+              document.getElementById("questionsContainer").style.display = "block";
+              loadQuestions(subject, doc.id, data.chapterName);
+            });
+            grid.appendChild(card);
+          });
+        })
+        .catch(error => {
+          console.error("Error loading chapters for subject " + subject + ":", error);
+        });
+    }
+    
+    // Load Questions for a specific chapter
+    function loadQuestions(subject, chapterId, chapterName) {
+      const grid = document.getElementById("questionsGrid");
+      grid.innerHTML = "";
+      firebase.firestore().collection("PYQS").doc("JEE")
+        .collection("subjects").doc(subject)
+        .collection("chapters").doc(chapterId)
+        .collection("questions").orderBy("addedAt", "desc").get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            grid.innerHTML = `<p>No questions found for ${chapterName}</p>`;
+          }
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const card = document.createElement("div");
+            card.classList.add("card");
+            // Display a summary or snippet of the question.
+            card.innerHTML = `<h4>Question</h4><p>${data.questionText ? data.questionText.substring(0,100) + '...' : 'No details available'}</p>`;
+            card.addEventListener("click", function() {
+              // When a question is clicked, show its details in a modal.
+              showQuestionDetail(data);
+            });
+            grid.appendChild(card);
+          });
+        })
+        .catch(error => {
+          console.error("Error loading questions for chapter " + chapterName + ":", error);
+        });
+    }
+    
+    // Show full question detail in modal – update layout as needed.
+    function showQuestionDetail(questionData) {
+      const modal = document.getElementById("questionModal");
+      const detail = document.getElementById("questionDetail");
+      // Example layout – update to match your image/format.
+      detail.innerHTML = `
+        <h3>Question Detail</h3>
+        <p>${questionData.questionText || "No question text available."}</p>
+        <p><strong>Answer:</strong> ${questionData.answerText || "Answer not provided."}</p>
+      `;
+      modal.style.display = "flex";
+    }
+    
+    // Modal close event
+    document.getElementById("modalClose").addEventListener("click", function() {
+      document.getElementById("questionModal").style.display = "none";
+    });
+    window.addEventListener("click", function(e) {
+      if (e.target === document.getElementById("questionModal")) {
+        document.getElementById("questionModal").style.display = "none";
+      }
+    });
+    
+    // Back button events
+    document.getElementById("backToSubjects").addEventListener("click", function() {
+      document.getElementById("chaptersContainer").style.display = "none";
+      document.getElementById("subjectsContainer").style.display = "flex";
+    });
+    document.getElementById("backToChapters").addEventListener("click", function() {
+      document.getElementById("questionsContainer").style.display = "none";
+      document.getElementById("chaptersContainer").style.display = "block";
+    });
     
     // Profile Dropdown Toggle
     const profile = document.querySelector(".profile");
@@ -451,5 +551,4 @@
     });
   </script>
 </body>
-  </html>
-  
+</html>
