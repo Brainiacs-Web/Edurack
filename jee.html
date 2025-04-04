@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PYQs - Edurack</title>
+  <title>JEE - Edurack</title>
   <link rel="manifest" href="manifest.json" />
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -19,7 +19,6 @@
       --text-color: #333;
       --card-shadow: rgba(0, 0, 0, 0.1);
       --hover-bg: rgba(0, 122, 223, 0.1);
-      --modal-bg: rgba(0, 0, 0, 0.6);
     }
     /* Dark Mode Variables */
     body.dark-mode {
@@ -30,7 +29,6 @@
       --text-color: #ddd;
       --card-shadow: rgba(0, 0, 0, 0.6);
       --hover-bg: rgba(77, 166, 255, 0.15);
-      --modal-bg: rgba(0, 0, 0, 0.8);
     }
     /* Global Resets & Typography */
     * {
@@ -73,9 +71,7 @@
       margin-right: 8px;
     }
     @media (max-width: 480px) {
-      .mobile-menu-toggle {
-        display: inline-block;
-      }
+      .mobile-menu-toggle { display: inline-block; }
     }
     .logo {
       font-size: 24px;
@@ -121,9 +117,7 @@
       color: var(--text-color);
       transition: color 0.3s ease;
     }
-    .dark-toggle:hover {
-      color: var(--primary-color);
-    }
+    .dark-toggle:hover { color: var(--primary-color); }
     .profile {
       display: flex;
       align-items: center;
@@ -165,7 +159,6 @@
       margin-right: 8px;
       font-size: 16px;
     }
-    /* Sidebar */
     .sidebar {
       position: fixed;
       top: 70px;
@@ -179,12 +172,8 @@
       z-index: 200;
       transition: left 0.3s ease;
     }
-    .sidebar ul {
-      list-style: none;
-    }
-    .sidebar ul li {
-      margin-bottom: 15px;
-    }
+    .sidebar ul { list-style: none; }
+    .sidebar ul li { margin-bottom: 15px; }
     .sidebar ul li a {
       color: var(--text-color);
       font-size: 1rem;
@@ -199,7 +188,6 @@
     .sidebar ul li a.active {
       background: var(--hover-bg);
     }
-    /* Main Content */
     .main-content {
       margin: 90px 20px 20px 260px;
       max-width: 1100px;
@@ -210,59 +198,110 @@
       margin-bottom: 20px;
       color: var(--text-color);
     }
-    /* Card styles for subjects, chapters & questions */
-    .card-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+    .section {
+      display: none;
     }
-    .card {
+    .section.active {
+      display: block;
+    }
+    /* Subject Selection */
+    #subjectSelection {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 30px;
+    }
+    .subject-card {
       background: var(--white);
       box-shadow: 0 2px 6px var(--card-shadow);
-      padding: 15px;
-      border-radius: 8px;
-      flex: 1;
-      min-width: 150px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 10px var(--card-shadow);
-    }
-    .back-btn {
-      margin-bottom: 20px;
-      cursor: pointer;
-      color: var(--primary-color);
-      font-weight: 600;
-    }
-    /* Modal for question details */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--modal-bg);
-      justify-content: center;
-      align-items: center;
-      z-index: 500;
-    }
-    .modal-content {
-      background: var(--white);
       padding: 20px;
       border-radius: 8px;
-      max-width: 600px;
-      width: 90%;
-      text-align: left;
-    }
-    .modal-close {
-      float: right;
+      flex: 1;
+      margin: 0 10px;
+      text-align: center;
       cursor: pointer;
-      font-size: 20px;
-      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+    .subject-card:hover { transform: translateY(-4px); }
+    .subject-card i {
+      font-size: 30px;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+    }
+    .subject-card span {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    /* Chapter Grid */
+    .chapter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .chapter-card {
+      background: var(--white);
+      box-shadow: 0 2px 6px var(--card-shadow);
+      border-radius: 8px;
+      padding: 15px 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .chapter-card:hover { transform: translateY(-4px); }
+    .chapter-icon {
+      font-size: 28px;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    .chapter-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    .chapter-questions {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    /* Question Items */
+    .question-item {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+    }
+    .question-item:last-child {
+      border-bottom: none;
+    }
+    .question-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .question-number {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+    .question-text {
+      font-weight: 400;
+      flex: 1;
+    }
+    .question-meta {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    .year-label {
+      background-color: #e6f2ff;
+      color: var(--primary-color);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      cursor: pointer;
     }
     @media (max-width: 768px) {
       .sidebar { width: 180px; }
@@ -277,14 +316,12 @@
         left: 0;
       }
       .main-content { margin: 90px 20px; }
-      .navbar { flex-direction: row; }
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav class="navbar">
-    <!-- Hamburger menu for mobile -->
     <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
       <i class="fas fa-bars"></i>
     </button>
@@ -310,7 +347,7 @@
     </div>
   </nav>
   
-  <!-- Sidebar Navigation -->
+  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <ul>
       <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
@@ -325,25 +362,40 @@
   
   <!-- Main Content -->
   <div class="main-content">
-    <h1 class="page-title">JEE PYQs</h1>
-    <!-- Containers for Subjects, Chapters and Questions -->
-    <div id="subjectsContainer" class="card-grid"></div>
-    <div id="chaptersContainer" style="display:none;">
-      <div class="back-btn" id="backToSubjects"><i class="fas fa-arrow-left"></i> Back to Subjects</div>
-      <div id="chaptersGrid" class="card-grid"></div>
+    <h1 class="page-title">JEE Preparation</h1>
+    
+    <!-- Subjects Section (visible on page load) -->
+    <div id="subjectSelection" class="section active">
+      <div class="subject-card" data-subject="Physics">
+        <i class="fas fa-atom"></i>
+        <span>Physics</span>
+      </div>
+      <div class="subject-card" data-subject="Chemistry">
+        <i class="fas fa-flask"></i>
+        <span>Chemistry</span>
+      </div>
+      <div class="subject-card" data-subject="Maths">
+        <i class="fas fa-square-root-alt"></i>
+        <span>Maths</span>
+      </div>
     </div>
-    <div id="questionsContainer" style="display:none;">
-      <div class="back-btn" id="backToChapters"><i class="fas fa-arrow-left"></i> Back to Chapters</div>
-      <div id="questionsGrid" class="card-grid"></div>
+    
+    <!-- Chapters Section -->
+    <div id="chapterList" class="section">
+      <h2 id="chapterTitle"></h2>
+      <div id="chaptersContainer" class="list-container">
+        <!-- Chapter grid is created dynamically -->
+      </div>
     </div>
-  </div>
-  
-  <!-- Modal for Question Details -->
-  <div id="questionModal" class="modal">
-    <div class="modal-content">
-      <span class="modal-close" id="modalClose">&times;</span>
-      <div id="questionDetail">
-        <!-- Question detail will be dynamically inserted here. Replace this markup with your desired layout. -->
+    
+    <!-- Questions Section -->
+    <div id="questionList" class="section">
+      <div class="back-btn" id="backToChapters">
+        <i class="fas fa-arrow-left"></i> Back to Chapters
+      </div>
+      <h2 id="questionTitle"></h2>
+      <div id="questionsContainer" class="list-container">
+        <!-- Questions will be loaded here dynamically -->
       </div>
     </div>
   </div>
@@ -353,7 +405,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script>
-    // Firebase configuration
+    // Your Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
       authDomain: "arena-b8996.firebaseapp.com",
@@ -365,143 +417,32 @@
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
+    const db = firebase.firestore();
     
-    // Check authentication state and then load the JEE subjects
+    // Auth check
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         window.location.href = "index.html";
       } else {
-        firebase.firestore().collection("users").doc(user.uid).get()
+        // Update greeting
+        db.collection("users").doc(user.uid).get()
           .then(function(doc) {
-            const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
-            document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
-            if (doc.exists && doc.data().photoURL) {
-              document.getElementById("navbarProfilePic").src = doc.data().photoURL;
+            if (doc.exists) {
+              const data = doc.data();
+              const name = data.fullName ? data.fullName : "User";
+              document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
+              if (data.photoURL) {
+                document.getElementById("navbarProfilePic").src = data.photoURL;
+              }
             }
           })
           .catch(function(error) {
             console.error("Error fetching user data:", error);
           });
-          
-        loadSubjects();
       }
     });
     
-    // Hardcoded subjects for JEE
-    const subjects = ["Physics", "Chemistry", "Maths"];
-    
-    // Load Subjects: display cards for each subject
-    function loadSubjects() {
-      const container = document.getElementById("subjectsContainer");
-      container.innerHTML = "";
-      subjects.forEach(subject => {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        card.innerHTML = `<h3>${subject}</h3><p>Click to view Chapters</p>`;
-        card.addEventListener("click", function() {
-          // When subject is clicked, hide subjects view and load chapters
-          document.getElementById("subjectsContainer").style.display = "none";
-          document.getElementById("chaptersContainer").style.display = "block";
-          loadChapters(subject);
-        });
-        container.appendChild(card);
-      });
-    }
-    
-    // Load Chapters for a subject from Firestore
-    function loadChapters(subject) {
-      const grid = document.getElementById("chaptersGrid");
-      grid.innerHTML = "";
-      firebase.firestore().collection("PYQS").doc("JEE")
-        .collection("subjects").doc(subject)
-        .collection("chapters").orderBy("addedAt", "desc").get()
-        .then(snapshot => {
-          if (snapshot.empty) {
-            grid.innerHTML = `<p>No chapters found for ${subject}</p>`;
-          }
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const card = document.createElement("div");
-            card.classList.add("card");
-            card.innerHTML = `<h3>${data.chapterName}</h3><p>View Questions</p>`;
-            card.addEventListener("click", function() {
-              // Hide chapters view and load questions for this chapter
-              document.getElementById("chaptersContainer").style.display = "none";
-              document.getElementById("questionsContainer").style.display = "block";
-              loadQuestions(subject, doc.id, data.chapterName);
-            });
-            grid.appendChild(card);
-          });
-        })
-        .catch(error => {
-          console.error("Error loading chapters for subject " + subject + ":", error);
-        });
-    }
-    
-    // Load Questions for a specific chapter
-    function loadQuestions(subject, chapterId, chapterName) {
-      const grid = document.getElementById("questionsGrid");
-      grid.innerHTML = "";
-      firebase.firestore().collection("PYQS").doc("JEE")
-        .collection("subjects").doc(subject)
-        .collection("chapters").doc(chapterId)
-        .collection("questions").orderBy("addedAt", "desc").get()
-        .then(snapshot => {
-          if (snapshot.empty) {
-            grid.innerHTML = `<p>No questions found for ${chapterName}</p>`;
-          }
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            const card = document.createElement("div");
-            card.classList.add("card");
-            // Display a summary or snippet of the question.
-            card.innerHTML = `<h4>Question</h4><p>${data.questionText ? data.questionText.substring(0,100) + '...' : 'No details available'}</p>`;
-            card.addEventListener("click", function() {
-              // When a question is clicked, show its details in a modal.
-              showQuestionDetail(data);
-            });
-            grid.appendChild(card);
-          });
-        })
-        .catch(error => {
-          console.error("Error loading questions for chapter " + chapterName + ":", error);
-        });
-    }
-    
-    // Show full question detail in modal – update layout as needed.
-    function showQuestionDetail(questionData) {
-      const modal = document.getElementById("questionModal");
-      const detail = document.getElementById("questionDetail");
-      // Example layout – update to match your image/format.
-      detail.innerHTML = `
-        <h3>Question Detail</h3>
-        <p>${questionData.questionText || "No question text available."}</p>
-        <p><strong>Answer:</strong> ${questionData.answerText || "Answer not provided."}</p>
-      `;
-      modal.style.display = "flex";
-    }
-    
-    // Modal close event
-    document.getElementById("modalClose").addEventListener("click", function() {
-      document.getElementById("questionModal").style.display = "none";
-    });
-    window.addEventListener("click", function(e) {
-      if (e.target === document.getElementById("questionModal")) {
-        document.getElementById("questionModal").style.display = "none";
-      }
-    });
-    
-    // Back button events
-    document.getElementById("backToSubjects").addEventListener("click", function() {
-      document.getElementById("chaptersContainer").style.display = "none";
-      document.getElementById("subjectsContainer").style.display = "flex";
-    });
-    document.getElementById("backToChapters").addEventListener("click", function() {
-      document.getElementById("questionsContainer").style.display = "none";
-      document.getElementById("chaptersContainer").style.display = "block";
-    });
-    
-    // Profile Dropdown Toggle
+    // Profile dropdown toggle
     const profile = document.querySelector(".profile");
     const profileDropdown = document.getElementById("profileDropdown");
     profile.addEventListener("click", function(e) {
@@ -514,7 +455,7 @@
       }
     });
     
-    // Dark Mode Toggle
+    // Dark mode toggle
     const darkToggle = document.getElementById("darkToggle");
     darkToggle.addEventListener("click", function() {
       document.body.classList.toggle("dark-mode");
@@ -523,7 +464,7 @@
         : '<i class="fas fa-moon"></i>';
     });
     
-    // Logout functionality
+    // Logout
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
       logoutBtn.addEventListener("click", function(e) {
@@ -536,7 +477,7 @@
       });
     }
     
-    // Mobile Sidebar Toggle
+    // Mobile sidebar toggle
     const mobileMenuToggle = document.getElementById("mobileMenuToggle");
     mobileMenuToggle.addEventListener("click", function(e) {
       e.stopPropagation();
@@ -549,6 +490,168 @@
         sidebar.classList.remove("active");
       }
     });
+    
+    // DOM elements
+    const subjectSelection = document.getElementById("subjectSelection");
+    const chapterList = document.getElementById("chapterList");
+    const questionList = document.getElementById("questionList");
+    const chaptersContainer = document.getElementById("chaptersContainer");
+    const questionsContainer = document.getElementById("questionsContainer");
+    const chapterTitle = document.getElementById("chapterTitle");
+    const questionTitle = document.getElementById("questionTitle");
+    const backToChaptersBtn = document.getElementById("backToChapters");
+    
+    // Remove "Back to Subjects" to keep user in selected subject
+    
+    // Helper: pick an icon for each chapter name (or fallback)
+    function getChapterIcon(chapterName) {
+      const lowerName = chapterName.toLowerCase();
+      // You can add your own custom mapping logic:
+      if (lowerName.includes("motion")) return "fa-route";
+      if (lowerName.includes("units")) return "fa-ruler-combined";
+      if (lowerName.includes("collision")) return "fa-explosion";
+      if (lowerName.includes("work") || lowerName.includes("energy")) return "fa-bolt";
+      if (lowerName.includes("gravitation")) return "fa-globe";
+      if (lowerName.includes("mechanical properties of solids")) return "fa-cubes";
+      if (lowerName.includes("fluids")) return "fa-water";
+      if (lowerName.includes("thermal")) return "fa-thermometer-half";
+      // Fallback icon
+      return "fa-book";
+    }
+    
+    // Subject selection: hide the subject section permanently and show chapters
+    document.querySelectorAll(".subject-card").forEach(card => {
+      card.addEventListener("click", function() {
+        const selectedSubject = card.getAttribute("data-subject");
+        chapterTitle.innerText = selectedSubject + " Chapters";
+        
+        // Hide subject selection
+        subjectSelection.classList.remove("active");
+        subjectSelection.style.display = "none";
+        
+        // Show chapters section
+        chapterList.classList.add("active");
+        
+        // Clear previous chapters
+        chaptersContainer.innerHTML = "";
+        
+        // Create a .chapter-grid container
+        const chapterGrid = document.createElement("div");
+        chapterGrid.classList.add("chapter-grid");
+        chaptersContainer.appendChild(chapterGrid);
+        
+        // Fetch chapters for the selected subject
+        db.collection("jee_chapters")
+          .where("subject", "==", selectedSubject)
+          .get()
+          .then(snapshot => {
+            if (snapshot.empty) {
+              chapterGrid.innerHTML = "<p>No chapters available for this subject yet.</p>";
+            } else {
+              snapshot.forEach(doc => {
+                const data = doc.data();
+                const chapterName = data.chapterName || "Untitled";
+                const chapterId = doc.id;
+                
+                // Create the chapter card
+                const cardDiv = document.createElement("div");
+                cardDiv.classList.add("chapter-card");
+                
+                // Set up icon
+                const iconClass = getChapterIcon(chapterName);
+                
+                // We'll load the question count in real-time by querying "jee_questions"
+                db.collection("jee_questions")
+                  .where("chapterId", "==", chapterId)
+                  .get()
+                  .then(qSnapshot => {
+                    const questionCount = qSnapshot.size; // Number of docs
+                    cardDiv.innerHTML = `
+                      <i class="chapter-icon fas ${iconClass}"></i>
+                      <div class="chapter-name">${chapterName}</div>
+                      <div class="chapter-questions">${questionCount} Qs</div>
+                    `;
+                  })
+                  .catch(err => {
+                    console.error("Error counting questions:", err);
+                    cardDiv.innerHTML = `
+                      <i class="chapter-icon fas ${iconClass}"></i>
+                      <div class="chapter-name">${chapterName}</div>
+                      <div class="chapter-questions">-- Qs</div>
+                    `;
+                  });
+                
+                // On click, load questions
+                cardDiv.addEventListener("click", () => {
+                  questionTitle.innerText = chapterName + " - Questions";
+                  chapterList.classList.remove("active");
+                  questionList.classList.add("active");
+                  loadQuestions(chapterId);
+                });
+                
+                chapterGrid.appendChild(cardDiv);
+              });
+            }
+          })
+          .catch(error => {
+            console.error("Error fetching chapters:", error);
+          });
+      });
+    });
+    
+    // Back to chapters
+    backToChaptersBtn.addEventListener("click", function() {
+      questionsContainer.innerHTML = ""; 
+      questionList.classList.remove("active");
+      chapterList.classList.add("active");
+    });
+    
+    // Load questions for a chapter
+    function loadQuestions(chapterId) {
+      questionsContainer.innerHTML = "";
+      db.collection("jee_questions")
+        .where("chapterId", "==", chapterId)
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            questionsContainer.innerHTML = "<p>No questions available for this chapter yet.</p>";
+          } else {
+            let index = 0;
+            snapshot.forEach(doc => {
+              index++;
+              const data = doc.data();
+              
+              // Create question item
+              const questionItem = document.createElement("div");
+              questionItem.classList.add("question-item");
+              
+              questionItem.innerHTML = `
+                <div class="question-header">
+                  <span class="question-number">${index < 10 ? '0'+index : index}</span>
+                  <span class="question-text">${data.questionTitle || "Untitled Question"}</span>
+                </div>
+                <div class="question-meta">
+                  ${
+                    data.year
+                      ? `<span class="year-label">${data.year}</span>`
+                      : ""
+                  }
+                </div>
+              `;
+              
+              // If you want the entire question to be clickable
+              questionItem.addEventListener("click", () => {
+                window.location.href = `Ques.html?questionId=${doc.id}`;
+              });
+              
+              questionsContainer.appendChild(questionItem);
+            });
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching questions:", error);
+        });
+    }
   </script>
 </body>
 </html>
