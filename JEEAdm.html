@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JEE Admin - Edurack</title>
+  <link rel="manifest" href="manifest.json" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Google Font: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Base Variables for Light Mode */
+    :root {
+      --primary-color: #007adf;
+      --secondary-color: #0056b3;
+      --light-bg: #f4f7fb;
+      --white: #fff;
+      --text-color: #333;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+      --hover-bg: rgba(0, 122, 223, 0.1);
+    }
+    /* Dark Mode Variables */
+    body.dark-mode {
+      --primary-color: #4da6ff;
+      --secondary-color: #1a75ff;
+      --light-bg: #1e1e1e;
+      --white: #2c2c2c;
+      --text-color: #ddd;
+      --card-shadow: rgba(0, 0, 0, 0.6);
+      --hover-bg: rgba(77, 166, 255, 0.15);
+    }
+    /* Global Resets & Typography */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: var(--light-bg);
+      color: var(--text-color);
+      line-height: 1.6;
+      transition: background 0.3s ease, color 0.3s ease;
+      padding: 20px;
+    }
+    a { text-decoration: none; color: var(--primary-color); }
+    
+    /* Main Content Area */
+    .main-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab {
+      cursor: pointer;
+      padding: 10px 20px;
+      border-radius: 4px;
+      background: var(--white);
+      box-shadow: 0 2px 6px var(--card-shadow);
+      transition: background 0.3s ease;
+    }
+    .tab.active {
+      background: var(--hover-bg);
+      font-weight: 600;
+    }
+    
+    /* Form styling */
+    form {
+      background: var(--white);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px var(--card-shadow);
+      margin-bottom: 20px;
+    }
+    form input, form select, form textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    form label { font-weight: 600; }
+    form button {
+      background: var(--primary-color);
+      color: var(--white);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    form button:hover { background: var(--secondary-color); }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <h1 class="page-title">JEE Administration</h1>
+    
+    <!-- Tabs for switching between forms -->
+    <div class="tabs">
+      <div class="tab active" id="tabChapter">Add Chapter</div>
+      <div class="tab" id="tabQuestion">Add Question</div>
+    </div>
+    
+    <!-- Add Chapter Form -->
+    <section id="addChapterSection">
+      <form id="chapterForm">
+        <h2>Add New Chapter</h2>
+        <label for="chapterSubject">Subject</label>
+        <select id="chapterSubject" required>
+          <option value="">Select Subject</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Maths">Maths</option>
+        </select>
+        
+        <label for="chapterName">Chapter Name</label>
+        <input type="text" id="chapterName" placeholder="Enter chapter name" required>
+        
+        <button type="submit">Add Chapter</button>
+      </form>
+    </section>
+    
+    <!-- Add Question Form -->
+    <section id="addQuestionSection" style="display:none;">
+      <form id="questionForm">
+        <h2>Add New Question</h2>
+        <!-- Subject Selection -->
+        <label for="questionSubject">Subject</label>
+        <select id="questionSubject" required>
+          <option value="">Select Subject</option>
+          <option value="Physics">Physics</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Maths">Maths</option>
+        </select>
+        
+        <!-- Dynamic Chapter Dropdown -->
+        <label for="chapterSelect">Select Chapter</label>
+        <select id="chapterSelect" required>
+          <option value="">Select Chapter</option>
+          <!-- Options will be loaded based on subject -->
+        </select>
+        
+        <!-- Question title / description -->
+        <label for="questionTitleInput">Question Title</label>
+        <input type="text" id="questionTitleInput" placeholder="Enter question title" required>
+        
+        <!-- Question Image URL -->
+        <label for="questionImage">Question Image URL</label>
+        <input type="url" id="questionImage" placeholder="Enter image URL (if any)">
+        
+        <!-- Options -->
+        <label>Options (Enter four options separately)</label>
+        <input type="text" id="option1" placeholder="Option 1 (e.g., A-(3), B-(1), C-(2), D-(4))" required>
+        <input type="text" id="option2" placeholder="Option 2" required>
+        <input type="text" id="option3" placeholder="Option 3" required>
+        <input type="text" id="option4" placeholder="Option 4" required>
+        
+        <!-- Correct Answer -->
+        <label for="correctAnswer">Correct Answer (A/B/C/D)</label>
+        <select id="correctAnswer" required>
+          <option value="">Select Correct Answer</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+        </select>
+        
+        <!-- Solution -->
+        <label for="solution">Solution</label>
+        <textarea id="solution" rows="4" placeholder="Enter explanation/solution" required></textarea>
+        
+        <!-- Solution Image URL -->
+        <label for="solutionImage">Solution Image URL</label>
+        <input type="url" id="solutionImage" placeholder="Enter image URL (if any)">
+        
+        <!-- Which Year Question -->
+        <label for="questionYear">Which Year Question?</label>
+        <input type="text" id="questionYear" placeholder="e.g., 2022" required>
+        
+        <button type="submit">Add Question</button>
+      </form>
+    </section>
+  </div>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.firebasestorage.app",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    
+    // Simple auth check (redirect if not logged in)
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (!user) {
+        window.location.href = "index.html";
+      }
+    });
+    
+    // Tab switching
+    const tabChapter = document.getElementById("tabChapter");
+    const tabQuestion = document.getElementById("tabQuestion");
+    const addChapterSection = document.getElementById("addChapterSection");
+    const addQuestionSection = document.getElementById("addQuestionSection");
+    
+    tabChapter.addEventListener("click", function() {
+      tabChapter.classList.add("active");
+      tabQuestion.classList.remove("active");
+      addChapterSection.style.display = "block";
+      addQuestionSection.style.display = "none";
+    });
+    
+    tabQuestion.addEventListener("click", function() {
+      tabQuestion.classList.add("active");
+      tabChapter.classList.remove("active");
+      addChapterSection.style.display = "none";
+      addQuestionSection.style.display = "block";
+    });
+    
+    // Add Chapter Form Submission
+    document.getElementById("chapterForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const subject = document.getElementById("chapterSubject").value;
+      const chapterName = document.getElementById("chapterName").value;
+      if (!subject || !chapterName) return;
+      
+      db.collection("jee_chapters").add({
+        subject: subject,
+        chapterName: chapterName,
+        addedAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        alert("Chapter added successfully!");
+        document.getElementById("chapterForm").reset();
+      })
+      .catch(error => {
+        console.error("Error adding chapter:", error);
+      });
+    });
+    
+    // When subject is selected in the question form, load chapters dynamically.
+    document.getElementById("questionSubject").addEventListener("change", function() {
+      const subject = this.value;
+      const chapterSelect = document.getElementById("chapterSelect");
+      chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+      
+      if (!subject) return;
+      
+      db.collection("jee_chapters")
+        .where("subject", "==", subject)
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            alert("No chapters available for this subject.");
+          } else {
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              const option = document.createElement("option");
+              option.value = doc.id; // Use chapter document ID
+              option.textContent = data.chapterName;
+              chapterSelect.appendChild(option);
+            });
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching chapters:", error);
+        });
+    });
+    
+    // Add Question Form Submission
+    document.getElementById("questionForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const subject = document.getElementById("questionSubject").value;
+      const chapterId = document.getElementById("chapterSelect").value;
+      const questionTitle = document.getElementById("questionTitleInput").value;
+      const questionImage = document.getElementById("questionImage").value;
+      const option1 = document.getElementById("option1").value;
+      const option2 = document.getElementById("option2").value;
+      const option3 = document.getElementById("option3").value;
+      const option4 = document.getElementById("option4").value;
+      const correctAnswer = document.getElementById("correctAnswer").value;
+      const solution = document.getElementById("solution").value;
+      const solutionImage = document.getElementById("solutionImage").value;
+      const questionYear = document.getElementById("questionYear").value;
+      
+      if (!subject || !chapterId || !questionTitle || !option1 || !option2 || !option3 || !option4 || !correctAnswer || !solution || !questionYear) {
+        alert("Please fill in all required fields.");
+        return;
+      }
+      
+      const questionData = {
+        subject: subject,
+        chapterId: chapterId,
+        questionTitle: questionTitle,
+        question: questionImage,
+        questionImage: questionImage,
+        options: [option1, option2, option3, option4],
+        correctAnswer: correctAnswer,
+        solution: solution,
+        solutionImage: solutionImage,
+        year: questionYear,
+        addedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      
+      db.collection("jee_questions").add(questionData)
+        .then(() => {
+          alert("Question added successfully!");
+          document.getElementById("questionForm").reset();
+        })
+        .catch(error => {
+          console.error("Error adding question:", error);
+        });
+    });
+  </script>
+</body>
+</html>
