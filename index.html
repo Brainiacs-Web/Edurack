@@ -10,8 +10,9 @@
   <link rel="icon" href="https://i.postimg.cc/k4VZLxVN/cropped-circle-image.png" type="image/png" />
 
   <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
   <!-- AOS CSS (Animate On Scroll) -->
@@ -21,47 +22,114 @@
     /*-----------------------------------------
       Base Styles
     -----------------------------------------*/
+    :root {
+      --primary: #0070f3;
+      --primary-dark: #0050d0;
+      --primary-light: #3694ff;
+      --secondary: #00c2ff;
+      --accent: #ff9500;
+      --text-dark: #111827;
+      --text-medium: #4b5563;
+      --text-light: #6b7280;
+      --bg-light: #f9fafb;
+      --bg-white: #ffffff;
+      --bg-card: #ffffff;
+      --border-light: #e5e7eb;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --transition: all 0.3s ease;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
     body {
-      background: linear-gradient(to bottom, #e0f2ff, #f7faff);
-      color: #333;
+      background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+      color: var(--text-dark);
       overflow-x: hidden;
-      line-height: 1.5;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      line-height: 1.3;
     }
 
     a {
       text-decoration: none;
       color: inherit;
+      transition: var(--transition);
     }
 
     button {
       cursor: pointer;
       border: none;
       background: none;
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    section {
+      position: relative;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 60px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-medium);
+      margin-bottom: 2.5rem;
     }
 
     /*-----------------------------------------
-      Navbar (Logo size 64×64)
+      Navbar
     -----------------------------------------*/
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 60px;
-      background: rgba(255, 255, 255, 0.9);
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-sm);
       position: fixed;
       width: 100%;
       top: 0;
       z-index: 100;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
+      transition: var(--transition);
       animation: slideDown 0.6s ease-in-out;
     }
 
@@ -70,7 +138,6 @@
         transform: translateY(-100%);
         opacity: 0;
       }
-
       to {
         transform: translateY(0);
         opacity: 1;
@@ -78,57 +145,56 @@
     }
 
     .navbar.scrolled {
-      background: rgba(255, 255, 255, 1);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: var(--shadow-md);
     }
 
     .logo {
-      font-size: 26px;
+      font-size: 1.5rem;
       font-weight: 700;
-      color: #007adf;
+      color: var(--primary);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.5rem;
     }
 
     .logo img {
-      width: 64px;   /* increased from 50px */
-      height: 64px;  /* increased from 50px */
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      vertical-align: middle;
-      margin-right: 8px;
+      object-fit: cover;
     }
 
     .nav-links {
       list-style: none;
       display: flex;
-      gap: 20px;
+      gap: 1.5rem;
     }
 
     .nav-links li {
-      margin: 0 8px;
+      position: relative;
     }
 
     .nav-links a {
-      font-size: 16px;
+      font-size: 0.95rem;
       font-weight: 500;
+      color: var(--text-medium);
+      padding: 0.5rem 0;
       position: relative;
-      transition: color 0.3s ease;
     }
 
     .nav-links a:hover {
-      color: #007adf;
+      color: var(--primary);
     }
 
     .nav-links a::after {
       content: '';
       width: 0;
       height: 2px;
-      background: #007adf;
+      background: var(--primary);
       position: absolute;
-      left: 50%;
-      bottom: -4px;
-      transform: translateX(-50%);
+      left: 0;
+      bottom: 0;
       transition: width 0.3s ease;
     }
 
@@ -139,54 +205,30 @@
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 1rem;
     }
 
     .get-started {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: #fff;
-      padding: 10px 22px;
-      font-size: 16px;
-      border-radius: 6px;
-      font-weight: 600;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      background: var(--primary);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      transition: var(--transition);
+      box-shadow: 0 2px 10px rgba(0, 112, 243, 0.2);
     }
 
     .get-started:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-      transform: scale(1.05);
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
     }
 
     .hamburger {
       display: none;
-      font-size: 24px;
-      color: #333;
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        padding: 10px 20px;
-      }
-
-      .nav-links {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        background: rgba(255, 255, 255, 0.98);
-        padding: 10px 0;
-      }
-
-      .nav-links.active {
-        display: flex;
-      }
-
-      .hamburger {
-        display: block;
-      }
+      font-size: 1.5rem;
+      color: var(--text-dark);
     }
 
     /*-----------------------------------------
@@ -194,10 +236,47 @@
     -----------------------------------------*/
     .hero {
       text-align: center;
-      padding: 160px 20px 60px;
-      max-width: 900px;
-      margin: 0 auto 20px;
+      padding: 10rem 1.5rem 5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(0, 112, 243, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+      z-index: -1;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
       animation: fadeInUp 1s ease-in-out;
+    }
+
+    .hero span {
+      color: var(--primary);
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    .hero p {
+      margin: 1.5rem 0;
+      font-size: clamp(1.1rem, 2vw, 1.25rem);
+      color: var(--text-medium);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeInUp 1s ease-in-out 0.2s backwards;
     }
 
     @keyframes fadeInUp {
@@ -205,59 +284,60 @@
         transform: translateY(20px);
         opacity: 0;
       }
-
       to {
         transform: translateY(0);
         opacity: 1;
       }
     }
 
-    .hero h1 {
-      font-size: 3.5em;
-      font-weight: 700;
-      color: #1c1c1c;
-      line-height: 1.3;
-    }
-
-    .hero span {
-      color: #009dff;
-      display: block;
-      margin-top: 8px;
-    }
-
-    .hero p {
-      margin: 15px 0;
-      font-size: 20px;
-      color: #555;
-    }
-
     .btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
+      background: var(--primary);
       color: white;
-      padding: 12px 30px;
-      font-size: 1.1em;
-      border-radius: 8px;
-      margin-top: 20px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      padding: 0.8rem 1.8rem;
+      font-size: 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 500;
+      margin-top: 1.5rem;
+      transition: var(--transition);
+      box-shadow: 0 4px 14px rgba(0, 112, 243, 0.25);
       display: inline-block;
+      animation: fadeInUp 1s ease-in-out 0.4s backwards;
     }
 
     .btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-      transform: scale(1.05);
+      background: var(--primary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0, 112, 243, 0.35);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-light);
+      color: var(--primary-dark);
+      border-color: var(--primary-dark);
     }
 
     /*-----------------------------------------
-      Sections (Free, Arena, Progress, About, Reviews)
+      Sections (Features, Arena, Progress, About, Reviews)
     -----------------------------------------*/
     .section {
-      padding: 80px 8%;
+      padding: 5rem 1.5rem;
       text-align: center;
+      position: relative;
     }
 
     .section:not(:last-child) {
-      margin-bottom: 50px;
+      margin-bottom: 2rem;
     }
 
     .features,
@@ -265,193 +345,296 @@
     .reviews {
       display: flex;
       justify-content: center;
-      gap: 25px;
+      gap: 1.5rem;
       flex-wrap: wrap;
-      margin-top: 40px;
+      margin-top: 3rem;
     }
 
     .feature-box,
     .about-box,
     .review-box,
     .progress-box {
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 300px;
+      background: var(--bg-card);
+      padding: 2rem;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      width: 320px;
       max-width: 100%;
       text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: var(--transition);
       position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+
+    .feature-box::before,
+    .about-box::before,
+    .review-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .feature-box:hover::before,
+    .about-box:hover::before,
+    .review-box:hover::before {
+      transform: scaleX(1);
     }
 
     .feature-box:hover,
     .about-box:hover,
     .review-box:hover {
       transform: translateY(-8px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: var(--shadow-lg);
     }
 
     .feature-box i,
     .about-box i,
     .review-box i {
-      font-size: 2.5em;
-      color: #007adf;
-      margin-bottom: 15px;
-      transition: color 0.3s ease, transform 0.3s ease;
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1.25rem;
+      transition: var(--transition);
+      display: inline-block;
     }
 
     .feature-box:hover i,
     .about-box:hover i,
     .review-box:hover i {
-      color: #00aaff;
-      transform: scale(1.1);
+      color: var(--primary-light);
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .feature-box h3,
+    .about-box h3,
+    .review-box h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.25rem;
+      color: var(--text-dark);
+    }
+
+    .feature-box p,
+    .about-box p,
+    .review-box p {
+      color: var(--text-medium);
+      font-size: 0.95rem;
+      line-height: 1.6;
     }
 
     /* Arena Section */
     #arena {
-      background: #e0f2ff;
+      background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #arena::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230070f3' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      opacity: 0.5;
+      z-index: -1;
     }
 
     /* Progress Section */
     #progress {
-      background: white;
-    }
-
-    #progress h2 {
-      font-size: 2.2em;
-      margin-bottom: 15px;
+      background: var(--bg-white);
     }
 
     .progress-container {
       display: flex;
       justify-content: center;
-      gap: 25px;
+      gap: 1.5rem;
       flex-wrap: wrap;
-      margin-top: 40px;
+      margin-top: 3rem;
+    }
+
+    .progress-box {
+      padding: 2rem;
     }
 
     .progress-box h3 {
-      margin-bottom: 10px;
+      margin-bottom: 1.25rem;
       font-weight: 600;
+      font-size: 1.25rem;
     }
 
     .progress-bar {
-      background: #ddd;
-      height: 12px;
-      border-radius: 6px;
+      background: #e9ecef;
+      height: 10px;
+      border-radius: 5px;
       overflow: hidden;
-      margin: 15px 0;
+      margin: 1.25rem 0;
       position: relative;
     }
 
     .progress-fill {
       width: 0;
       height: 100%;
-      background: linear-gradient(135deg, #009dff, #006edc);
-      transition: width 1.2s ease-in-out;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 5px;
+      transition: width 1.5s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
     .progress-text {
-      font-weight: 500;
-      color: #555;
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 1.1rem;
     }
 
     /* Reviews Section */
-    #reviews h2 {
-      font-size: 2.2em;
-      margin-bottom: 15px;
+    #reviews {
+      background: linear-gradient(to bottom, #ffffff, #f0f7ff);
     }
 
     .review-box {
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 280px;
-      max-width: 100%;
       text-align: left;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-    }
-
-    .review-box:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      padding: 2rem;
     }
 
     .review-box .stars {
       color: #ffbb00;
-      margin-bottom: 8px;
+      margin-bottom: 1rem;
+      font-size: 1rem;
     }
 
     .review-box h3 {
-      font-size: 1.1em;
-      margin-bottom: 6px;
-      color: #1c1c1c;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-dark);
     }
 
     .review-box p {
-      font-size: 14px;
-      color: #555;
-      line-height: 1.4;
+      font-size: 0.95rem;
+      color: var(--text-medium);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .review-box::after {
+      content: '\201D';
+      position: absolute;
+      bottom: 1rem;
+      right: 1.5rem;
+      font-size: 4rem;
+      font-family: serif;
+      color: rgba(0, 112, 243, 0.1);
+      line-height: 0;
     }
 
     /*-----------------------------------------
       Footer
     -----------------------------------------*/
     footer {
-      background-color: #000;
-      color: #fff;
-      padding: 40px 20px;
+      background-color: #111827;
+      color: #f9fafb;
+      padding: 4rem 2rem 2rem;
+      position: relative;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+
+    .footer-container {
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
-      border-top: 3px solid #00aaff;
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 2rem;
     }
 
-    footer>div {
-      margin: 15px;
+    .footer-section {
       flex: 1;
       min-width: 200px;
     }
 
     footer h2 {
-      font-size: 1.5em;
-      font-weight: bold;
-      color: #00aaff;
-      margin-bottom: 10px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-light);
+      margin-bottom: 1.25rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    footer h2::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 30px;
+      height: 2px;
+      background: var(--primary-light);
     }
 
     footer p,
     footer a {
-      font-size: 0.9em;
-      line-height: 1.6;
-      color: #fff;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: #d1d5db;
+      margin-bottom: 0.5rem;
+      display: block;
     }
 
     footer a:hover {
-      color: #ffbb00;
+      color: var(--primary-light);
+      transform: translateX(3px);
     }
 
     .social-icons {
       display: flex;
-      gap: 15px;
-      margin-top: 10px;
+      gap: 1rem;
+      margin-top: 1.25rem;
     }
 
     .social-icons a {
-      font-size: 20px;
-      color: #00aaff;
-      transition: color 0.3s ease;
+      font-size: 1.25rem;
+      color: #d1d5db;
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .social-icons a:hover {
-      color: #ffbb00;
+      color: white;
+      background: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
     }
 
     /*-----------------------------------------
-      LOGIN/REGISTER MODAL (Contrast & Spacing Improved)
+      LOGIN/REGISTER MODAL
     -----------------------------------------*/
     .modal-container {
       display: none;
@@ -460,32 +643,31 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(5px);
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
 
     .modal {
-      background: rgba(255, 255, 255, 0.97);
-      backdrop-filter: blur(6px);
+      background: var(--bg-white);
       width: 90%;
-      max-width: 520px;
-      padding: 64px 50px;    /* increased top padding from 48px to 64px */
-      border-radius: 16px;
+      max-width: 500px;
+      padding: 3rem 2.5rem;
+      border-radius: var(--radius-lg);
       position: relative;
-      max-height: 90%;
+      max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-lg);
       animation: fadeInScale 0.4s ease-in-out;
     }
 
     @keyframes fadeInScale {
       from {
-        transform: scale(0.8);
+        transform: scale(0.9);
         opacity: 0;
       }
-
       to {
         transform: scale(1);
         opacity: 1;
@@ -494,42 +676,56 @@
 
     .close-btn {
       position: absolute;
-      right: 20px;
-      top: 20px;
+      right: 1.5rem;
+      top: 1.5rem;
       background: none;
-      font-size: 24px;
+      font-size: 1.5rem;
       cursor: pointer;
-      color: #333;
+      color: var(--text-medium);
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
 
-    /* Floating Labels + High-Contrast Inputs */
+    .close-btn:hover {
+      color: var(--text-dark);
+      background: rgba(0, 0, 0, 0.05);
+    }
+
     .modal h2 {
-      margin-bottom: 28px;
+      margin-bottom: 2rem;
       text-align: center;
-      color: #007adf;
-      font-size: 1.6em;
+      color: var(--primary);
+      font-size: 1.5rem;
       position: relative;
     }
 
     .modal h2::before {
-      content: "\f007";           /* FontAwesome “user” icon */
+      content: "\f007";
       font-family: "Font Awesome 5 Free";
       font-weight: 900;
       position: absolute;
       left: 50%;
-      top: -50px;                 /* moved higher so it never overlaps content */
+      top: -3.5rem;
       transform: translateX(-50%);
-      background: #ffffff;        /* solid white circle behind */
-      color: #009dff;             /* bright blue user icon */
-      padding: 14px;              /* slightly larger circle */
+      background: var(--primary);
+      color: white;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      font-size: 1.3em;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      z-index: 10;                /* ensure it sits above any blur */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 112, 243, 0.2);
     }
 
     .form-group {
-      margin-bottom: 28px;
+      margin-bottom: 1.5rem;
       position: relative;
     }
 
@@ -537,212 +733,209 @@
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 18px 14px 18px 48px;
-      border: 1px solid #ccc;
-      border-radius: 12px;
-      font-size: 14px;
-      background: rgba(255, 255, 255, 0.98);
-      color: #333;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-      transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      background: var(--bg-white);
+      color: var(--text-dark);
+      transition: var(--transition);
     }
 
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
-      background: #fff;
-      border-color: #009dff;
-      box-shadow: 0 0 0 3px rgba(0, 157, 255, 0.2);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.15);
       outline: none;
     }
 
     .form-group label {
       position: absolute;
-      left: 48px;
+      left: 2.5rem;
       top: 50%;
       transform: translateY(-50%);
       pointer-events: none;
-      font-size: 14px;
-      color: #666;
-      transition: transform 0.2s ease, font-size 0.2s ease, background 0.2s ease;
-      background: #fff;
-      padding: 0 4px;
+      font-size: 0.95rem;
+      color: var(--text-light);
+      transition: var(--transition);
+      background: var(--bg-white);
+      padding: 0 0.25rem;
     }
 
-    /* Move label up when input is focused OR has content */
     .form-group input:focus + label,
     .form-group input:not(:placeholder-shown) + label,
     .form-group textarea:focus + label,
     .form-group textarea:not(:placeholder-shown) + label,
     .form-group select:focus + label,
     .form-group select:not([value=""]) + label {
-      transform: translateY(-140%) scale(0.85);
-      font-size: 12px;
-      color: #007adf;
-      background: #fff;
+      transform: translateY(-170%) scale(0.85);
+      font-size: 0.85rem;
+      color: var(--primary);
+      background: var(--bg-white);
     }
 
-    /* Icons inside inputs (position adjusted) */
     .form-group i {
       position: absolute;
-      left: 16px;
+      left: 0.75rem;
       top: 50%;
       transform: translateY(-50%);
-      color: #888;
-      font-size: 1em;
+      color: var(--text-light);
+      font-size: 1rem;
+      transition: var(--transition);
     }
 
-    /* Show/Hide Password Toggle (position adjusted) */
+    .form-group input:focus ~ i,
+    .form-group select:focus ~ i,
+    .form-group textarea:focus ~ i {
+      color: var(--primary);
+    }
+
     .toggle-password {
       position: absolute;
-      right: 16px;
+      right: 0.75rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 1.2em;
-      color: #888;
+      font-size: 1rem;
+      color: var(--text-light);
       cursor: pointer;
+      transition: var(--transition);
     }
 
-    /* Validation Feedback */
+    .toggle-password:hover {
+      color: var(--text-dark);
+    }
+
     .form-group.invalid input,
     .form-group.invalid select {
-      border-color: #e74c3c;
+      border-color: #ef4444;
     }
 
     .form-group.invalid label {
-      color: #e74c3c;
+      color: #ef4444;
     }
 
     .form-group .helper-text {
-      font-size: 12px;
-      color: #e74c3c;
-      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #ef4444;
+      margin-top: 0.5rem;
       display: none;
     }
 
     .form-group.invalid .helper-text {
       display: block;
+      animation: fadeIn 0.3s ease;
     }
 
-    /* Primary & Google Buttons */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
     .modal .submit-btn,
     .modal .google-btn {
-      padding: 14px 0;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
+      padding: 0.75rem 0;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 500;
       width: 100%;
-      margin-top: 14px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      margin-top: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 0.5rem;
     }
 
     .modal .submit-btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: #fff;
+      background: var(--primary);
+      color: white;
     }
 
     .modal .submit-btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-      transform: scale(1.03);
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 112, 243, 0.25);
     }
 
     .google-btn {
-      background: #ffffff;
-      color: #555;
-      border: 1px solid #ccc;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      background: white;
+      color: var(--text-dark);
+      border: 1px solid var(--border-light);
     }
 
     .google-btn i {
       color: #db4437;
-      font-size: 1.2em;
-    }
-
-    .google-btn span {
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 1.1rem;
     }
 
     .google-btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-      color: #fff;
-      transform: scale(1.02);
+      background: #f9fafb;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
 
-    /* Remember Me Checkbox */
     .remember-me {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-      font-size: 14px;
-      color: #555;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-medium);
     }
 
     .remember-me input {
       width: 16px;
       height: 16px;
-      accent-color: #009dff;
+      accent-color: var(--primary);
     }
 
-    /* Toggle between forms text */
     .toggle-form {
       text-align: center;
-      margin-top: 18px;
+      margin-top: 1.5rem;
+      color: var(--text-medium);
+      font-size: 0.9rem;
     }
 
     .toggle-form button {
       background: none;
       border: none;
-      color: #007adf;
+      color: var(--primary);
       cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-left: 0.25rem;
+    }
+
+    .toggle-form button:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
     }
 
     .forgot-password {
       display: block;
       text-align: right;
-      margin-top: 8px;
-      font-size: 0.9em;
-      color: #007adf;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--primary);
       background: none;
       border: none;
       cursor: pointer;
     }
 
-    @media (max-width: 768px) {
-      .section {
-        padding: 60px 5%;
-      }
-
-      .feature-box,
-      .about-box,
-      .review-box,
-      .progress-box {
-        width: 100%;
-        max-width: 320px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero h1 {
-        font-size: 2.5em;
-      }
-
-      .hero p {
-        font-size: 16px;
-      }
+    .forgot-password:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
     }
 
     /*-----------------------------------------
-      Contact-Us Popup (Fully Visible & Centered)
+      Contact-Us Popup
     -----------------------------------------*/
     .contact-popup {
       display: none;
@@ -751,20 +944,21 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.7);   /* slightly darker for better contrast */
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(5px);
       justify-content: center;
       align-items: center;
       z-index: 1001;
     }
 
     .contact-form {
-      background: #fff;
+      background: var(--bg-white);
       width: 90%;
-      max-width: 450px;
-      padding: 30px 35px;
-      border-radius: 12px;
+      max-width: 500px;
+      padding: 3rem 2.5rem;
+      border-radius: var(--radius-lg);
       position: relative;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--shadow-lg);
       animation: slideIn 0.4s ease-in-out;
     }
 
@@ -773,7 +967,6 @@
         transform: translateY(-20px);
         opacity: 0;
       }
-
       to {
         transform: translateY(0);
         opacity: 1;
@@ -781,122 +974,86 @@
     }
 
     .contact-form h2 {
-      margin-bottom: 20px;
-      font-size: 1.4em;
-      color: #007adf;
+      margin-bottom: 2rem;
+      font-size: 1.5rem;
+      color: var(--primary);
       text-align: center;
       position: relative;
     }
 
     .contact-form h2::before {
-      content: "\f1d8";           /* FontAwesome “headset” icon */
+      content: "\f1d8";
       font-family: "Font Awesome 5 Free";
       font-weight: 900;
       position: absolute;
       left: 50%;
-      top: -38px;                 /* raised above the header */
+      top: -3.5rem;
       transform: translateX(-50%);
-      background: #007adf;        /* solid blue circle */
-      color: #ffffff;             /* white icon */
-      padding: 12px;
+      background: var(--primary);
+      color: white;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      font-size: 1.2em;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 112, 243, 0.2);
     }
 
     .contact-form .close-contact {
       position: absolute;
-      right: 15px;
-      top: 15px;
+      right: 1.5rem;
+      top: 1.5rem;
       background: none;
-      font-size: 22px;
-      color: #333;
+      font-size: 1.5rem;
       cursor: pointer;
+      color: var(--text-medium);
+      transition: var(--transition);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
 
-    .contact-form .form-group {
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .contact-form .form-group input,
-    .contact-form .form-group select,
-    .contact-form .form-group textarea {
-      width: 100%;
-      padding: 14px 12px 14px 40px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      background: #fff;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .contact-form .form-group input:focus,
-    .contact-form .form-group select:focus,
-    .contact-form .form-group textarea:focus {
-      border-color: #009dff;
-      box-shadow: 0 0 0 3px rgba(0, 157, 255, 0.2);
-      outline: none;
-    }
-
-    .contact-form .form-group label {
-      position: absolute;
-      left: 40px;
-      top: 50%;
-      transform: translateY(-50%);
-      pointer-events: none;
-      font-size: 14px;
-      color: #666;
-      background: #fff;
-      padding: 0 4px;
-    }
-
-    /* Move label up when there’s content or focus */
-    .contact-form .form-group input:focus + label,
-    .contact-form .form-group input:not(:placeholder-shown) + label,
-    .contact-form .form-group textarea:focus + label,
-    .contact-form .form-group textarea:not(:placeholder-shown) + label,
-    .contact-form .form-group select:focus + label,
-    .contact-form .form-group select:not([value=""]) + label {
-      transform: translateY(-140%) scale(0.85);
-      font-size: 12px;
-      color: #007adf;
-      background: #fff;
+    .contact-form .close-contact:hover {
+      color: var(--text-dark);
+      background: rgba(0, 0, 0, 0.05);
     }
 
     .contact-form .submit-btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: #fff;
-      padding: 12px 0;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 0;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 500;
       width: 100%;
-      margin-top: 12px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      margin-top: 1rem;
+      transition: var(--transition);
+      box-shadow: var(--shadow-md);
     }
 
     .contact-form .submit-btn:hover {
-      background: linear-gradient(135deg, #007adf, #005ab5);
-      transform: scale(1.03);
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 112, 243, 0.25);
     }
 
-    /* Fade-in “Thank You” Message */
     .thank-you {
       display: none;
       position: fixed;
       top: 20%;
       left: 50%;
       transform: translateX(-50%);
-      background: #28a745;
-      color: #fff;
-      padding: 14px 20px;
-      border-radius: 8px;
-      font-size: 1em;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      background: #10b981;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      box-shadow: var(--shadow-lg);
       z-index: 1002;
       animation: fadeOut 3s ease forwards;
     }
@@ -905,14 +1062,196 @@
       0% {
         opacity: 1;
       }
-
       80% {
         opacity: 1;
       }
-
       100% {
         opacity: 0;
-        transform: translate(-50%, -20%);
+        transform: translate(-50%, -20px);
+      }
+    }
+
+    /* Dark Mode Toggle */
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-medium);
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .theme-toggle:hover {
+      color: var(--primary);
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    /* Dark Mode Styles */
+    body.dark-mode {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --primary-light: #60a5fa;
+      --secondary: #38bdf8;
+      --accent: #f59e0b;
+      --text-dark: #f9fafb;
+      --text-medium: #d1d5db;
+      --text-light: #9ca3af;
+      --bg-light: #1f2937;
+      --bg-white: #111827;
+      --bg-card: #1f2937;
+      --border-light: #374151;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+      
+      background: linear-gradient(to bottom, #111827, #1f2937);
+    }
+
+    body.dark-mode .navbar {
+      background: rgba(31, 41, 55, 0.95);
+    }
+
+    body.dark-mode .navbar.scrolled {
+      background: rgba(31, 41, 55, 0.98);
+    }
+
+    body.dark-mode #arena {
+      background: linear-gradient(to bottom, #111827, #1f2937);
+    }
+
+    body.dark-mode #reviews {
+      background: linear-gradient(to bottom, #1f2937, #111827);
+    }
+
+    body.dark-mode .hero::before {
+      background: radial-gradient(circle at center, rgba(59, 130, 246, 0.1) 0%, rgba(17, 24, 39, 0) 70%);
+    }
+
+    body.dark-mode .modal,
+    body.dark-mode .contact-form {
+      background: var(--bg-card);
+    }
+
+    body.dark-mode .form-group label,
+    body.dark-mode .form-group input,
+    body.dark-mode .form-group select,
+    body.dark-mode .form-group textarea {
+      background: var(--bg-card);
+      color: var(--text-medium);
+    }
+
+    body.dark-mode .form-group input:focus + label,
+    body.dark-mode .form-group input:not(:placeholder-shown) + label,
+    body.dark-mode .form-group textarea:focus + label,
+    body.dark-mode .form-group textarea:not(:placeholder-shown) + label,
+    body.dark-mode .form-group select:focus + label,
+    body.dark-mode .form-group select:not([value=""]) + label {
+      background: var(--bg-card);
+    }
+
+    body.dark-mode .google-btn {
+      background: var(--bg-light);
+      color: var(--text-medium);
+      border-color: var(--border-light);
+    }
+
+    body.dark-mode .google-btn:hover {
+      background: #374151;
+    }
+
+    /*-----------------------------------------
+      Responsive Styles
+    -----------------------------------------*/
+    @media (max-width: 992px) {
+      .navbar {
+        padding: 0.75rem 1.5rem;
+      }
+      
+      .hero {
+        padding: 8rem 1.5rem 4rem;
+      }
+      
+      .section {
+        padding: 4rem 1.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 0.75rem 1rem;
+      }
+      
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--bg-white);
+        box-shadow: var(--shadow-md);
+        padding: 1rem 0;
+        z-index: 99;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      .nav-links li {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .nav-links a {
+        display: block;
+        padding: 0.75rem 0;
+      }
+      
+      .nav-links a::after {
+        display: none;
+      }
+      
+      .hamburger {
+        display: block;
+      }
+      
+      .feature-box,
+      .about-box,
+      .review-box,
+      .progress-box {
+        width: 100%;
+        max-width: 350px;
+      }
+      
+      .footer-section {
+        flex: 0 0 100%;
+        margin-bottom: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero h1 {
+        font-size: 2.25rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .section-title {
+        font-size: 1.75rem;
+      }
+      
+      .modal,
+      .contact-form {
+        padding: 2.5rem 1.5rem;
       }
     }
   </style>
@@ -933,6 +1272,9 @@
       <li><a href="#contact-section">Contact</a></li>
     </ul>
     <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
       <button class="get-started" id="navGetStarted">Get Started</button>
       <div class="hamburger"><i class="fas fa-bars"></i></div>
     </div>
@@ -942,171 +1284,188 @@
   <section class="hero" data-aos="fade-up">
     <h1>Let Your Preparation<br /><span>Go Ahead With Edurack!</span></h1>
     <p>Learn ► Practice ► Analyze ► Better Results</p>
-    <button class="get-started" id="heroGetStarted">Get Started for Free</button>
+    <button class="btn" id="heroGetStarted">Get Started for Free</button>
   </section>
 
   <!-- What You Get Section -->
   <section id="free" class="section" data-aos="fade-in">
-    <h2><i class="fas fa-gift"></i> What You Get</h2>
-    <div class="features">
-      <div class="feature-box" data-aos="flip-left" data-aos-delay="100">
-        <i class="fas fa-file-alt"></i>
-        <h3>Previous Year Question Papers</h3>
-        <p>Access previous year JEE & NEET questions for free.</p>
-      </div>
-      <div class="feature-box" data-aos="flip-left" data-aos-delay="200">
-        <i class="fas fa-tasks"></i>
-        <h3>6+ Test Series</h3>
-        <p>Full-length and topic-wise tests with real-time rankings.</p>
-      </div>
-      <div class="feature-box" data-aos="flip-left" data-aos-delay="300">
-        <i class="fas fa-question-circle"></i>
-        <h3>Daily Quiz</h3>
-        <p>Test your skills daily with fun and challenging quizzes.</p>
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-gift"></i> What You Get</h2>
+      <p class="section-subtitle">Everything you need to excel in your exams</p>
+      <div class="features">
+        <div class="feature-box" data-aos="fade-up" data-aos-delay="100">
+          <i class="fas fa-file-alt"></i>
+          <h3>Previous Year Papers</h3>
+          <p>Access previous year JEE & NEET questions for free with detailed solutions.</p>
+        </div>
+        <div class="feature-box" data-aos="fade-up" data-aos-delay="200">
+          <i class="fas fa-tasks"></i>
+          <h3>6+ Test Series</h3>
+          <p>Full-length and topic-wise tests with real-time rankings and analytics.</p>
+        </div>
+        <div class="feature-box" data-aos="fade-up" data-aos-delay="300">
+          <i class="fas fa-question-circle"></i>
+          <h3>Daily Quiz</h3>
+          <p>Test your skills daily with fun and challenging quizzes to build consistency.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Arena Section -->
   <section id="arena" class="section" data-aos="fade-up">
-    <h2><i class="fas fa-trophy"></i> Arena - Compete & Win!</h2>
-    <p>Challenge another student in a 5-question quiz. The winner gets ranked on the leaderboard!</p>
-    <button class="btn">Join Arena</button>
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-trophy"></i> Arena - Compete & Win!</h2>
+      <p class="section-subtitle">Challenge another student in a 5-question quiz. The winner gets ranked on the leaderboard!</p>
+      <button class="btn">Join Arena</button>
+    </div>
   </section>
 
   <!-- Track Your Growth Section -->
   <section id="progress" class="section" data-aos="fade-in">
-    <h2><i class="fas fa-chart-bar"></i> Track Your Growth</h2>
-    <p>Monitor your improvement with AI-powered analytics.</p>
-    <div class="progress-container">
-      <div class="progress-box" data-aos="zoom-in" data-aos-delay="100">
-        <h3>Physics</h3>
-        <div class="progress-bar" data-percentage="75">
-          <div class="progress-fill"></div>
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-chart-bar"></i> Track Your Growth</h2>
+      <p class="section-subtitle">Monitor your improvement with AI-powered analytics</p>
+      <div class="progress-container">
+        <div class="progress-box" data-aos="fade-up" data-aos-delay="100">
+          <h3>Physics</h3>
+          <div class="progress-bar" data-percentage="75">
+            <div class="progress-fill"></div>
+          </div>
+          <p><span class="progress-text">0%</span> Mastery</p>
         </div>
-        <p><span class="progress-text">0%</span> Mastery</p>
-      </div>
-      <div class="progress-box" data-aos="zoom-in" data-aos-delay="200">
-        <h3>Chemistry</h3>
-        <div class="progress-bar" data-percentage="62">
-          <div class="progress-fill"></div>
+        <div class="progress-box" data-aos="fade-up" data-aos-delay="200">
+          <h3>Chemistry</h3>
+          <div class="progress-bar" data-percentage="62">
+            <div class="progress-fill"></div>
+          </div>
+          <p><span class="progress-text">0%</span> Mastery</p>
         </div>
-        <p><span class="progress-text">0%</span> Mastery</p>
-      </div>
-      <div class="progress-box" data-aos="zoom-in" data-aos-delay="300">
-        <h3>Mathematics</h3>
-        <div class="progress-bar" data-percentage="85">
-          <div class="progress-fill"></div>
+        <div class="progress-box" data-aos="fade-up" data-aos-delay="300">
+          <h3>Mathematics</h3>
+          <div class="progress-bar" data-percentage="85">
+            <div class="progress-fill"></div>
+          </div>
+          <p><span class="progress-text">0%</span> Mastery</p>
         </div>
-        <p><span class="progress-text">0%</span> Mastery</p>
       </div>
     </div>
   </section>
 
   <!-- About Section -->
   <section id="about" class="section" data-aos="fade-up">
-    <h2><i class="fas fa-rocket"></i> About Edurack</h2>
-    <p>Your ultimate destination for JEE & NEET preparation with free resources, premium content, and competitive quizzes.</p>
-    <div class="about-content">
-      <div class="about-box" data-aos="flip-left" data-aos-delay="150">
-        <i class="fas fa-book-open"></i>
-        <h3>Comprehensive Study Materials</h3>
-        <p>Curated content from top educators to boost your exam preparation.</p>
-      </div>
-      <div class="about-box" data-aos="flip-left" data-aos-delay="250">
-        <i class="fas fa-bolt"></i>
-        <h3>Interactive Learning</h3>
-        <p>Engaging quizzes & challenges to test and enhance your knowledge.</p>
-      </div>
-      <div class="about-box" data-aos="flip-left" data-aos-delay="350">
-        <i class="fas fa-chart-line"></i>
-        <h3>Track Your Progress</h3>
-        <p>Smart analytics help you improve your weak areas effectively.</p>
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-rocket"></i> About Edurack</h2>
+      <p class="section-subtitle">Your ultimate destination for JEE & NEET preparation</p>
+      <div class="about-content">
+        <div class="about-box" data-aos="fade-up" data-aos-delay="100">
+          <i class="fas fa-book-open"></i>
+          <h3>Comprehensive Materials</h3>
+          <p>Curated content from top educators to boost your exam preparation journey.</p>
+        </div>
+        <div class="about-box" data-aos="fade-up" data-aos-delay="200">
+          <i class="fas fa-bolt"></i>
+          <h3>Interactive Learning</h3>
+          <p>Engaging quizzes & challenges to test and enhance your knowledge effectively.</p>
+        </div>
+        <div class="about-box" data-aos="fade-up" data-aos-delay="300">
+          <i class="fas fa-chart-line"></i>
+          <h3>Track Your Progress</h3>
+          <p>Smart analytics help you identify and improve your weak areas efficiently.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Reviews Section -->
-  <section id="reviews" class="section" data-aos="fade-up">
-    <h2><i class="fas fa-comments"></i> Reviews</h2>
-    <div class="reviews">
-      <div class="review-box" data-aos="fade-up" data-aos-delay="100">
-        <div class="stars">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star-half-alt"></i>
+  <section id="reviews" class="section" data-aos="fade-in">
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-comments"></i> Reviews</h2>
+      <p class="section-subtitle">What our students say about us</p>
+      <div class="reviews">
+        <div class="review-box" data-aos="fade-up" data-aos-delay="100">
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <h3>– Riya Sharma, NEET Aspirant</h3>
+          <p>"Edurack's daily quizzes and previous year question papers were exactly what I needed. The AI analytics helped me pinpoint weak areas and improve my score from 70% to 90%!"</p>
         </div>
-        <h3>– Riya Sharma, NEET Aspirant</h3>
-        <p>“Edurack’s daily quizzes and previous year question papers were exactly what I needed. The AI analytics helped me pinpoint weak areas and improve my score from 70% to 90%!”</p>
-      </div>
-      <div class="review-box" data-aos="fade-up" data-aos-delay="200">
-        <div class="stars">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
+        <div class="review-box" data-aos="fade-up" data-aos-delay="200">
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <h3>– Arjun Patel, JEE Aspirant</h3>
+          <p>"The gamified Arena feature is fantastic. Competing with friends made studying fun, and I could track my progress in real time. Highly recommend Edurack to all engineering aspirants!"</p>
         </div>
-        <h3>– Arjun Patel, JEE Aspirant</h3>
-        <p>“The gamified Arena feature is fantastic. Competing with friends made studying fun, and I could track my progress in real time. Highly recommend Edurack to all engineering aspirants!”</p>
-      </div>
-      <div class="review-box" data-aos="fade-up" data-aos-delay="300">
-        <div class="stars">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star-half-alt"></i>
+        <div class="review-box" data-aos="fade-up" data-aos-delay="300">
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <h3>– Sonal Verma, NEET Instructor</h3>
+          <p>"I love how Edurack brings together adaptive tests and AI tutoring. My students find the interface intuitive, and the analytics dashboard helps them stay motivated throughout their prep."</p>
         </div>
-        <h3>– Sonal Verma, NEET Instructor</h3>
-        <p>“I love how Edurack brings together adaptive tests and AI tutoring. My students find the interface intuitive, and the analytics dashboard helps them stay motivated throughout their prep.”</p>
       </div>
     </div>
   </section>
 
-  <!-- Contact Section (Banner + Contact Us button) -->
+  <!-- Contact Section -->
   <section id="contact-section" class="section" data-aos="fade-in">
-    <h2><i class="fas fa-headset"></i> Still need help? Have Queries</h2>
-    <p>Have questions? Get in touch & we’ll be happy to assist you!</p>
-    <button class="btn" id="openContactBtn" style="margin-top: 15px;">Contact Us</button>
+    <div class="container">
+      <h2 class="section-title"><i class="fas fa-headset"></i> Still need help?</h2>
+      <p class="section-subtitle">Have questions? Get in touch & we'll be happy to assist you!</p>
+      <button class="btn" id="openContactBtn">Contact Us</button>
+    </div>
   </section>
 
   <!-- Footer Section -->
- <footer class="footer">
-  <div>
-    <h2>About Us</h2>
-    <p>Edurack provides top-tier exam preparation resources, including past papers, test series, and competitive quizzes.</p>
-  </div>
-  <div>
-    <h2>Quick Links</h2>
-    <p><a href="index.html">Home</a></p>
-    <p><a href="courses.html">Courses</a></p>
-    <p><a href="arena.html">Arena</a></p>
-    <p><a href="Contact.html">Contact</a></p>
-    <!-- New policy links -->
-    <p><a href="terms-and-conditions.html">Terms &amp; Conditions</a></p>
-    <p><a href="privacy-policy.html">Privacy Policy</a></p>
-    <p><a href="cancellation-refund.html">Cancellation &amp; Refund</a></p>
-    <p><a href="shipping-and-delivery.html">Shipping &amp; Delivery</a></p>
-  </div>
-  <div>
-    <h2>Follow Us</h2>
-    <div class="social-icons">
-      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+  <footer>
+    <div class="footer-container">
+      <div class="footer-section">
+        <h2>About Us</h2>
+        <p>Edurack provides top-tier exam preparation resources, including past papers, test series, and competitive quizzes for JEE and NEET aspirants.</p>
+      </div>
+      <div class="footer-section">
+        <h2>Quick Links</h2>
+        <a href="#">Home</a>
+        <a href="#free">Free Content</a>
+        <a href="#arena">Arena</a>
+        <a href="#about">About Us</a>
+        <a href="#contact-section">Contact</a>
+      </div>
+      <div class="footer-section">
+        <h2>Follow Us</h2>
+        <div class="social-icons">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-section">
+        <h2>Contact Info</h2>
+        <p><i class="fas fa-envelope"></i> support@edurack.com</p>
+        <p><i class="fas fa-phone"></i> +91 9876543210</p>
+        <p><i class="fas fa-map-marker-alt"></i> New Delhi, India</p>
+      </div>
     </div>
-  </div>
-  <div style="text-align: center; width: 100%;">
-    <p>© 2025 Edurack. All rights reserved.</p>
-  </div>
-</footer>
+    <div class="footer-bottom">
+      <p>© 2025 Edurack. All rights reserved.</p>
+    </div>
+  </footer>
 
-
-  <!-- LOGIN/REGISTER MODAL (Contrast & Spacing Improved) -->
+  <!-- LOGIN/REGISTER MODAL -->
   <div class="modal-container" id="modalContainer">
     <div class="modal">
       <button class="close-btn" id="closePopup">&times;</button>
@@ -1117,41 +1476,40 @@
           <form id="registerFormElement">
             <!-- Full Name -->
             <div class="form-group" id="group-fullName">
-              <i class="fas fa-user"></i>
               <input type="text" id="fullName" placeholder=" " required />
               <label for="fullName">Full Name</label>
+              <i class="fas fa-user"></i>
               <div class="helper-text">Required</div>
             </div>
 
             <!-- Email Address -->
             <div class="form-group" id="group-regEmail">
-              <i class="fas fa-envelope"></i>
               <input type="email" id="regEmail" placeholder=" " required />
               <label for="regEmail">Email Address</label>
+              <i class="fas fa-envelope"></i>
               <div class="helper-text">Invalid email format</div>
             </div>
 
             <!-- Password -->
             <div class="form-group" id="group-regPassword">
-              <i class="fas fa-lock"></i>
               <input type="password" id="regPassword" placeholder=" " required />
               <label for="regPassword">Password (min 6 chars)</label>
+              <i class="fas fa-lock"></i>
               <i class="fas fa-eye toggle-password" toggle="#regPassword"></i>
               <div class="helper-text">Minimum 6 characters</div>
             </div>
 
             <!-- Confirm Password -->
             <div class="form-group" id="group-confirmPassword">
-              <i class="fas fa-lock"></i>
               <input type="password" id="confirmPassword" placeholder=" " required />
               <label for="confirmPassword">Confirm Password</label>
+              <i class="fas fa-lock"></i>
               <i class="fas fa-eye toggle-password" toggle="#confirmPassword"></i>
               <div class="helper-text">Passwords must match</div>
             </div>
 
             <!-- Target Exam -->
             <div class="form-group" id="group-targetExam">
-              <i class="fas fa-graduation-cap"></i>
               <select id="targetExam" required>
                 <option value="" disabled selected></option>
                 <option value="JEE">JEE</option>
@@ -1159,12 +1517,12 @@
                 <option value="Both">Both</option>
               </select>
               <label for="targetExam">Target Exam</label>
+              <i class="fas fa-graduation-cap"></i>
               <div class="helper-text">Required</div>
             </div>
 
             <!-- Class -->
             <div class="form-group" id="group-userClass">
-              <i class="fas fa-chalkboard"></i>
               <select id="userClass" required>
                 <option value="" disabled selected></option>
                 <option value="11th">11th</option>
@@ -1172,29 +1530,30 @@
                 <option value="Dropper">Dropper</option>
               </select>
               <label for="userClass">Class</label>
+              <i class="fas fa-chalkboard"></i>
               <div class="helper-text">Required</div>
             </div>
 
             <!-- State -->
             <div class="form-group" id="group-state">
-              <i class="fas fa-map-marker-alt"></i>
               <input type="text" id="state" placeholder=" " required />
               <label for="state">State</label>
+              <i class="fas fa-map-marker-alt"></i>
               <div class="helper-text">Required</div>
             </div>
 
             <!-- City -->
             <div class="form-group" id="group-city">
-              <i class="fas fa-city"></i>
               <input type="text" id="city" placeholder=" " required />
               <label for="city">City</label>
+              <i class="fas fa-city"></i>
               <div class="helper-text">Required</div>
             </div>
 
             <!-- Register Button -->
             <button type="submit" class="submit-btn" id="registerBtn">
               Register
-              <i class="fas fa-circle-notch fa-spin" id="register-loading" style="display:none; margin-left:8px; font-size:14px;"></i>
+              <i class="fas fa-circle-notch fa-spin" id="register-loading" style="display:none;"></i>
             </button>
 
             <!-- Google Sign-Up -->
@@ -1215,17 +1574,17 @@
           <form id="loginFormElement">
             <!-- Email Address -->
             <div class="form-group" id="group-loginEmail">
-              <i class="fas fa-envelope"></i>
               <input type="email" id="loginEmail" placeholder=" " required />
               <label for="loginEmail">Email Address</label>
+              <i class="fas fa-envelope"></i>
               <div class="helper-text">Invalid email format</div>
             </div>
 
             <!-- Password -->
             <div class="form-group" id="group-loginPassword">
-              <i class="fas fa-lock"></i>
               <input type="password" id="loginPassword" placeholder=" " required />
               <label for="loginPassword">Password</label>
+              <i class="fas fa-lock"></i>
               <i class="fas fa-eye toggle-password" toggle="#loginPassword"></i>
               <div class="helper-text">Required</div>
             </div>
@@ -1239,7 +1598,7 @@
             <!-- Login Button -->
             <button type="submit" class="submit-btn" id="loginBtn">
               Login
-              <i class="fas fa-circle-notch fa-spin" id="login-loading" style="display:none; margin-left:8px; font-size:14px;"></i>
+              <i class="fas fa-circle-notch fa-spin" id="login-loading" style="display:none;"></i>
             </button>
 
             <!-- Google Sign-In -->
@@ -1258,29 +1617,28 @@
     </div>
   </div>
 
-  <!-- Contact-Us Popup (Fully Visible & Centered) -->
+  <!-- Contact-Us Popup -->
   <div class="contact-popup" id="contactPopup">
     <div class="contact-form" data-aos="slide-in">
       <button class="close-contact" id="closeContact">&times;</button>
       <h2>Contact Us</h2>
       <form id="contactFormElement">
         <div class="form-group">
-          <i class="fas fa-user"></i>
           <input type="text" id="contactName" placeholder=" " required />
           <label for="contactName">Your Name</label>
+          <i class="fas fa-user"></i>
         </div>
         <div class="form-group">
-          <i class="fas fa-phone"></i>
           <input type="tel" id="contactPhone" placeholder=" " required />
           <label for="contactPhone">Your Contact</label>
+          <i class="fas fa-phone"></i>
         </div>
         <div class="form-group">
-          <i class="fas fa-envelope"></i>
           <input type="email" id="contactEmail" placeholder=" " required />
           <label for="contactEmail">Your Email</label>
+          <i class="fas fa-envelope"></i>
         </div>
         <div class="form-group">
-          <i class="fas fa-tags"></i>
           <select id="contactType" required>
             <option value="" disabled selected></option>
             <option value="Request">Request</option>
@@ -1288,21 +1646,22 @@
             <option value="Query">Query</option>
           </select>
           <label for="contactType">Option</label>
+          <i class="fas fa-tags"></i>
         </div>
         <div class="form-group">
-          <i class="fas fa-comment-dots"></i>
-          <textarea id="contactMessage" placeholder=" " required></textarea>
+          <textarea id="contactMessage" placeholder=" " rows="4" required></textarea>
           <label for="contactMessage">Message</label>
+          <i class="fas fa-comment-dots"></i>
         </div>
         <button type="submit" class="submit-btn" id="contact-submit-btn">
           Submit
-          <i class="fas fa-circle-notch fa-spin" id="contact-loading" style="display:none; margin-left:8px; font-size:14px;"></i>
+          <i class="fas fa-circle-notch fa-spin" id="contact-loading" style="display:none;"></i>
         </button>
       </form>
     </div>
   </div>
 
-  <!-- “Thank You” Overlay -->
+  <!-- "Thank You" Overlay -->
   <div class="thank-you" id="thankYouMessage">
     Thanks for contacting us! Our team will connect within 24hrs.
   </div>
@@ -1332,20 +1691,98 @@
       const auth = firebase.auth();
       const firestore = firebase.firestore();
 
-      // Initialize AOS
-      AOS.init({ duration: 800, once: true, offset: 120 });
+      // Initialize AOS with improved settings
+      AOS.init({ 
+        duration: 800, 
+        once: true, 
+        offset: 100,
+        easing: 'ease-out-cubic',
+        delay: 100
+      });
+
+      // --------- Dark Mode Toggle ----------
+      const themeToggle = document.getElementById('themeToggle');
+      const themeIcon = themeToggle.querySelector('i');
+      
+      // Check for saved theme preference or respect OS preference
+      const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+      const currentTheme = localStorage.getItem('theme');
+      
+      if (currentTheme === 'dark' || (!currentTheme && prefersDarkScheme.matches)) {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      }
+      
+      themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        
+        if (document.body.classList.contains('dark-mode')) {
+          localStorage.setItem('theme', 'dark');
+          themeIcon.classList.remove('fa-moon');
+          themeIcon.classList.add('fa-sun');
+        } else {
+          localStorage.setItem('theme', 'light');
+          themeIcon.classList.remove('fa-sun');
+          themeIcon.classList.add('fa-moon');
+        }
+      });
 
       // --------- Navbar Scroll Behavior ----------
       const navbar = document.querySelector('.navbar');
+      let lastScrollTop = 0;
+      
       window.addEventListener('scroll', () => {
-        navbar.classList.toggle('scrolled', window.scrollY > 50);
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        if (scrollTop > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        
+        lastScrollTop = scrollTop;
+      });
+
+      // --------- Smooth Scrolling for Navigation Links ----------
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
       });
 
       // --------- Hamburger Toggle for Mobile Menu ----------
       const hamburger = document.querySelector('.hamburger');
       const navLinks = document.querySelector('.nav-links');
+      
       hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('active');
+        const icon = hamburger.querySelector('i');
+        
+        if (navLinks.classList.contains('active')) {
+          icon.classList.remove('fa-bars');
+          icon.classList.add('fa-times');
+        } else {
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        }
+      });
+
+      // Close mobile menu when clicking on a link
+      navLinks.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          navLinks.classList.remove('active');
+          const icon = hamburger.querySelector('i');
+          icon.classList.remove('fa-times');
+          icon.classList.add('fa-bars');
+        }
       });
 
       // --------- Login/Register Modal Logic ----------
@@ -1364,6 +1801,13 @@
 
       // Close login/register modal
       closePopup.addEventListener('click', () => modalContainer.style.display = 'none');
+      
+      // Close modal when clicking outside
+      modalContainer.addEventListener('click', (e) => {
+        if (e.target === modalContainer) {
+          modalContainer.style.display = 'none';
+        }
+      });
 
       // Toggle between login & register
       showLoginBtn.addEventListener('click', () => {
@@ -1371,6 +1815,7 @@
         loginFormDiv.style.display = 'block';
         resetValidation();
       });
+      
       showRegisterBtn.addEventListener('click', () => {
         loginFormDiv.style.display = 'none';
         registerFormDiv.style.display = 'block';
@@ -1386,9 +1831,11 @@
       function setInvalid(fieldGroupId) {
         document.getElementById(fieldGroupId).classList.add('invalid');
       }
+      
       function setValid(fieldGroupId) {
         document.getElementById(fieldGroupId).classList.remove('invalid');
       }
+      
       function resetValidation() {
         document.querySelectorAll('.form-group').forEach(g => g.classList.remove('invalid'));
       }
@@ -1605,7 +2052,11 @@
 
       // --------- IntersectionObserver for Progress Bars ----------
       const progressBars = document.querySelectorAll('.progress-bar');
-      const observerOptions = { root: null, rootMargin: '0px', threshold: 0.6 };
+      const observerOptions = { 
+        root: null, 
+        rootMargin: '0px', 
+        threshold: 0.5 
+      };
 
       const animateBar = (entry) => {
         const bar = entry.target;
@@ -1613,7 +2064,12 @@
         const fill = bar.querySelector('.progress-fill');
         const text = bar.parentElement.querySelector('.progress-text');
 
-        fill.style.width = percentage + '%';
+        // Animate the progress bar
+        setTimeout(() => {
+          fill.style.width = percentage + '%';
+        }, 200);
+
+        // Animate the counter
         let counter = 0;
         const interval = setInterval(() => {
           if (counter >= percentage) {
@@ -1622,7 +2078,7 @@
             counter++;
             text.textContent = counter + '%';
           }
-        }, 12);
+        }, 20);
       };
 
       const observer = new IntersectionObserver((entries, obs) => {
@@ -1653,6 +2109,13 @@
       // Close Contact-Us form
       closeContact.addEventListener('click', () => {
         contactPopup.style.display = 'none';
+      });
+
+      // Close contact popup when clicking outside
+      contactPopup.addEventListener('click', (e) => {
+        if (e.target === contactPopup) {
+          contactPopup.style.display = 'none';
+        }
       });
 
       // Submit Contact-Us form
@@ -1694,6 +2157,65 @@
             contactSubmitBtn.disabled = false;
           });
       });
+
+      // --------- Parallax Effect for Hero Section ----------
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.hero');
+        const speed = scrolled * 0.5;
+        
+        if (parallax) {
+          parallax.style.transform = `translateY(${speed}px)`;
+        }
+      });
+
+      // --------- Add Loading Animation to Buttons ----------
+      document.querySelectorAll('.btn, .get-started').forEach(btn => {
+        btn.addEventListener('click', function() {
+          if (!this.classList.contains('loading')) {
+            this.classList.add('loading');
+            setTimeout(() => {
+              this.classList.remove('loading');
+            }, 2000);
+          }
+        });
+      });
+
+      // --------- Keyboard Navigation Support ----------
+      document.addEventListener('keydown', (e) => {
+        // Close modals with Escape key
+        if (e.key === 'Escape') {
+          if (modalContainer.style.display === 'flex') {
+            modalContainer.style.display = 'none';
+          }
+          if (contactPopup.style.display === 'flex') {
+            contactPopup.style.display = 'none';
+          }
+        }
+      });
+
+      // --------- Performance Optimization ----------
+      // Lazy load images
+      const images = document.querySelectorAll('img[data-src]');
+      const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            img.classList.remove('lazy');
+            imageObserver.unobserve(img);
+          }
+        });
+      });
+
+      images.forEach(img => imageObserver.observe(img));
+
+      // Preload critical resources
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'preload';
+      preloadLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap';
+      preloadLink.as = 'style';
+      document.head.appendChild(preloadLink);
     });
   </script>
 </body>
