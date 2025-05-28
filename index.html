@@ -6,18 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Edurack</title>
 
+  <!-- Favicon (Logo) -->
+  <link rel="icon" href="https://i.postimg.cc/k4VZLxVN/cropped-circle-image.png" type="image/png" />
+
   <!-- Google Fonts & Font Awesome -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
-  <!-- AOS (Animate On Scroll) CSS -->
+  <!-- AOS CSS (Animate On Scroll) -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
   <style>
-    /* ----------------------------------------
-       Base Styles
-    ---------------------------------------- */
+    /*-----------------------------------------
+      Base Styles
+    -----------------------------------------*/
     * {
       margin: 0;
       padding: 0;
@@ -29,6 +32,7 @@
       background: linear-gradient(to bottom, #e0f2ff, #f7faff);
       color: #333;
       overflow-x: hidden;
+      line-height: 1.5;
     }
 
     a {
@@ -42,15 +46,15 @@
       background: none;
     }
 
-    /* ----------------------------------------
-       Navbar (unchanged)
-    ---------------------------------------- */
+    /*-----------------------------------------
+      Navbar (Logo size 64×64)
+    -----------------------------------------*/
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 60px;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(10px);
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       position: fixed;
@@ -74,7 +78,7 @@
     }
 
     .navbar.scrolled {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 1);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     }
 
@@ -84,12 +88,15 @@
       color: #007adf;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .logo i {
-      font-size: 30px;
-      color: #009dff;
+    .logo img {
+      width: 64px;   /* increased from 50px */
+      height: 64px;  /* increased from 50px */
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 8px;
     }
 
     .nav-links {
@@ -169,7 +176,7 @@
         position: absolute;
         top: 60px;
         left: 0;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.98);
         padding: 10px 0;
       }
 
@@ -182,9 +189,9 @@
       }
     }
 
-    /* ----------------------------------------
-       Hero Section (unchanged)
-    ---------------------------------------- */
+    /*-----------------------------------------
+      Hero Section
+    -----------------------------------------*/
     .hero {
       text-align: center;
       padding: 160px 20px 60px;
@@ -241,10 +248,9 @@
       transform: scale(1.05);
     }
 
-    /* ----------------------------------------
-       Sections (Free, Arena, Progress, About, Reviews)
-       (unchanged from previous version)
-    ---------------------------------------- */
+    /*-----------------------------------------
+      Sections (Free, Arena, Progress, About, Reviews)
+    -----------------------------------------*/
     .section {
       padding: 80px 8%;
       text-align: center;
@@ -391,9 +397,9 @@
       line-height: 1.4;
     }
 
-    /* ----------------------------------------
-       Footer (unchanged)
-    ---------------------------------------- */
+    /*-----------------------------------------
+      Footer
+    -----------------------------------------*/
     footer {
       background-color: #000;
       color: #fff;
@@ -444,10 +450,9 @@
       color: #ffbb00;
     }
 
-
-    /* ----------------------------------------
-       Modal Popup (Login/Register) - ENHANCED
-    ---------------------------------------- */
+    /*-----------------------------------------
+      LOGIN/REGISTER MODAL (Contrast & Spacing Improved)
+    -----------------------------------------*/
     .modal-container {
       display: none;
       position: fixed;
@@ -455,18 +460,18 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
+      background: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
 
     .modal {
-      background: #ffffff;
-      background-image: linear-gradient(to bottom right, #ffffff, #f0f4f8);
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(6px);
       width: 90%;
-      max-width: 500px;
-      padding: 40px 45px;
+      max-width: 520px;
+      padding: 64px 50px;    /* increased top padding from 48px to 64px */
       border-radius: 16px;
       position: relative;
       max-height: 90%;
@@ -497,9 +502,9 @@
       color: #333;
     }
 
-    /* Form Titles with Icon */
+    /* Floating Labels + High-Contrast Inputs */
     .modal h2 {
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       text-align: center;
       color: #007adf;
       font-size: 1.6em;
@@ -507,68 +512,121 @@
     }
 
     .modal h2::before {
-      content: "\f007"; /* Font Awesome user icon */
+      content: "\f007";           /* FontAwesome “user” icon */
       font-family: "Font Awesome 5 Free";
       font-weight: 900;
       position: absolute;
       left: 50%;
-      transform: translateX(-50%) translateY(-130%);
-      background: #ffffff;
-      color: #009dff;
-      padding: 12px;
+      top: -50px;                 /* moved higher so it never overlaps content */
+      transform: translateX(-50%);
+      background: #ffffff;        /* solid white circle behind */
+      color: #009dff;             /* bright blue user icon */
+      padding: 14px;              /* slightly larger circle */
       border-radius: 50%;
-      font-size: 1.2em;
+      font-size: 1.3em;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 10;                /* ensure it sits above any blur */
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 28px;
       position: relative;
-    }
-
-    /* Input Icons */
-    .form-group i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #888;
-      font-size: 1em;
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 12px 14px 12px 40px;
-      border: none;
-      border-radius: 8px;
+      padding: 18px 14px 18px 48px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
       font-size: 14px;
-      background: #f0f4f8;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
+      background: rgba(255, 255, 255, 0.98);
+      color: #333;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     }
 
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
-      background: #ffffff;
+      background: #fff;
+      border-color: #009dff;
       box-shadow: 0 0 0 3px rgba(0, 157, 255, 0.2);
       outline: none;
     }
 
-    /* Style for <select> arrow */
-    .form-group select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20width='10'%20height='6'%20viewBox='0%200%2010%206'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cpath%20d='M5%206L0%200h10L5%206z'%20fill='%23888'%20/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
+    .form-group label {
+      position: absolute;
+      left: 48px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 14px;
+      color: #666;
+      transition: transform 0.2s ease, font-size 0.2s ease, background 0.2s ease;
+      background: #fff;
+      padding: 0 4px;
     }
 
+    /* Move label up when input is focused OR has content */
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+      transform: translateY(-140%) scale(0.85);
+      font-size: 12px;
+      color: #007adf;
+      background: #fff;
+    }
+
+    /* Icons inside inputs (position adjusted) */
+    .form-group i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      font-size: 1em;
+    }
+
+    /* Show/Hide Password Toggle (position adjusted) */
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2em;
+      color: #888;
+      cursor: pointer;
+    }
+
+    /* Validation Feedback */
+    .form-group.invalid input,
+    .form-group.invalid select {
+      border-color: #e74c3c;
+    }
+
+    .form-group.invalid label {
+      color: #e74c3c;
+    }
+
+    .form-group .helper-text {
+      font-size: 12px;
+      color: #e74c3c;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .form-group.invalid .helper-text {
+      display: block;
+    }
+
+    /* Primary & Google Buttons */
     .modal .submit-btn,
     .modal .google-btn {
-      background: linear-gradient(135deg, #009dff, #006edc);
-      color: #fff;
       padding: 14px 0;
       border-radius: 8px;
       font-size: 16px;
@@ -584,8 +642,12 @@
       gap: 10px;
     }
 
-    .modal .submit-btn:hover,
-    .modal .google-btn:hover {
+    .modal .submit-btn {
+      background: linear-gradient(135deg, #009dff, #006edc);
+      color: #fff;
+    }
+
+    .modal .submit-btn:hover {
       background: linear-gradient(135deg, #007adf, #005ab5);
       transform: scale(1.03);
     }
@@ -607,6 +669,29 @@
       font-weight: 500;
     }
 
+    .google-btn:hover {
+      background: linear-gradient(135deg, #007adf, #005ab5);
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    /* Remember Me Checkbox */
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .remember-me input {
+      width: 16px;
+      height: 16px;
+      accent-color: #009dff;
+    }
+
+    /* Toggle between forms text */
     .toggle-form {
       text-align: center;
       margin-top: 18px;
@@ -656,10 +741,9 @@
       }
     }
 
-
-    /* ----------------------------------------
-       Contact-Us Popup (unchanged)
-    ---------------------------------------- */
+    /*-----------------------------------------
+      Contact-Us Popup (Fully Visible & Centered)
+    -----------------------------------------*/
     .contact-popup {
       display: none;
       position: fixed;
@@ -667,7 +751,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.7);   /* slightly darker for better contrast */
       justify-content: center;
       align-items: center;
       z-index: 1001;
@@ -677,7 +761,7 @@
       background: #fff;
       width: 90%;
       max-width: 450px;
-      padding: 25px 30px;
+      padding: 30px 35px;
       border-radius: 12px;
       position: relative;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
@@ -697,10 +781,27 @@
     }
 
     .contact-form h2 {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       font-size: 1.4em;
       color: #007adf;
       text-align: center;
+      position: relative;
+    }
+
+    .contact-form h2::before {
+      content: "\f1d8";           /* FontAwesome “headset” icon */
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      position: absolute;
+      left: 50%;
+      top: -38px;                 /* raised above the header */
+      transform: translateX(-50%);
+      background: #007adf;        /* solid blue circle */
+      color: #ffffff;             /* white icon */
+      padding: 12px;
+      border-radius: 50%;
+      font-size: 1.2em;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .contact-form .close-contact {
@@ -713,20 +814,68 @@
       cursor: pointer;
     }
 
+    .contact-form .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .contact-form .form-group input,
+    .contact-form .form-group select,
     .contact-form .form-group textarea {
-      min-height: 80px;
+      width: 100%;
+      padding: 14px 12px 14px 40px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      background: #fff;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-form .form-group input:focus,
+    .contact-form .form-group select:focus,
+    .contact-form .form-group textarea:focus {
+      border-color: #009dff;
+      box-shadow: 0 0 0 3px rgba(0, 157, 255, 0.2);
+      outline: none;
+    }
+
+    .contact-form .form-group label {
+      position: absolute;
+      left: 40px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      font-size: 14px;
+      color: #666;
+      background: #fff;
+      padding: 0 4px;
+    }
+
+    /* Move label up when there’s content or focus */
+    .contact-form .form-group input:focus + label,
+    .contact-form .form-group input:not(:placeholder-shown) + label,
+    .contact-form .form-group textarea:focus + label,
+    .contact-form .form-group textarea:not(:placeholder-shown) + label,
+    .contact-form .form-group select:focus + label,
+    .contact-form .form-group select:not([value=""]) + label {
+      transform: translateY(-140%) scale(0.85);
+      font-size: 12px;
+      color: #007adf;
+      background: #fff;
     }
 
     .contact-form .submit-btn {
       background: linear-gradient(135deg, #009dff, #006edc);
       color: #fff;
-      padding: 10px 18px;
-      border-radius: 6px;
+      padding: 12px 0;
+      border-radius: 8px;
       font-size: 15px;
       font-weight: 600;
       width: 100%;
       margin-top: 12px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
@@ -735,7 +884,7 @@
       transform: scale(1.03);
     }
 
-    /* Fade-in “Thank You” Message (unchanged) */
+    /* Fade-in “Thank You” Message */
     .thank-you {
       display: none;
       position: fixed;
@@ -772,7 +921,10 @@
 <body>
   <!-- Navbar -->
   <nav class="navbar">
-    <div class="logo"><i class="fas fa-graduation-cap"></i> Edurack</div>
+    <div class="logo">
+      <img src="https://i.postimg.cc/nV4TrRtj/cropped-circle-image-removebg-preview.png" alt="Edurack Logo" />
+      Edurack
+    </div>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#free">Free Content</a></li>
@@ -948,7 +1100,7 @@
     </div>
   </footer>
 
-  <!-- Login/Register Modal Popup -->
+  <!-- LOGIN/REGISTER MODAL (Contrast & Spacing Improved) -->
   <div class="modal-container" id="modalContainer">
     <div class="modal">
       <button class="close-btn" id="closePopup">&times;</button>
@@ -957,49 +1109,87 @@
         <div id="registerForm">
           <h2>Create Your Account</h2>
           <form id="registerFormElement">
-            <div class="form-group">
+            <!-- Full Name -->
+            <div class="form-group" id="group-fullName">
               <i class="fas fa-user"></i>
-              <input type="text" id="fullName" placeholder="Enter your full name" required />
+              <input type="text" id="fullName" placeholder=" " required />
+              <label for="fullName">Full Name</label>
+              <div class="helper-text">Required</div>
             </div>
-            <div class="form-group">
+
+            <!-- Email Address -->
+            <div class="form-group" id="group-regEmail">
               <i class="fas fa-envelope"></i>
-              <input type="email" id="regEmail" placeholder="you@example.com" required />
+              <input type="email" id="regEmail" placeholder=" " required />
+              <label for="regEmail">Email Address</label>
+              <div class="helper-text">Invalid email format</div>
             </div>
-            <div class="form-group">
+
+            <!-- Password -->
+            <div class="form-group" id="group-regPassword">
               <i class="fas fa-lock"></i>
-              <input type="password" id="regPassword" placeholder="Choose a strong password" required />
+              <input type="password" id="regPassword" placeholder=" " required />
+              <label for="regPassword">Password (min 6 chars)</label>
+              <i class="fas fa-eye toggle-password" toggle="#regPassword"></i>
+              <div class="helper-text">Minimum 6 characters</div>
             </div>
-            <div class="form-group">
+
+            <!-- Confirm Password -->
+            <div class="form-group" id="group-confirmPassword">
               <i class="fas fa-lock"></i>
-              <input type="password" id="confirmPassword" placeholder="Re-enter your password" required />
+              <input type="password" id="confirmPassword" placeholder=" " required />
+              <label for="confirmPassword">Confirm Password</label>
+              <i class="fas fa-eye toggle-password" toggle="#confirmPassword"></i>
+              <div class="helper-text">Passwords must match</div>
             </div>
-            <div class="form-group">
+
+            <!-- Target Exam -->
+            <div class="form-group" id="group-targetExam">
               <i class="fas fa-graduation-cap"></i>
               <select id="targetExam" required>
-                <option value="">Select Target Exam</option>
+                <option value="" disabled selected></option>
                 <option value="JEE">JEE</option>
                 <option value="NEET">NEET</option>
                 <option value="Both">Both</option>
               </select>
+              <label for="targetExam">Target Exam</label>
+              <div class="helper-text">Required</div>
             </div>
-            <div class="form-group">
+
+            <!-- Class -->
+            <div class="form-group" id="group-userClass">
               <i class="fas fa-chalkboard"></i>
               <select id="userClass" required>
-                <option value="">Select Class</option>
+                <option value="" disabled selected></option>
                 <option value="11th">11th</option>
                 <option value="12th">12th</option>
                 <option value="Dropper">Dropper</option>
               </select>
+              <label for="userClass">Class</label>
+              <div class="helper-text">Required</div>
             </div>
-            <div class="form-group">
+
+            <!-- State -->
+            <div class="form-group" id="group-state">
               <i class="fas fa-map-marker-alt"></i>
-              <input type="text" id="state" placeholder="Your State (e.g. Maharashtra)" required />
+              <input type="text" id="state" placeholder=" " required />
+              <label for="state">State</label>
+              <div class="helper-text">Required</div>
             </div>
-            <div class="form-group">
+
+            <!-- City -->
+            <div class="form-group" id="group-city">
               <i class="fas fa-city"></i>
-              <input type="text" id="city" placeholder="Your City (e.g. Mumbai)" required />
+              <input type="text" id="city" placeholder=" " required />
+              <label for="city">City</label>
+              <div class="helper-text">Required</div>
             </div>
-            <button type="submit" class="submit-btn">Register</button>
+
+            <!-- Register Button -->
+            <button type="submit" class="submit-btn" id="registerBtn">
+              Register
+              <i class="fas fa-circle-notch fa-spin" id="register-loading" style="display:none; margin-left:8px; font-size:14px;"></i>
+            </button>
 
             <!-- Google Sign-Up -->
             <button type="button" class="google-btn" id="googleRegisterBtn">
@@ -1017,15 +1207,34 @@
         <div id="loginForm" style="display: none;">
           <h2>Log In to Edurack</h2>
           <form id="loginFormElement">
-            <div class="form-group">
+            <!-- Email Address -->
+            <div class="form-group" id="group-loginEmail">
               <i class="fas fa-envelope"></i>
-              <input type="email" id="loginEmail" placeholder="you@example.com" required />
+              <input type="email" id="loginEmail" placeholder=" " required />
+              <label for="loginEmail">Email Address</label>
+              <div class="helper-text">Invalid email format</div>
             </div>
-            <div class="form-group">
+
+            <!-- Password -->
+            <div class="form-group" id="group-loginPassword">
               <i class="fas fa-lock"></i>
-              <input type="password" id="loginPassword" placeholder="Enter your password" required />
+              <input type="password" id="loginPassword" placeholder=" " required />
+              <label for="loginPassword">Password</label>
+              <i class="fas fa-eye toggle-password" toggle="#loginPassword"></i>
+              <div class="helper-text">Required</div>
             </div>
-            <button type="submit" class="submit-btn">Login</button>
+
+            <!-- Remember Me -->
+            <label class="remember-me">
+              <input type="checkbox" id="rememberMe" />
+              Remember Me
+            </label>
+
+            <!-- Login Button -->
+            <button type="submit" class="submit-btn" id="loginBtn">
+              Login
+              <i class="fas fa-circle-notch fa-spin" id="login-loading" style="display:none; margin-left:8px; font-size:14px;"></i>
+            </button>
 
             <!-- Google Sign-In -->
             <button type="button" class="google-btn" id="googleLoginBtn">
@@ -1043,43 +1252,51 @@
     </div>
   </div>
 
-  <!-- Contact-Us Popup (unchanged) -->
+  <!-- Contact-Us Popup (Fully Visible & Centered) -->
   <div class="contact-popup" id="contactPopup">
     <div class="contact-form" data-aos="slide-in">
       <button class="close-contact" id="closeContact">&times;</button>
       <h2>Contact Us</h2>
       <form id="contactFormElement">
         <div class="form-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="contactName" placeholder=" " required />
           <label for="contactName">Your Name</label>
-          <input type="text" id="contactName" placeholder="Full Name" required />
         </div>
         <div class="form-group">
+          <i class="fas fa-phone"></i>
+          <input type="tel" id="contactPhone" placeholder=" " required />
           <label for="contactPhone">Your Contact</label>
-          <input type="tel" id="contactPhone" placeholder="Phone Number" required />
         </div>
         <div class="form-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="contactEmail" placeholder=" " required />
           <label for="contactEmail">Your Email</label>
-          <input type="email" id="contactEmail" placeholder="you@example.com" required />
         </div>
         <div class="form-group">
-          <label for="contactType">Option</label>
+          <i class="fas fa-tags"></i>
           <select id="contactType" required>
-            <option value="">Select One</option>
+            <option value="" disabled selected></option>
             <option value="Request">Request</option>
             <option value="Problem">Problem</option>
             <option value="Query">Query</option>
           </select>
+          <label for="contactType">Option</label>
         </div>
         <div class="form-group">
+          <i class="fas fa-comment-dots"></i>
+          <textarea id="contactMessage" placeholder=" " required></textarea>
           <label for="contactMessage">Message</label>
-          <textarea id="contactMessage" placeholder="Type your message here..." required></textarea>
         </div>
-        <button type="submit" class="submit-btn">Submit</button>
+        <button type="submit" class="submit-btn" id="contact-submit-btn">
+          Submit
+          <i class="fas fa-circle-notch fa-spin" id="contact-loading" style="display:none; margin-left:8px; font-size:14px;"></i>
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- “Thank You” Overlay (unchanged) -->
+  <!-- “Thank You” Overlay -->
   <div class="thank-you" id="thankYouMessage">
     Thanks for contacting us! Our team will connect within 24hrs.
   </div>
@@ -1094,7 +1311,7 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // Firebase Configuration & Initialization
+      // --------- Firebase Configuration & Initialization ----------
       const firebaseConfig = {
         apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
         authDomain: "arena-b8996.firebaseapp.com",
@@ -1112,20 +1329,20 @@
       // Initialize AOS
       AOS.init({ duration: 800, once: true, offset: 120 });
 
-      // Navbar scroll behavior
+      // --------- Navbar Scroll Behavior ----------
       const navbar = document.querySelector('.navbar');
       window.addEventListener('scroll', () => {
         navbar.classList.toggle('scrolled', window.scrollY > 50);
       });
 
-      // Hamburger toggle for mobile menu
+      // --------- Hamburger Toggle for Mobile Menu ----------
       const hamburger = document.querySelector('.hamburger');
       const navLinks = document.querySelector('.nav-links');
       hamburger.addEventListener('click', () => {
         navLinks.classList.toggle('active');
       });
 
-      // Login/Register Modal Elements
+      // --------- Login/Register Modal Logic ----------
       const navGetStarted = document.getElementById('navGetStarted');
       const heroGetStarted = document.getElementById('heroGetStarted');
       const modalContainer = document.getElementById('modalContainer');
@@ -1135,32 +1352,62 @@
       const registerFormDiv = document.getElementById('registerForm');
       const loginFormDiv = document.getElementById('loginForm');
 
-      // Show login/register modal
+      // Show login/register modal on click
       navGetStarted.addEventListener('click', () => modalContainer.style.display = 'flex');
       heroGetStarted.addEventListener('click', () => modalContainer.style.display = 'flex');
 
       // Close login/register modal
       closePopup.addEventListener('click', () => modalContainer.style.display = 'none');
 
-      // Toggle between login/register
+      // Toggle between login & register
       showLoginBtn.addEventListener('click', () => {
         registerFormDiv.style.display = 'none';
         loginFormDiv.style.display = 'block';
+        resetValidation();
       });
       showRegisterBtn.addEventListener('click', () => {
         loginFormDiv.style.display = 'none';
         registerFormDiv.style.display = 'block';
+        resetValidation();
       });
 
-      // If user already logged in (localStorage), redirect
+      // If user already logged in (localStorage), redirect immediately
       if (localStorage.getItem('userEmail')) {
         window.location.href = "home.html";
       }
 
-      // Registration form submission
+      // --------- Form Validation Helpers ----------
+      function setInvalid(fieldGroupId) {
+        document.getElementById(fieldGroupId).classList.add('invalid');
+      }
+      function setValid(fieldGroupId) {
+        document.getElementById(fieldGroupId).classList.remove('invalid');
+      }
+      function resetValidation() {
+        document.querySelectorAll('.form-group').forEach(g => g.classList.remove('invalid'));
+      }
+
+      // Email format checker
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+
+      // Password length checker
+      function validatePasswordLength(pw) {
+        return pw.length >= 6;
+      }
+
+      // --------- Registration Form Submission ----------
       const registerFormElement = document.getElementById('registerFormElement');
+      const registerBtn = document.getElementById('registerBtn');
+      const registerLoading = document.getElementById('register-loading');
+
       registerFormElement.addEventListener('submit', (e) => {
         e.preventDefault();
+        resetValidation();
+
+        // Grab values
         const fullName = document.getElementById('fullName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value;
@@ -1170,11 +1417,49 @@
         const state = document.getElementById('state').value.trim();
         const city = document.getElementById('city').value.trim();
 
-        if (password !== confirmPassword) {
-          alert('Passwords do not match.');
-          return;
+        let valid = true;
+
+        // Validate each field
+        if (!fullName) {
+          setInvalid('group-fullName');
+          valid = false;
+        }
+        if (!validateEmail(email)) {
+          setInvalid('group-regEmail');
+          valid = false;
+        }
+        if (!validatePasswordLength(password)) {
+          setInvalid('group-regPassword');
+          valid = false;
+        }
+        if (confirmPassword !== password || !confirmPassword) {
+          setInvalid('group-confirmPassword');
+          valid = false;
+        }
+        if (!targetExam) {
+          setInvalid('group-targetExam');
+          valid = false;
+        }
+        if (!userClass) {
+          setInvalid('group-userClass');
+          valid = false;
+        }
+        if (!state) {
+          setInvalid('group-state');
+          valid = false;
+        }
+        if (!city) {
+          setInvalid('group-city');
+          valid = false;
         }
 
+        if (!valid) return; // Halt submission if any validation fails
+
+        // Show loading spinner
+        registerLoading.style.display = 'inline-block';
+        registerBtn.disabled = true;
+
+        // Create account in Firebase
         auth.createUserWithEmailAndPassword(email, password)
           .then((userCredential) => {
             localStorage.setItem('userEmail', email);
@@ -1189,39 +1474,67 @@
             });
           })
           .then(() => {
-            alert('Registration successful!');
             window.location.href = "home.html";
           })
           .catch((error) => {
             console.error('Registration error:', error);
             alert('Error: ' + error.message);
+          })
+          .finally(() => {
+            registerLoading.style.display = 'none';
+            registerBtn.disabled = false;
           });
       });
 
-      // Login form submission
+      // --------- Login Form Submission ----------
       const loginFormElement = document.getElementById('loginFormElement');
+      const loginBtn = document.getElementById('loginBtn');
+      const loginLoading = document.getElementById('login-loading');
+
       loginFormElement.addEventListener('submit', (e) => {
         e.preventDefault();
+        resetValidation();
+
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value;
+
+        let valid = true;
+        if (!validateEmail(email)) {
+          setInvalid('group-loginEmail');
+          valid = false;
+        }
+        if (!password) {
+          setInvalid('group-loginPassword');
+          valid = false;
+        }
+        if (!valid) return;
+
+        // Show loading spinner
+        loginLoading.style.display = 'inline-block';
+        loginBtn.disabled = true;
+
         auth.signInWithEmailAndPassword(email, password)
           .then((userCredential) => {
             localStorage.setItem('userEmail', email);
-            alert('Login successful!');
             window.location.href = "home.html";
           })
           .catch((error) => {
             console.error('Login error:', error);
             alert('Error: ' + error.message);
+          })
+          .finally(() => {
+            loginLoading.style.display = 'none';
+            loginBtn.disabled = false;
           });
       });
 
-      // Forgot Password functionality
+      // --------- Forgot Password Functionality ----------
       const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
       forgotPasswordBtn.addEventListener('click', () => {
         const email = document.getElementById('loginEmail').value.trim();
-        if (!email) {
-          alert('Please enter your email in the login field to reset your password.');
+        if (!validateEmail(email)) {
+          setInvalid('group-loginEmail');
+          alert('Please enter a valid email to reset password.');
           return;
         }
         auth.sendPasswordResetEmail(email)
@@ -1234,7 +1547,23 @@
           });
       });
 
-      // Google Sign-In (for both login & register)
+      // --------- Show/Hide Password Toggle ----------
+      document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', () => {
+          const input = document.querySelector(icon.getAttribute('toggle'));
+          if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+          } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+          }
+        });
+      });
+
+      // --------- Google Sign-In (Login/Register) ----------
       const googleRegisterBtn = document.getElementById('googleRegisterBtn');
       const googleLoginBtn = document.getElementById('googleLoginBtn');
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -1244,7 +1573,7 @@
           .then((result) => {
             const user = result.user;
             localStorage.setItem('userEmail', user.email);
-            // Optionally, store user info in Firestore for new users
+            // If new user, write minimal info to Firestore
             if (result.additionalUserInfo.isNewUser) {
               firestore.collection('users').doc(user.uid).set({
                 fullName: user.displayName || '',
@@ -1257,7 +1586,6 @@
                 googleSignIn: true
               });
             }
-            alert('Google sign-in successful!');
             window.location.href = "home.html";
           })
           .catch((error) => {
@@ -1269,7 +1597,7 @@
       googleRegisterBtn.addEventListener('click', signInWithGoogle);
       googleLoginBtn.addEventListener('click', signInWithGoogle);
 
-      // IntersectionObserver for Progress Bars
+      // --------- IntersectionObserver for Progress Bars ----------
       const progressBars = document.querySelectorAll('.progress-bar');
       const observerOptions = { root: null, rootMargin: '0px', threshold: 0.6 };
 
@@ -1302,33 +1630,39 @@
 
       progressBars.forEach((bar) => observer.observe(bar));
 
-      // Contact Us Popup Logic
+      // --------- Contact-Us Popup Logic ----------
       const openContactBtn = document.getElementById('openContactBtn');
       const contactPopup = document.getElementById('contactPopup');
       const closeContact = document.getElementById('closeContact');
       const contactFormElement = document.getElementById('contactFormElement');
+      const contactSubmitBtn = document.getElementById('contact-submit-btn');
+      const contactLoading = document.getElementById('contact-loading');
       const thankYouMessage = document.getElementById('thankYouMessage');
 
-      // Show Contact Us form
+      // Show Contact-Us form
       openContactBtn.addEventListener('click', () => {
         contactPopup.style.display = 'flex';
       });
 
-      // Close Contact Us form
+      // Close Contact-Us form
       closeContact.addEventListener('click', () => {
         contactPopup.style.display = 'none';
       });
 
-      // Submit Contact Us form
+      // Submit Contact-Us form
       contactFormElement.addEventListener('submit', (e) => {
         e.preventDefault();
+
+        // Show loading spinner
+        contactLoading.style.display = 'inline-block';
+        contactSubmitBtn.disabled = true;
+
         const name = document.getElementById('contactName').value.trim();
         const phone = document.getElementById('contactPhone').value.trim();
         const email = document.getElementById('contactEmail').value.trim();
         const type = document.getElementById('contactType').value;
         const message = document.getElementById('contactMessage').value.trim();
 
-        // Write to Firestore collection "CONTACT US"
         firestore.collection('CONTACT US').add({
           name,
           phone,
@@ -1338,13 +1672,9 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         })
           .then(() => {
-            // Close popup
             contactPopup.style.display = 'none';
-            // Clear form fields
             contactFormElement.reset();
-            // Show thank-you message
             thankYouMessage.style.display = 'block';
-            // After fade-out (3s animation), hide it completely
             setTimeout(() => {
               thankYouMessage.style.display = 'none';
             }, 3000);
@@ -1352,6 +1682,10 @@
           .catch((error) => {
             console.error('Error saving contact form:', error);
             alert('There was an error submitting your request. Please try again.');
+          })
+          .finally(() => {
+            contactLoading.style.display = 'none';
+            contactSubmitBtn.disabled = false;
           });
       });
     });
