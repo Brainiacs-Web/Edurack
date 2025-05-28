@@ -1590,460 +1590,994 @@
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
   <script>
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
-      authDomain: "arena-b8996.firebaseapp.com",
-      projectId: "arena-b8996",
-      storageBucket: "arena-b8996.firebasestorage.app",
-      messagingSenderId: "188106766480",
-      appId: "1:188106766480:web:801e701f00151448090015"
-    };
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+  authDomain: "arena-b8996.firebaseapp.com",
+  projectId: "arena-b8996",
+  storageBucket: "arena-b8996.firebasestorage.app",
+  messagingSenderId: "188106766480",
+  appId: "1:188106766480:web:801e701f00151448090015"
+};
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    
-    // Cache DOM elements
-    const profileNameEl = document.getElementById("profileName");
-    const profileGreetingEl = document.getElementById("profileGreeting");
-    const navbarProfilePic = document.getElementById("navbarProfilePic");
-    const profilePicture = document.getElementById("profilePicture");
-    const sidebar = document.getElementById("sidebar");
-    const sidebarOverlay = document.getElementById("sidebarOverlay");
-    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
-    const searchToggle = document.getElementById("searchToggle");
-    const darkToggle = document.getElementById("darkToggle");
-    const profileEl = document.querySelector(".profile");
-    const profileDropdownEl = document.getElementById("profileDropdown");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const successMessage = document.getElementById("successMessage");
-    
-    // Settings navigation
-    const settingsNavItems = document.querySelectorAll('.settings-nav-item');
-    const settingsSections = document.querySelectorAll('.settings-section');
-    
-    // Modals
-    const passwordModal = document.getElementById("passwordModal");
-    const deleteModal = document.getElementById("deleteModal");
-    const changePasswordBtn = document.getElementById("changePasswordBtn");
-    const deleteAccountBtn = document.getElementById("deleteAccountBtn");
-    const cancelPassword = document.getElementById("cancelPassword");
-    const cancelDelete = document.getElementById("cancelDelete");
-    const deleteConfirmation = document.getElementById("deleteConfirmation");
-    const confirmDelete = document.getElementById("confirmDelete");
-    
-    // Forms
-    const profileForm = document.getElementById("profileForm");
-    const passwordForm = document.getElementById("passwordForm");
-    const profilePicInput = document.getElementById("profilePicInput");
-    const removePhoto = document.getElementById("removePhoto");
-    const themeSelect = document.getElementById("themeSelect");
-    
-    // Check for saved theme preference
-    const savedTheme = localStorage.getItem('darkMode');
-    if (savedTheme === 'true') {
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// Initialize services
+const auth = firebase.auth();
+const firestore = firebase.firestore();
+const storage = firebase.storage();
+
+// Cache DOM elements
+const profileNameEl = document.getElementById("profileName");
+const profileGreetingEl = document.getElementById("profileGreeting");
+const navbarProfilePic = document.getElementById("navbarProfilePic");
+const profilePicture = document.getElementById("profilePicture");
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+const searchToggle = document.getElementById("searchToggle");
+const searchMobile = document.getElementById("searchMobile");
+const darkToggle = document.getElementById("darkToggle");
+const profileEl = document.querySelector(".profile");
+const profileDropdownEl = document.getElementById("profileDropdown");
+const logoutBtn = document.getElementById("logoutBtn");
+const successMessage = document.getElementById("successMessage");
+
+// Settings navigation
+const settingsNavItems = document.querySelectorAll('.settings-nav-item');
+const settingsSections = document.querySelectorAll('.settings-section');
+
+// Modals
+const passwordModal = document.getElementById("passwordModal");
+const deleteModal = document.getElementById("deleteModal");
+const changePasswordBtn = document.getElementById("changePasswordBtn");
+const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+const cancelPassword = document.getElementById("cancelPassword");
+const cancelDelete = document.getElementById("cancelDelete");
+const deleteConfirmation = document.getElementById("deleteConfirmation");
+const confirmDelete = document.getElementById("confirmDelete");
+
+// Forms
+const profileForm = document.getElementById("profileForm");
+const passwordForm = document.getElementById("passwordForm");
+const profilePicInput = document.getElementById("profilePicInput");
+const removePhoto = document.getElementById("removePhoto");
+const themeSelect = document.getElementById("themeSelect");
+const cancelProfile = document.getElementById("cancelProfile");
+
+// Global user data
+let currentUserData = {};
+
+// Initialize app
+document.addEventListener('DOMContentLoaded', () => {
+  initializeTheme();
+  setupEventListeners();
+  loadUserSettings();
+});
+
+// Theme Management
+function initializeTheme() {
+  const savedTheme = localStorage.getItem('edurack_theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark) || (!savedTheme && prefersDark)) {
+    document.body.classList.add('dark-mode');
+    darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    themeSelect.value = savedTheme || 'auto';
+  } else {
+    document.body.classList.remove('dark-mode');
+    darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
+    themeSelect.value = savedTheme || 'light';
+  }
+}
+
+function setTheme(theme) {
+  localStorage.setItem('edurack_theme', theme);
+  
+  if (theme === 'dark') {
+    document.body.classList.add('dark-mode');
+    darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  } else if (theme === 'light') {
+    document.body.classList.remove('dark-mode');
+    darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  } else {
+    // Auto theme
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
       document.body.classList.add('dark-mode');
       darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
-      themeSelect.value = 'dark';
-    } else if (savedTheme === 'false') {
-      themeSelect.value = 'light';
     } else {
-      themeSelect.value = 'auto';
+      document.body.classList.remove('dark-mode');
+      darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
     }
-    
-    // Listen for auth changes and update user info
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        firebase.firestore().collection("users").doc(user.uid).get()
-          .then(doc => {
-            if (doc.exists) {
-              const userData = doc.data();
-              const name = userData.fullName || "User";
-              const email = userData.email || user.email;
-              
-              // Update profile elements
-              profileNameEl.innerText = name;
-              profileGreetingEl.innerText = "Hi, " + name + "!";
-              
-              // Update form fields
-              const nameParts = name.split(' ');
-              document.getElementById('firstName').value = nameParts[0] || '';
-              document.getElementById('lastName').value = nameParts.slice(1).join(' ') || '';
-              document.getElementById('email').value = email;
-              
-              if (userData.phone) document.getElementById('phone').value = userData.phone;
-              if (userData.dateOfBirth) document.getElementById('dateOfBirth').value = userData.dateOfBirth;
-              if (userData.bio) document.getElementById('bio').value = userData.bio;
-              if (userData.school) document.getElementById('school').value = userData.school;
-              if (userData.examTarget) document.getElementById('examTarget').value = userData.examTarget;
-              
-              // Update profile pictures
-              if (userData.photoURL) {
-                navbarProfilePic.src = userData.photoURL;
-                profilePicture.src = userData.photoURL;
-              } else {
-                const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-                const avatarUrl = `https://ui-avatars.com/api/?name=${initials}&background=007adf&color=fff`;
-                navbarProfilePic.src = avatarUrl;
-                profilePicture.src = avatarUrl;
-              }
-            }
-          })
-          .catch(error => console.error("Error fetching user data:", error));
-      } else {
-        window.location.href = "index.html";
-      }
+  }
+  
+  showSuccessMessage('Theme updated successfully!');
+}
+
+// Event Listeners Setup
+function setupEventListeners() {
+  // Mobile menu toggle
+  mobileMenuToggle.addEventListener("click", toggleMobileMenu);
+  sidebarOverlay.addEventListener("click", closeMobileMenu);
+  
+  // Search toggle
+  searchToggle.addEventListener("click", toggleMobileSearch);
+  document.addEventListener("click", closeMobileSearchOutside);
+  
+  // Profile dropdown
+  profileEl.addEventListener("click", toggleProfileDropdown);
+  document.addEventListener("click", closeProfileDropdownOutside);
+  
+  // Theme controls
+  darkToggle.addEventListener("click", toggleDarkMode);
+  themeSelect.addEventListener('change', handleThemeChange);
+  
+  // Settings navigation
+  settingsNavItems.forEach(item => {
+    item.addEventListener('click', () => switchSettingsSection(item.dataset.section));
+  });
+  
+  // Forms
+  profileForm.addEventListener('submit', handleProfileSubmit);
+  passwordForm.addEventListener('submit', handlePasswordSubmit);
+  cancelProfile.addEventListener('click', resetProfileForm);
+  
+  // Profile picture
+  profilePicInput.addEventListener('change', handleProfilePictureUpload);
+  removePhoto.addEventListener('click', handleRemoveProfilePicture);
+  
+  // Modals
+  changePasswordBtn.addEventListener('click', () => openModal(passwordModal));
+  deleteAccountBtn.addEventListener('click', () => openModal(deleteModal));
+  cancelPassword.addEventListener('click', () => closeModal(passwordModal));
+  cancelDelete.addEventListener('click', () => closeModal(deleteModal));
+  
+  // Delete account confirmation
+  deleteConfirmation.addEventListener('input', handleDeleteConfirmation);
+  confirmDelete.addEventListener('click', handleDeleteAccount);
+  
+  // Close modals on outside click
+  [passwordModal, deleteModal].forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal(modal);
     });
+  });
+  
+  // Toggle switches
+  setupToggleSwitches();
+  
+  // Select dropdowns
+  setupSelectDropdowns();
+  
+  // Logout
+  logoutBtn.addEventListener("click", handleLogout);
+  
+  // System theme change detection
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (localStorage.getItem('edurack_theme') === 'auto') {
+      setTheme('auto');
+    }
+  });
+}
+
+// Mobile Menu Functions
+function toggleMobileMenu(e) {
+  e.stopPropagation();
+  sidebar.classList.toggle("active");
+  sidebarOverlay.classList.toggle("active");
+  document.body.style.overflow = sidebar.classList.contains("active") ? "hidden" : "";
+}
+
+function closeMobileMenu() {
+  sidebar.classList.remove("active");
+  sidebarOverlay.classList.remove("active");
+  document.body.style.overflow = "";
+}
+
+// Mobile Search Functions
+function toggleMobileSearch() {
+  searchMobile.classList.toggle("active");
+  if (searchMobile.classList.contains("active")) {
+    searchMobile.querySelector("input").focus();
+  }
+}
+
+function closeMobileSearchOutside(e) {
+  if (!searchToggle.contains(e.target) && !searchMobile.contains(e.target)) {
+    searchMobile.classList.remove("active");
+  }
+}
+
+// Profile Dropdown Functions
+function toggleProfileDropdown(e) {
+  e.stopPropagation();
+  profileDropdownEl.style.display = profileDropdownEl.style.display === "block" ? "none" : "block";
+}
+
+function closeProfileDropdownOutside() {
+  profileDropdownEl.style.display = "none";
+}
+
+// Theme Functions
+function toggleDarkMode() {
+  const currentTheme = localStorage.getItem('edurack_theme') || 'light';
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  setTheme(newTheme);
+  themeSelect.value = newTheme;
+}
+
+function handleThemeChange(e) {
+  setTheme(e.target.value);
+}
+
+// Settings Navigation
+function switchSettingsSection(sectionName) {
+  // Update active nav item
+  settingsNavItems.forEach(nav => nav.classList.remove('active'));
+  document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+  
+  // Show target section
+  settingsSections.forEach(section => {
+    section.classList.remove('active');
+    if (section.id === sectionName + '-section') {
+      section.classList.add('active');
+    }
+  });
+  
+  // Save current section
+  localStorage.setItem('edurack_current_settings_section', sectionName);
+}
+
+// Firebase Auth State Management
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    await loadUserData(user);
+    loadSavedSettingsSection();
+  } else {
+    window.location.href = "index.html";
+  }
+});
+
+// Load User Data
+async function loadUserData(user) {
+  try {
+    const doc = await firestore.collection("users").doc(user.uid).get();
     
-    // Settings Navigation
-    settingsNavItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const targetSection = item.dataset.section;
-        
-        // Update active nav item
-        settingsNavItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-        
-        // Show target section
-        settingsSections.forEach(section => {
-          section.classList.remove('active');
-          if (section.id === targetSection + '-section') {
-            section.classList.add('active');
-          }
-        });
-      });
-    });
-    
-    // Mobile Menu Toggle
-    mobileMenuToggle.addEventListener("click", (e) => {
-      e.stopPropagation();
-      sidebar.classList.toggle("active");
-      sidebarOverlay.classList.toggle("active");
-      document.body.style.overflow = sidebar.classList.contains("active") ? "hidden" : "";
-    });
-    
-    // Close sidebar when clicking overlay
-    sidebarOverlay.addEventListener("click", () => {
-      sidebar.classList.remove("active");
-      sidebarOverlay.classList.remove("active");
-      document.body.style.overflow = "";
-    });
-    
-    // Profile Dropdown Toggle
-    profileEl.addEventListener("click", e => {
-      e.stopPropagation();
-      profileDropdownEl.style.display = profileDropdownEl.style.display === "block" ? "none" : "block";
-    });
-    
-    // Close profile dropdown when clicking outside
-    document.addEventListener("click", () => {
-      profileDropdownEl.style.display = "none";
-    });
-    
-    // Dark Mode Toggle
-    darkToggle.addEventListener("click", () => {
-      document.body.classList.toggle("dark-mode");
-      const isDarkMode = document.body.classList.contains("dark-mode");
-      localStorage.setItem('darkMode', isDarkMode);
-      
-      darkToggle.innerHTML = isDarkMode 
-        ? '<i class="fas fa-sun"></i>' 
-        : '<i class="fas fa-moon"></i>';
-        
-      themeSelect.value = isDarkMode ? 'dark' : 'light';
-    });
-    
-    // Theme Select Change
-    themeSelect.addEventListener('change', (e) => {
-      const theme = e.target.value;
-      
-      if (theme === 'dark') {
-        document.body.classList.add('dark-mode');
-        darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        localStorage.setItem('darkMode', 'true');
-      } else if (theme === 'light') {
-        document.body.classList.remove('dark-mode');
-        darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        localStorage.setItem('darkMode', 'false');
-      } else {
-        // Auto theme - use system preference
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (prefersDark) {
-          document.body.classList.add('dark-mode');
-          darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
-        } else {
-          document.body.classList.remove('dark-mode');
-          darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
-        }
-        localStorage.removeItem('darkMode');
-      }
-    });
-    
-    // Profile Form Submission
-    profileForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const user = firebase.auth().currentUser;
-      if (!user) return;
-      
-      const formData = new FormData(profileForm);
-      const profileData = {
-        fullName: `${formData.get('firstName')} ${formData.get('lastName')}`.trim(),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        dateOfBirth: formData.get('dateOfBirth'),
-        bio: formData.get('bio'),
-        school: formData.get('school'),
-        examTarget: formData.get('examTarget'),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    if (doc.exists) {
+      currentUserData = { id: user.uid, ...doc.data() };
+      updateUIWithUserData(currentUserData);
+    } else {
+      // Create user document if it doesn't exist
+      currentUserData = {
+        id: user.uid,
+        fullName: user.displayName || "User",
+        email: user.email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       };
       
-      try {
-        await firebase.firestore().collection('users').doc(user.uid).update(profileData);
-        showSuccessMessage('Profile updated successfully!');
-        
-        // Update navbar display
-        profileNameEl.innerText = profileData.fullName;
-        profileGreetingEl.innerText = "Hi, " + profileData.fullName + "!";
-        
-      } catch (error) {
-        console.error('Error updating profile:', error);
-        alert('Error updating profile. Please try again.');
-      }
-    });
+      await firestore.collection("users").doc(user.uid).set(currentUserData);
+      updateUIWithUserData(currentUserData);
+    }
+  } catch (error) {
+    console.error("Error loading user data:", error);
+    showErrorMessage("Error loading user data. Please refresh the page.");
+  }
+}
+
+// Update UI with User Data
+function updateUIWithUserData(userData) {
+  const name = userData.fullName || "User";
+  const email = userData.email || "";
+  
+  // Update navbar
+  profileNameEl.innerText = name;
+  profileGreetingEl.innerText = `Hi, ${name}!`;
+  
+  // Update profile pictures
+  if (userData.photoURL) {
+    navbarProfilePic.src = userData.photoURL;
+    profilePicture.src = userData.photoURL;
+  } else {
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=007adf&color=fff&size=200`;
+    navbarProfilePic.src = avatarUrl;
+    profilePicture.src = avatarUrl;
+  }
+  
+  // Update form fields
+  const nameParts = name.split(' ');
+  document.getElementById('firstName').value = nameParts[0] || '';
+  document.getElementById('lastName').value = nameParts.slice(1).join(' ') || '';
+  document.getElementById('email').value = email;
+  document.getElementById('phone').value = userData.phone || '';
+  document.getElementById('dateOfBirth').value = userData.dateOfBirth || '';
+  document.getElementById('bio').value = userData.bio || '';
+  document.getElementById('school').value = userData.school || '';
+  document.getElementById('examTarget').value = userData.examTarget || 'neet';
+}
+
+// Load Saved Settings Section
+function loadSavedSettingsSection() {
+  const savedSection = localStorage.getItem('edurack_current_settings_section') || 'profile';
+  switchSettingsSection(savedSection);
+}
+
+// Profile Form Handling
+async function handleProfileSubmit(e) {
+  e.preventDefault();
+  
+  const submitBtn = profileForm.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  
+  try {
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+    submitBtn.disabled = true;
     
-    // Profile Picture Upload
-    profilePicInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      
-      const user = firebase.auth().currentUser;
-      if (!user) return;
-      
-      // Validate file type and size
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file.');
-        return;
-      }
-      
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert('Image size should be less than 5MB.');
-        return;
-      }
-      
-      try {
-        // Create a reference to the storage location
-        const storageRef = firebase.storage().ref();
-        const imageRef = storageRef.child(`profile-pictures/${user.uid}/${Date.now()}_${file.name}`);
-        
-        // Upload the file
-        const snapshot = await imageRef.put(file);
-        const downloadURL = await snapshot.ref.getDownloadURL();
-        
-        // Update user document with new photo URL
-        await firebase.firestore().collection('users').doc(user.uid).update({
-          photoURL: downloadURL,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Update UI
-        navbarProfilePic.src = downloadURL;
-        profilePicture.src = downloadURL;
-        
-        showSuccessMessage('Profile picture updated successfully!');
-        
-      } catch (error) {
-        console.error('Error uploading profile picture:', error);
-        alert('Error uploading image. Please try again.');
-      }
-    });
+    const formData = new FormData(profileForm);
+    const profileData = {
+      fullName: `${formData.get('firstName')} ${formData.get('lastName')}`.trim(),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      dateOfBirth: formData.get('dateOfBirth'),
+      bio: formData.get('bio'),
+      school: formData.get('school'),
+      examTarget: formData.get('examTarget'),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
     
-    // Remove Profile Picture
-    removePhoto.addEventListener('click', async () => {
-      const user = firebase.auth().currentUser;
-      if (!user) return;
-      
-      try {
-        await firebase.firestore().collection('users').doc(user.uid).update({
-          photoURL: firebase.firestore.FieldValue.delete(),
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        // Reset to default avatar
-        const userData = await firebase.firestore().collection('users').doc(user.uid).get();
-        const name = userData.data()?.fullName || 'User';
-        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-        const avatarUrl = `https://ui-avatars.com/api/?name=${initials}&background=007adf&color=fff`;
-        
-        navbarProfilePic.src = avatarUrl;
-        profilePicture.src = avatarUrl;
-        
-        showSuccessMessage('Profile picture removed successfully!');
-        
-      } catch (error) {
-        console.error('Error removing profile picture:', error);
-        alert('Error removing image. Please try again.');
-      }
-    });
-    
-    // Change Password Modal
-    changePasswordBtn.addEventListener('click', () => {
-      passwordModal.classList.add('active');
-    });
-    
-    cancelPassword.addEventListener('click', () => {
-      passwordModal.classList.remove('active');
-      passwordForm.reset();
-    });
-    
-    // Password Form Submission
-    passwordForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      
-      if (newPassword !== confirmPassword) {
-        alert('New passwords do not match.');
-        return;
-      }
-      
-      if (newPassword.length < 8) {
-        alert('Password must be at least 8 characters long.');
-        return;
-      }
-      
-      const user = firebase.auth().currentUser;
-      if (!user) return;
-      
-      try {
-        // Re-authenticate user with current password
-        const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-        await user.reauthenticateWithCredential(credential);
-        
-        // Update password
-        await user.updatePassword(newPassword);
-        
-        passwordModal.classList.remove('active');
-        passwordForm.reset();
-        showSuccessMessage('Password updated successfully!');
-        
-      } catch (error) {
-        console.error('Error updating password:', error);
-        if (error.code === 'auth/wrong-password') {
-          alert('Current password is incorrect.');
-        } else {
-          alert('Error updating password. Please try again.');
-        }
-      }
-    });
-    
-    // Delete Account Modal
-    deleteAccountBtn.addEventListener('click', () => {
-      deleteModal.classList.add('active');
-    });
-    
-    cancelDelete.addEventListener('click', () => {
-      deleteModal.classList.remove('active');
-      deleteConfirmation.value = '';
-      confirmDelete.disabled = true;
-    });
-    
-    // Enable delete button when "DELETE" is typed
-    deleteConfirmation.addEventListener('input', (e) => {
-      confirmDelete.disabled = e.target.value !== 'DELETE';
-    });
-    
-    // Confirm Delete Account
-    confirmDelete.addEventListener('click', async () => {
-      const user = firebase.auth().currentUser;
-      if (!user) return;
-      
-      try {
-        // Delete user document from Firestore
-        await firebase.firestore().collection('users').doc(user.uid).delete();
-        
-        // Delete user account
-        await user.delete();
-        
-        // Redirect to home page
-        window.location.href = 'index.html';
-        
-      } catch (error) {
-        console.error('Error deleting account:', error);
-        alert('Error deleting account. Please try again or contact support.');
-      }
-    });
-    
-    // Close modals when clicking outside
-    [passwordModal, deleteModal].forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('active');
-        }
-      });
-    });
-    
-    // Success Message Function
-    function showSuccessMessage(message) {
-      successMessage.querySelector('span').textContent = message;
-      successMessage.classList.add('show');
-      
-      setTimeout(() => {
-        successMessage.classList.remove('show');
-      }, 3000);
+    // Validate required fields
+    if (!profileData.fullName.trim()) {
+      throw new Error('Full name is required');
     }
     
-    // Save toggle states to localStorage
-    document.querySelectorAll('.toggle-switch input').forEach(toggle => {
-      const settingKey = toggle.closest('.setting-item').querySelector('h4').textContent.replace(/\s+/g, '_').toLowerCase();
-      
-      // Load saved state
-      const savedState = localStorage.getItem(`setting_${settingKey}`);
-      if (savedState !== null) {
-        toggle.checked = savedState === 'true';
-      }
-      
-      // Save state on change
-      toggle.addEventListener('change', () => {
-        localStorage.setItem(`setting_${settingKey}`, toggle.checked);
-        showSuccessMessage('Setting updated successfully!');
-      });
+    if (!profileData.email.trim()) {
+      throw new Error('Email is required');
+    }
+    
+    // Update Firestore
+    await firestore.collection('users').doc(currentUserData.id).update(profileData);
+    
+    // Update current user data
+    currentUserData = { ...currentUserData, ...profileData };
+    
+    // Update UI
+    profileNameEl.innerText = profileData.fullName;
+    profileGreetingEl.innerText = `Hi, ${profileData.fullName}!`;
+    
+    showSuccessMessage('Profile updated successfully!');
+    
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    showErrorMessage(error.message || 'Error updating profile. Please try again.');
+  } finally {
+    // Reset button state
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+}
+
+// Reset Profile Form
+function resetProfileForm() {
+  updateUIWithUserData(currentUserData);
+  showSuccessMessage('Changes discarded');
+}
+
+// Profile Picture Upload
+async function handleProfilePictureUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  try {
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      throw new Error('Please select an image file');
+    }
+    
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error('Image size should be less than 5MB');
+    }
+    
+    // Show loading state
+    const loadingOverlay = createLoadingOverlay('Uploading image...');
+    document.body.appendChild(loadingOverlay);
+    
+    // Create storage reference
+    const storageRef = storage.ref();
+    const imageRef = storageRef.child(`profile-pictures/${currentUserData.id}/${Date.now()}_${file.name}`);
+    
+    // Upload file
+    const snapshot = await imageRef.put(file);
+    const downloadURL = await snapshot.ref.getDownloadURL();
+    
+    // Update Firestore
+    await firestore.collection('users').doc(currentUserData.id).update({
+      photoURL: downloadURL,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     
-    // Save select states to localStorage
-    document.querySelectorAll('select').forEach(select => {
-      if (select.id && select.id !== 'themeSelect') {
-        const savedValue = localStorage.getItem(`setting_${select.id}`);
-        if (savedValue) {
-          select.value = savedValue;
+    // Update UI
+    navbarProfilePic.src = downloadURL;
+    profilePicture.src = downloadURL;
+    currentUserData.photoURL = downloadURL;
+    
+    showSuccessMessage('Profile picture updated successfully!');
+    
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    showErrorMessage(error.message || 'Error uploading image. Please try again.');
+  } finally {
+    // Remove loading overlay
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    if (loadingOverlay) {
+      loadingOverlay.remove();
+    }
+    
+    // Reset file input
+    profilePicInput.value = '';
+  }
+}
+
+// Remove Profile Picture
+async function handleRemoveProfilePicture() {
+  try {
+    // Show loading state
+    const loadingOverlay = createLoadingOverlay('Removing image...');
+    document.body.appendChild(loadingOverlay);
+    
+    // Update Firestore
+    await firestore.collection('users').doc(currentUserData.id).update({
+      photoURL: firebase.firestore.FieldValue.delete(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    // Generate new avatar
+    const name = currentUserData.fullName || 'User';
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=007adf&color=fff&size=200`;
+    
+    // Update UI
+    navbarProfilePic.src = avatarUrl;
+    profilePicture.src = avatarUrl;
+    delete currentUserData.photoURL;
+    
+    showSuccessMessage('Profile picture removed successfully!');
+    
+  } catch (error) {
+    console.error('Error removing profile picture:', error);
+    showErrorMessage('Error removing image. Please try again.');
+  } finally {
+    // Remove loading overlay
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    if (loadingOverlay) {
+      loadingOverlay.remove();
+    }
+  }
+}
+
+// Password Change Handling
+async function handlePasswordSubmit(e) {
+  e.preventDefault();
+  
+  const currentPassword = document.getElementById('currentPassword').value;
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  
+  const submitBtn = passwordForm.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  
+  try {
+    // Validate passwords
+    if (newPassword !== confirmPassword) {
+      throw new Error('New passwords do not match');
+    }
+    
+    if (newPassword.length < 8) {
+      throw new Error('Password must be at least 8 characters long');
+    }
+    
+    if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
+      throw new Error('Password must contain at least one uppercase letter, one lowercase letter, and one number');
+    }
+    
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+    submitBtn.disabled = true;
+    
+    const user = auth.currentUser;
+    if (!user) throw new Error('User not authenticated');
+    
+    // Re-authenticate user
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+    await user.reauthenticateWithCredential(credential);
+    
+    // Update password
+    await user.updatePassword(newPassword);
+    
+    // Update last password change in Firestore
+    await firestore.collection('users').doc(currentUserData.id).update({
+      lastPasswordChange: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    closeModal(passwordModal);
+    passwordForm.reset();
+    showSuccessMessage('Password updated successfully!');
+    
+  } catch (error) {
+    console.error('Error updating password:', error);
+    let errorMessage = 'Error updating password. Please try again.';
+    
+    if (error.code === 'auth/wrong-password') {
+      errorMessage = 'Current password is incorrect';
+    } else if (error.code === 'auth/weak-password') {
+      errorMessage = 'Password is too weak';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    showErrorMessage(errorMessage);
+  } finally {
+    // Reset button state
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+}
+
+// Delete Account Handling
+function handleDeleteConfirmation(e) {
+  confirmDelete.disabled = e.target.value !== 'DELETE';
+  
+  if (e.target.value === 'DELETE') {
+    confirmDelete.style.background = 'var(--danger-color)';
+    confirmDelete.style.transform = 'scale(1.02)';
+  } else {
+    confirmDelete.style.background = '';
+    confirmDelete.style.transform = '';
+  }
+}
+
+async function handleDeleteAccount() {
+  const submitBtn = confirmDelete;
+  const originalText = submitBtn.innerHTML;
+  
+  try {
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+    submitBtn.disabled = true;
+    
+    const user = auth.currentUser;
+    if (!user) throw new Error('User not authenticated');
+    
+    // Delete user data from Firestore
+    await firestore.collection('users').doc(currentUserData.id).delete();
+    
+    // Delete profile picture from storage if exists
+    if (currentUserData.photoURL) {
+      try {
+        const photoRef = storage.refFromURL(currentUserData.photoURL);
+        await photoRef.delete();
+      } catch (error) {
+        console.warn('Error deleting profile picture:', error);
+      }
+    }
+    
+    // Delete user account
+    await user.delete();
+    
+    // Clear local storage
+    localStorage.clear();
+    
+    // Show final message and redirect
+    alert('Account deleted successfully. You will be redirected to the home page.');
+    window.location.href = 'index.html';
+    
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    let errorMessage = 'Error deleting account. Please try again.';
+    
+    if (error.code === 'auth/requires-recent-login') {
+      errorMessage = 'Please log out and log back in before deleting your account for security reasons.';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    showErrorMessage(errorMessage);
+  } finally {
+    // Reset button state
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  }
+}
+
+// Toggle Switches Setup
+function setupToggleSwitches() {
+  document.querySelectorAll('.toggle-switch input').forEach(toggle => {
+    const settingItem = toggle.closest('.setting-item');
+    const settingTitle = settingItem.querySelector('h4').textContent;
+    const settingKey = `edurack_setting_${settingTitle.replace(/\s+/g, '_').toLowerCase()}`;
+    
+    // Load saved state
+    const savedState = localStorage.getItem(settingKey);
+    if (savedState !== null) {
+      toggle.checked = savedState === 'true';
+    }
+    
+    // Add change listener
+    toggle.addEventListener('change', async () => {
+      try {
+        // Save to localStorage
+        localStorage.setItem(settingKey, toggle.checked);
+        
+        // Save to Firestore
+        const settingsUpdate = {};
+        settingsUpdate[`settings.${settingKey}`] = toggle.checked;
+        settingsUpdate.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+        
+        await firestore.collection('users').doc(currentUserData.id).update(settingsUpdate);
+        
+        showSuccessMessage(`${settingTitle} ${toggle.checked ? 'enabled' : 'disabled'}`);
+        
+        // Special handling for certain settings
+        if (settingTitle.includes('Sound Effects')) {
+          handleSoundEffectsToggle(toggle.checked);
+        } else if (settingTitle.includes('Animations')) {
+          handleAnimationsToggle(toggle.checked);
         }
         
-        select.addEventListener('change', () => {
-          localStorage.setItem(`setting_${select.id}`, select.value);
-          showSuccessMessage('Setting updated successfully!');
-        });
+      } catch (error) {
+        console.error('Error saving setting:', error);
+        // Revert toggle state
+        toggle.checked = !toggle.checked;
+        showErrorMessage('Error saving setting. Please try again.');
       }
     });
-    
-    // Logout functionality
-    logoutBtn.addEventListener("click", e => {
-      e.preventDefault();
-      firebase.auth().signOut()
-        .then(() => window.location.href = "index.html")
-        .catch(error => console.error("Sign out error:", error));
-    });
-    
-    // Register Service Worker for PWA capabilities
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("/sw.js")
-          .then(registration => console.log("Service Worker registered with scope:", registration.scope))
-          .catch(err => console.error("Service Worker registration failed:", err));
+  });
+}
+
+// Select Dropdowns Setup
+function setupSelectDropdowns() {
+  document.querySelectorAll('select').forEach(select => {
+    if (select.id && select.id !== 'themeSelect') {
+      const settingKey = `edurack_setting_${select.id}`;
+      
+      // Load saved value
+      const savedValue = localStorage.getItem(settingKey);
+      if (savedValue) {
+        select.value = savedValue;
+      }
+      
+      // Add change listener
+      select.addEventListener('change', async () => {
+        try {
+          // Save to localStorage
+          localStorage.setItem(settingKey, select.value);
+          
+          // Save to Firestore
+          const settingsUpdate = {};
+          settingsUpdate[`settings.${settingKey}`] = select.value;
+          settingsUpdate.updatedAt = firebase.firestore.FieldValue.serverTimestamp();
+          
+          await firestore.collection('users').doc(currentUserData.id).update(settingsUpdate);
+          
+          const settingName = select.closest('.setting-item').querySelector('h4').textContent;
+          showSuccessMessage(`${settingName} updated to ${select.options[select.selectedIndex].text}`);
+          
+        } catch (error) {
+          console.error('Error saving setting:', error);
+          showErrorMessage('Error saving setting. Please try again.');
+        }
       });
     }
-  </script>
+  });
+}
+
+// Load User Settings from Firestore
+async function loadUserSettings() {
+  try {
+    if (!currentUserData.id) return;
+    
+    const doc = await firestore.collection('users').doc(currentUserData.id).get();
+    const userData = doc.data();
+    
+    if (userData && userData.settings) {
+      // Apply saved settings to toggles and selects
+      Object.entries(userData.settings).forEach(([key, value]) => {
+        if (key.startsWith('edurack_setting_')) {
+          localStorage.setItem(key, value);
+          
+          // Update UI elements
+          const toggle = document.querySelector(`input[data-setting="${key}"]`);
+          if (toggle) {
+            toggle.checked = value === true;
+          }
+          
+          const select = document.querySelector(`select[data-setting="${key}"]`);
+          if (select) {
+            select.value = value;
+          }
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error loading user settings:', error);
+  }
+}
+
+// Special Setting Handlers
+function handleSoundEffectsToggle(enabled) {
+  if (enabled) {
+    // Play a test sound
+    playNotificationSound();
+  }
+  
+  // Store globally for use in other parts of the app
+  window.edurackSettings = window.edurackSettings || {};
+  window.edurackSettings.soundEffects = enabled;
+}
+
+function handleAnimationsToggle(enabled) {
+  if (enabled) {
+    document.body.classList.remove('no-animations');
+  } else {
+    document.body.classList.add('no-animations');
+  }
+  
+  // Store globally
+  window.edurackSettings = window.edurackSettings || {};
+  window.edurackSettings.animations = enabled;
+}
+
+// Utility Functions
+function openModal(modal) {
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  
+  // Focus first input in modal
+  const firstInput = modal.querySelector('input');
+  if (firstInput) {
+    setTimeout(() => firstInput.focus(), 100);
+  }
+}
+
+function closeModal(modal) {
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  
+  // Reset forms
+  const form = modal.querySelector('form');
+  if (form) {
+    form.reset();
+  }
+  
+  // Reset delete confirmation
+  if (modal === deleteModal) {
+    deleteConfirmation.value = '';
+    confirmDelete.disabled = true;
+    confirmDelete.style.background = '';
+    confirmDelete.style.transform = '';
+  }
+}
+
+function showSuccessMessage(message) {
+  const messageEl = successMessage.querySelector('span');
+  messageEl.textContent = message;
+  successMessage.classList.add('show');
+  
+  // Auto hide after 3 seconds
+  setTimeout(() => {
+    successMessage.classList.remove('show');
+  }, 3000);
+  
+  // Play sound if enabled
+  if (window.edurackSettings?.soundEffects) {
+    playSuccessSound();
+  }
+}
+
+function showErrorMessage(message) {
+  // Create error message element if it doesn't exist
+  let errorMessage = document.getElementById('errorMessage');
+  if (!errorMessage) {
+    errorMessage = document.createElement('div');
+    errorMessage.id = 'errorMessage';
+    errorMessage.className = 'error-message';
+    errorMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i><span></span>';
+    errorMessage.style.cssText = `
+      background: rgba(244, 67, 54, 0.1);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+      color: var(--danger-color);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      animation: slideDown 0.3s ease;
+    `;
+    successMessage.parentNode.insertBefore(errorMessage, successMessage.nextSibling);
+  }
+  
+  const messageEl = errorMessage.querySelector('span');
+  messageEl.textContent = message;
+  errorMessage.style.display = 'flex';
+  
+  // Auto hide after 5 seconds
+  setTimeout(() => {
+    errorMessage.style.display = 'none';
+  }, 5000);
+  
+  // Play error sound if enabled
+  if (window.edurackSettings?.soundEffects) {
+    playErrorSound();
+  }
+}
+
+function createLoadingOverlay(message) {
+  const overlay = document.createElement('div');
+  overlay.className = 'loading-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--modal-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 16px;
+  `;
+  
+  overlay.innerHTML = `
+    <div style="
+      background: var(--white);
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: var(--card-shadow);
+    ">
+      <div style="
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--border-color);
+        border-top: 4px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+      "></div>
+      <p style="color: var(--text-color); font-weight: 500;">${message}</p>
+    </div>
+  `;
+  
+  return overlay;
+}
+
+// Sound Functions
+function playSuccessSound() {
+  try {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+    audio.volume = 0.3;
+    audio.play().catch(() => {}); // Ignore errors
+  } catch (error) {
+    // Ignore audio errors
+  }
+}
+
+function playErrorSound() {
+  try {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+    audio.volume = 0.2;
+    audio.play().catch(() => {}); // Ignore errors
+  } catch (error) {
+    // Ignore audio errors
+  }
+}
+
+function playNotificationSound() {
+  try {
+    const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+    audio.volume = 0.25;
+    audio.play().catch(() => {}); // Ignore errors
+  } catch (error) {
+    // Ignore audio errors
+  }
+}
+
+// Logout Function
+function handleLogout(e) {
+  e.preventDefault();
+  
+  if (confirm('Are you sure you want to log out?')) {
+    auth.signOut()
+      .then(() => {
+        localStorage.removeItem('edurack_current_settings_section');
+        window.location.href = "index.html";
+      })
+      .catch(error => {
+        console.error("Sign out error:", error);
+        showErrorMessage('Error signing out. Please try again.');
+      });
+  }
+}
+
+// Add CSS for animations and loading states
+const additionalStyles = document.createElement('style');
+additionalStyles.textContent = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .no-animations * {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
+  
+  .error-message {
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: var(--danger-color);
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    animation: slideDown 0.3s ease;
+  }
+  
+  .error-message.show {
+    display: flex;
+  }
+  
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .loading-overlay {
+    backdrop-filter: blur(4px);
+  }
+`;
+document.head.appendChild(additionalStyles);
+
+// Register Service Worker for PWA capabilities
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .then(registration => console.log("Service Worker registered with scope:", registration.scope))
+      .catch(err => console.error("Service Worker registration failed:", err));
+  });
+}
+
+// Initialize keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Ctrl/Cmd + S to save profile
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (document.getElementById('profile-section').classList.contains('active')) {
+      profileForm.dispatchEvent(new Event('submit'));
+    }
+  }
+  
+  // Escape to close modals
+  if (e.key === 'Escape') {
+    if (passwordModal.classList.contains('active')) {
+      closeModal(passwordModal);
+    }
+    if (deleteModal.classList.contains('active')) {
+      closeModal(deleteModal);
+    }
+  }
+});
+
+console.log('🔥 Edurack Settings - All features loaded and ready!');
+</script>
 </body>
 </html>
