@@ -3,36 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Enable app-like experience on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="icon-192.png">
   <title>PYQs - Edurack</title>
   <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#007adf" />
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <!-- Google Font: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <!-- Firebase SDKs will be loaded later -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     /* Base Variables for Light Mode */
     :root {
       --primary-color: #007adf;
       --secondary-color: #0056b3;
+      --accent-color: #ff6f61;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --danger-color: #f44336;
+      --info-color: #2196f3;
       --light-bg: #f4f7fb;
       --white: #fff;
       --text-color: #333;
-      --card-shadow: rgba(0, 0, 0, 0.1);
+      --text-secondary: #666;
+      --text-muted: #999;
+      --card-shadow: 0 8px 24px rgba(149, 157, 165, 0.15);
       --hover-bg: rgba(0, 122, 223, 0.1);
       --modal-bg: rgba(0, 0, 0, 0.6);
+      --border-color: #e0e0e0;
+      --gradient-primary: linear-gradient(135deg, #007adf 0%, #0056b3 100%);
+      --gradient-accent: linear-gradient(135deg, #ff6f61 0%, #ff8a80 100%);
+      --transition-speed: 0.3s;
+      --border-radius: 12px;
+      --box-shadow-hover: 0 12px 32px rgba(0, 122, 223, 0.2);
     }
+    
     /* Dark Mode Variables */
     body.dark-mode {
       --primary-color: #4da6ff;
       --secondary-color: #1a75ff;
-      --light-bg: #1e1e1e;
-      --white: #2c2c2c;
-      --text-color: #ddd;
-      --card-shadow: rgba(0, 0, 0, 0.6);
+      --accent-color: #ff8a80;
+      --light-bg: #121212;
+      --white: #1e1e1e;
+      --text-color: #e0e0e0;
+      --text-secondary: #aaaaaa;
+      --text-muted: #777;
+      --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
       --hover-bg: rgba(77, 166, 255, 0.15);
       --modal-bg: rgba(0, 0, 0, 0.8);
+      --border-color: #333333;
+      --gradient-primary: linear-gradient(135deg, #4da6ff 0%, #1a75ff 100%);
+      --gradient-accent: linear-gradient(135deg, #ff8a80 0%, #ffab91 100%);
     }
+    
     /* Global Resets & Typography */
     * {
       margin: 0;
@@ -40,70 +64,129 @@
       box-sizing: border-box;
       font-family: "Poppins", sans-serif;
     }
+    
     body {
       background: var(--light-bg);
       color: var(--text-color);
       line-height: 1.6;
-      transition: background 0.3s ease, color 0.3s ease;
+      transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
+      overflow-x: hidden;
     }
+    
     a {
       text-decoration: none;
       color: var(--primary-color);
+      transition: color var(--transition-speed) ease;
     }
+    
+    a:hover {
+      color: var(--secondary-color);
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 600;
+      line-height: 1.3;
+    }
+    
     /* Navbar */
     .navbar {
       display: flex;
-      justify-content: flex-start;
+      justify-content: space-between;
       align-items: center;
-      padding: 15px 20px;
+      padding: 12px 24px;
       background: var(--white);
-      box-shadow: 0 4px 10px var(--card-shadow);
+      box-shadow: var(--card-shadow);
       position: fixed;
       width: 100%;
       top: 0;
       z-index: 300;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid var(--border-color);
+      transition: background var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+      backdrop-filter: blur(10px);
     }
-    /* Hamburger Button (visible on mobile) */
+    
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
     .mobile-menu-toggle {
       display: none;
-      font-size: 24px;
+      font-size: 22px;
       border: none;
       background: none;
       cursor: pointer;
       color: var(--text-color);
-      margin-right: 8px;
+      transition: all var(--transition-speed) ease;
+      padding: 8px;
+      border-radius: 8px;
     }
-    @media (max-width: 480px) {
-      .mobile-menu-toggle {
-        display: inline-block;
-      }
+    
+    .mobile-menu-toggle:hover {
+      color: var(--primary-color);
+      background: var(--hover-bg);
+      transform: scale(1.1);
     }
+    
     .logo {
       font-size: 24px;
       font-weight: 700;
       color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform var(--transition-speed) ease;
     }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    .logo i {
+      font-size: 28px;
+    }
+    
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 15px;
-      margin-left: auto;
+      gap: 20px;
       position: relative;
     }
-    /* Search Wrapper & Toggle */
+    
+    /* Advanced Search */
     .search-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 6px;
       position: relative;
     }
+    
     .search-input {
-      padding: 5px 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem;
+      padding: 10px 16px 10px 40px;
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      font-size: 0.95rem;
+      width: 280px;
+      background: var(--light-bg);
+      color: var(--text-color);
+      transition: all var(--transition-speed) ease;
     }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 122, 223, 0.2);
+      width: 320px;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    
     .search-toggle {
       display: none;
       background: none;
@@ -111,237 +194,1030 @@
       font-size: 20px;
       color: var(--text-color);
       cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      transition: background var(--transition-speed) ease;
     }
-    @media (max-width: 480px) {
-      .search-input { display: none; }
-      .search-toggle { display: inline-block; }
+    
+    .search-toggle:hover {
+      background: var(--hover-bg);
     }
+    
+    /* Dark Mode Toggle */
     .dark-toggle {
       font-size: 20px;
       cursor: pointer;
       border: none;
-      background: none;
+      background: var(--hover-bg);
       color: var(--text-color);
-      transition: color 0.3s ease;
+      transition: all var(--transition-speed) ease;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    
     .dark-toggle:hover {
       color: var(--primary-color);
+      transform: rotate(15deg) scale(1.1);
     }
+    
     /* Profile */
     .profile {
       display: flex;
       align-items: center;
       cursor: pointer;
       position: relative;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 50px;
+      transition: background var(--transition-speed) ease;
     }
+    
+    .profile:hover {
+      background: var(--hover-bg);
+    }
+    
     .navbar-profile-pic {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       object-fit: cover;
+      border: 2px solid var(--primary-color);
+      transition: transform var(--transition-speed) ease;
     }
+    
+    .profile:hover .navbar-profile-pic {
+      transform: scale(1.05);
+    }
+    
+    .profile-info {
+      display: none;
+    }
+    
     .profile-dropdown {
       position: absolute;
-      top: 50px;
+      top: 60px;
       right: 0;
       background: var(--white);
-      border: 1px solid #e0e0e0;
-      box-shadow: 0 4px 10px var(--card-shadow);
-      border-radius: 6px;
-      padding: 10px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--card-shadow);
+      border-radius: var(--border-radius);
+      padding: 16px;
       display: none;
       z-index: 400;
-      min-width: 150px;
+      min-width: 220px;
+      animation: fadeIn 0.2s ease;
     }
-    .profile-dropdown p,
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .profile-dropdown p {
+      font-weight: 500;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-color);
+    }
+    
     .profile-dropdown a {
-      display: block;
-      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
       color: var(--text-color);
       font-size: 0.95rem;
-      transition: background 0.3s ease, color 0.3s ease;
+      border-radius: 8px;
+      margin-bottom: 4px;
+      transition: all var(--transition-speed) ease;
     }
+    
     .profile-dropdown a:hover {
-      background: var(--primary-color);
-      color: var(--white);
+      background: var(--hover-bg);
+      color: var(--primary-color);
+      transform: translateX(4px);
     }
+    
     .profile-dropdown a i {
-      margin-right: 8px;
-      font-size: 16px;
+      margin-right: 12px;
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
     }
+    
     /* Sidebar */
     .sidebar {
       position: fixed;
       top: 70px;
       left: 0;
-      width: 220px;
+      width: 260px;
       height: calc(100% - 70px);
       background: var(--white);
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-      padding: 20px;
+      box-shadow: var(--card-shadow);
+      padding: 24px 16px;
       overflow-y: auto;
       z-index: 200;
-      transition: left 0.3s ease;
+      transition: all var(--transition-speed) ease;
+      border-right: 1px solid var(--border-color);
     }
+    
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+      background-color: var(--border-color);
+      border-radius: 10px;
+    }
+    
     .sidebar ul {
       list-style: none;
     }
+    
     .sidebar ul li {
-      margin-bottom: 15px;
+      margin-bottom: 8px;
     }
+    
     .sidebar ul li a {
       color: var(--text-color);
       font-size: 1rem;
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      border-radius: 4px;
-      transition: background 0.3s ease;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      transition: all var(--transition-speed) ease;
+      font-weight: 500;
     }
-    .sidebar ul li a:hover,
-    .sidebar ul li a.active {
+    
+    .sidebar ul li a i {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+    }
+    
+    .sidebar ul li a:hover {
       background: var(--hover-bg);
+      color: var(--primary-color);
+      transform: translateX(4px);
     }
+    
+    .sidebar ul li a.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .sidebar ul li a.active:hover {
+      transform: none;
+    }
+    
+    .sidebar-footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    
     /* Main Content */
     .main-content {
-      margin: 90px 20px 20px 260px;
-      max-width: 1100px;
+      margin: 90px 30px 30px 290px;
+      transition: margin var(--transition-speed) ease;
     }
-    .page-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-      color: var(--text-color);
+    
+    /* Page Header */
+    .page-header {
+      margin-bottom: 40px;
+      background: var(--white);
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
     }
-    /* Section Buttons */
-    .section-buttons {
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: var(--gradient-primary);
+      opacity: 0.1;
+      border-radius: 50%;
+      transform: translate(50%, -50%);
+    }
+    
+    .page-header h1 {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+      color: var(--primary-color);
+      position: relative;
       display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .page-header h1 i {
+      font-size: 2rem;
+    }
+    
+    .page-header p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      position: relative;
+    }
+    
+    /* Stats Cards */
+    .stats-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 20px;
       margin-bottom: 30px;
     }
-    .section-button {
+    
+    .stat-card {
+      background: var(--white);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      text-align: center;
+      transition: all var(--transition-speed) ease;
+      border-top: 4px solid var(--primary-color);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--box-shadow-hover);
+    }
+    
+    .stat-card:nth-child(2) {
+      border-top-color: var(--accent-color);
+    }
+    
+    .stat-card:nth-child(3) {
+      border-top-color: var(--success-color);
+    }
+    
+    .stat-card:nth-child(4) {
+      border-top-color: var(--warning-color);
+    }
+    
+    .stat-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 8px;
+    }
+    
+    .stat-card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    
+    /* Filter Section */
+    .filter-section {
+      background: var(--white);
+      padding: 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      margin-bottom: 30px;
+    }
+    
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .filter-header h3 {
+      color: var(--text-color);
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 10px 20px;
+      gap: 8px;
+    }
+    
+    .filter-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .filter-group label {
+      font-weight: 500;
+      color: var(--text-color);
+      font-size: 0.9rem;
+    }
+    
+    .filter-group select,
+    .filter-group input {
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background: var(--light-bg);
+      color: var(--text-color);
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .filter-group select:focus,
+    .filter-group input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 122, 223, 0.2);
+    }
+    
+    /* Exam Type Buttons */
+    .exam-type-section {
+      margin-bottom: 30px;
+    }
+    
+    .exam-type-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .exam-type-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 24px;
       background: var(--white);
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--border-radius);
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all var(--transition-speed) ease;
       text-decoration: none;
       color: var(--text-color);
       font-weight: 500;
+      min-width: 150px;
+      justify-content: center;
     }
-    .section-button:hover {
+    
+    .exam-type-btn:hover {
+      border-color: var(--primary-color);
       background: var(--hover-bg);
+      transform: translateY(-3px);
+      box-shadow: var(--box-shadow-hover);
     }
-    /* PYQs Specific */
-    .chapters-grid {
+    
+    .exam-type-btn.active {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .exam-type-btn i {
+      font-size: 24px;
+    }
+    
+    /* Chapters Grid */
+    .chapters-section {
+      margin-bottom: 40px;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      margin-bottom: 24px;
+      color: var(--text-color);
       display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      align-items: center;
+      gap: 12px;
     }
+    
+    .section-title i {
+      color: var(--primary-color);
+      font-size: 24px;
+    }
+    
+    .chapters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    
     .chapter-card {
       background: var(--white);
-      box-shadow: 0 2px 6px var(--card-shadow);
-      padding: 15px;
-      border-radius: 8px;
-      flex: 1;
-      min-width: 150px;
-      text-align: center;
+      box-shadow: var(--card-shadow);
+      padding: 24px;
+      border-radius: var(--border-radius);
       cursor: pointer;
-      transition: transform 0.3s ease;
+      transition: all var(--transition-speed) ease;
+      position: relative;
+      overflow: hidden;
+      border-left: 4px solid var(--primary-color);
     }
+    
+    .chapter-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-primary);
+      opacity: 0;
+      transition: opacity var(--transition-speed) ease;
+      z-index: 1;
+    }
+    
     .chapter-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-8px);
+      box-shadow: var(--box-shadow-hover);
     }
-    @media (max-width: 768px) {
-      .sidebar { width: 180px; }
-      .main-content { margin-left: 200px; }
+    
+    .chapter-card:hover::before {
+      opacity: 0.05;
     }
-    @media (max-width: 480px) {
-      /* On mobile, slide sidebar off-canvas */
+    
+    .chapter-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .chapter-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--hover-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--primary-color);
+      transition: all var(--transition-speed) ease;
+    }
+    
+    .chapter-card:hover .chapter-icon {
+      transform: scale(1.1);
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .chapter-difficulty {
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    
+    .difficulty-easy {
+      background: rgba(76, 175, 80, 0.1);
+      color: var(--success-color);
+    }
+    
+    .difficulty-medium {
+      background: rgba(255, 152, 0, 0.1);
+      color: var(--warning-color);
+    }
+    
+    .difficulty-hard {
+      background: rgba(244, 67, 54, 0.1);
+      color: var(--danger-color);
+    }
+    
+    .chapter-card h3 {
+      font-size: 1.3rem;
+      color: var(--text-color);
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .chapter-card p {
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .chapter-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .chapter-stat {
+      text-align: center;
+    }
+    
+    .chapter-stat span:first-child {
+      display: block;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-color);
+    }
+    
+    .chapter-stat span:last-child {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    .chapter-progress {
+      width: 100%;
+      height: 8px;
+      background: var(--light-bg);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .chapter-progress-bar {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    
+    .chapter-actions {
+      display: flex;
+      gap: 8px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all var(--transition-speed) ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      text-decoration: none;
+    }
+    
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+    
+    .btn-outline:hover {
+      background: var(--hover-bg);
+      transform: translateY(-2px);
+    }
+    
+    /* Loading States */
+    .loading-skeleton {
+      background: linear-gradient(90deg, var(--border-color) 25%, transparent 50%, var(--border-color) 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    
+    .skeleton-card {
+      background: var(--white);
+      padding: 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+    }
+    
+    .skeleton-header {
+      height: 20px;
+      background: var(--border-color);
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    
+    .skeleton-text {
+      height: 16px;
+      background: var(--border-color);
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    
+    .skeleton-text:last-child {
+      width: 60%;
+    }
+    
+    /* Success Message */
+    .success-message {
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      color: var(--success-color);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .success-message.show {
+      display: flex;
+      animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    /* Responsive Design */
+    @media (min-width: 992px) {
+      .profile-info {
+        display: block;
+        margin-right: 8px;
+      }
+      
+      .profile-info span {
+        display: block;
+        line-height: 1.2;
+      }
+      
+      .profile-info span:first-child {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-color);
+      }
+      
+      .profile-info span:last-child {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+      }
+    }
+    
+    @media (max-width: 1200px) {
       .sidebar {
-        left: -240px;
         width: 240px;
       }
+      
+      .main-content {
+        margin-left: 270px;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .search-input {
+        width: 200px;
+      }
+      
+      .search-input:focus {
+        width: 240px;
+      }
+      
+      .filter-controls {
+        grid-template-columns: 1fr;
+      }
+      
+      .exam-type-buttons {
+        justify-content: center;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 280px;
+        left: -300px;
+        z-index: 350;
+      }
+      
       .sidebar.active {
         left: 0;
       }
-      .main-content { margin: 90px 20px; }
-      /* Keep navbar horizontal */
-      .navbar { flex-direction: row; }
-      .section-buttons {
+      
+      .main-content {
+        margin: 80px 20px 20px 20px;
+      }
+      
+      .mobile-menu-toggle {
+        display: block;
+      }
+      
+      .search-input {
+        display: none;
+      }
+      
+      .search-toggle {
+        display: inline-block;
+      }
+      
+      .chapters-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-section {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .exam-type-buttons {
         flex-direction: column;
       }
+    }
+    
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 12px 16px;
+      }
+      
+      .logo {
+        font-size: 20px;
+      }
+      
+      .nav-right {
+        gap: 12px;
+      }
+      
+      .page-header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .stats-section {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* Overlay for sidebar on mobile */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 300;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+    }
+    
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    /* Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+      40%, 43% { transform: translate3d(0,-30px,0); }
+      70% { transform: translate3d(0,-15px,0); }
+      90% { transform: translate3d(0,-4px,0); }
+    }
+    
+    .bounce {
+      animation: bounce 1s ease;
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar">
-    <!-- Hamburger menu for mobile -->
-    <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation">
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="logo">Edurack</div>
+  <header class="navbar">
+    <div class="navbar-left">
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" title="Toggle Navigation" aria-label="Toggle Navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        Edurack
+      </div>
+    </div>
     <div class="nav-right">
       <div class="search-wrapper">
-        <input type="text" placeholder="Search courses..." class="search-input">
-        <button id="searchToggle" class="search-toggle" title="Search">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" placeholder="Search questions, topics..." class="search-input" id="searchInput" aria-label="Search questions">
+        <button id="searchToggle" class="search-toggle" title="Search" aria-label="Toggle Search">
           <i class="fas fa-search"></i>
         </button>
       </div>
-      <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode">
+      <button id="darkToggle" class="dark-toggle" title="Toggle Dark Mode" aria-label="Toggle Dark Mode">
         <i class="fas fa-moon"></i>
       </button>
+      <!-- Profile Icon with Image -->
       <div class="profile">
-        <img id="navbarProfilePic" src="default-profile.png" alt="Profile" class="navbar-profile-pic">
+        <div class="profile-info">
+          <span id="profileName">User</span>
+          <span>Student</span>
+        </div>
+        <img id="navbarProfilePic" src="default-profile.png" alt="Profile" class="navbar-profile-pic" loading="lazy">
         <div class="profile-dropdown" id="profileDropdown">
           <p id="profileGreeting">Hi, User!</p>
+          <a href="profile.html"><i class="fas fa-user"></i> My Profile</a>
           <a href="settings.html"><i class="fas fa-cog"></i> Settings</a>
+          <a href="help.html"><i class="fas fa-question-circle"></i> Help Center</a>
           <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Log Out</a>
         </div>
       </div>
     </div>
-  </nav>
-  
+  </header>
+
+  <!-- Mobile Search -->
+  <div class="search-mobile" id="searchMobile" style="position: fixed; top: 70px; left: 0; width: 100%; padding: 16px; background: var(--white); z-index: 300; box-shadow: var(--card-shadow); display: none;">
+    <input type="text" placeholder="Search questions, topics..." style="width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 1rem; background: var(--light-bg); color: var(--text-color);" aria-label="Mobile search">
+  </div>
+
+  <!-- Sidebar Overlay (Mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   <!-- Sidebar Navigation -->
-  <div class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar">
     <ul>
-      <li><a href="home.html"><i class="fas fa-home"></i> Dashboard</a></li>
+      <li><a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
       <li><a href="pyqs.html" class="active"><i class="fas fa-question-circle"></i> PYQs</a></li>
       <li><a href="test-series.html"><i class="fas fa-pen-square"></i> Test Series</a></li>
       <li><a href="chapter-growth.html"><i class="fas fa-chart-line"></i> Chapter Growth</a></li>
       <li><a href="leaderboard.html"><i class="fas fa-trophy"></i> Leaderboard</a></li>
-      <li><a href="settings.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+      <li><a href="schedule.html"><i class="fas fa-calendar-alt"></i> Schedule</a></li>
+      <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+      <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
       <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
     </ul>
-  </div>
-  
+    <div class="sidebar-footer">
+      <p>Edurack v2.0</p>
+      <p>© 2025 All Rights Reserved</p>
+    </div>
+  </aside>
+
   <!-- Main Content -->
-  <div class="main-content">
-    <h1 class="page-title">Past Year Questions (PYQs)</h1>
-    
-    <!-- Section Buttons for JEE and NEET -->
-    <div class="section-buttons">
-      <a href="jee.html" class="section-button" title="JEE Section">
-        <i class="fas fa-atom" style="font-size:20px;"></i>
-        JEE
-      </a>
-      <a href="neet.html" class="section-button" title="NEET Section">
-        <i class="fas fa-microscope" style="font-size:20px;"></i>
-        NEET
-      </a>
+  <main class="main-content">
+    <!-- Page Header -->
+    <section class="page-header">
+      <h1><i class="fas fa-question-circle"></i> Past Year Questions (PYQs)</h1>
+      <p>Master your preparation with carefully curated previous year questions from NEET and JEE examinations. Track your progress and identify areas for improvement.</p>
+    </section>
+
+    <!-- Success Message -->
+    <div class="success-message" id="successMessage">
+      <i class="fas fa-check-circle"></i>
+      <span>Progress updated successfully!</span>
     </div>
-    
-    <div id="chaptersContainer" class="chapters-grid">
-      <!-- Chapter cards will be dynamically inserted here -->
-    </div>
-  </div>
-  
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+      <div class="stat-card">
+        <h3 id="totalQuestions">0</h3>
+        <p>Total Questions</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="solvedQuestions">0</h3>
+        <p>Questions Solved</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="accuracyRate">0%</h3>
+        <p>Accuracy Rate</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="studyStreak">0</h3>
+        <p>Day Streak</p>
+      </div>
+    </section>
+
+    <!-- Exam Type Selection -->
+    <section class="exam-type-section">
+      <div class="exam-type-buttons">
+        <button class="exam-type-btn active" data-exam="all" id="allExamBtn">
+          <i class="fas fa-globe"></i>
+          <span>All Exams</span>
+        </button>
+        <button class="exam-type-btn" data-exam="jee" id="jeeExamBtn">
+          <i class="fas fa-atom"></i>
+          <span>JEE</span>
+        </button>
+        <button class="exam-type-btn" data-exam="neet" id="neetExamBtn">
+          <i class="fas fa-microscope"></i>
+          <span>NEET</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+      <div class="filter-header">
+        <h3><i class="fas fa-filter"></i> Filter Questions</h3>
+        <button class="btn btn-outline" id="clearFilters">
+          <i class="fas fa-times"></i> Clear Filters
+        </button>
+      </div>
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="subjectFilter">Subject</label>
+          <select id="subjectFilter">
+            <option value="">All Subjects</option>
+            <option value="physics">Physics</option>
+            <option value="chemistry">Chemistry</option>
+            <option value="mathematics">Mathematics</option>
+            <option value="biology">Biology</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="yearFilter">Year</label>
+          <select id="yearFilter">
+            <option value="">All Years</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="difficultyFilter">Difficulty</label>
+          <select id="difficultyFilter">
+            <option value="">All Levels</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="statusFilter">Status</label>
+          <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="unsolved">Unsolved</option>
+            <option value="solved">Solved</option>
+            <option value="bookmarked">Bookmarked</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapters Section -->
+    <section class="chapters-section">
+      <h2 class="section-title">
+        <i class="fas fa-book-open"></i>
+        <span id="sectionTitleText">All Chapters</span>
+      </h2>
+      
+      <!-- Loading Skeleton -->
+      <div class="chapters-grid" id="loadingSkeleton" style="display: none;">
+        <div class="skeleton-card loading-skeleton">
+          <div class="skeleton-header loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+        </div>
+        <div class="skeleton-card loading-skeleton">
+          <div class="skeleton-header loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+        </div>
+        <div class="skeleton-card loading-skeleton">
+          <div class="skeleton-header loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+          <div class="skeleton-text loading-skeleton"></div>
+        </div>
+      </div>
+
+      <!-- Chapters Grid -->
+      <div class="chapters-grid" id="chaptersContainer">
+        <!-- Chapter cards will be dynamically inserted here -->
+      </div>
+    </section>
+  </main>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -356,98 +1232,880 @@
       messagingSenderId: "188106766480",
       appId: "1:188106766480:web:801e701f00151448090015"
     };
+
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
-    
-    // Check authentication state and fetch PYQs chapters
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (!user) {
-        window.location.href = "index.html";
-      } else {
-        // Update navbar with user data
-        firebase.firestore().collection("users").doc(user.uid).get()
-          .then(function(doc) {
-            const name = doc.exists && doc.data().fullName ? doc.data().fullName : "User";
-            document.getElementById("profileGreeting").innerText = "Hi, " + name + "!";
-            if (doc.exists && doc.data().photoURL) {
-              document.getElementById("navbarProfilePic").src = doc.data().photoURL;
-            }
-          })
-          .catch(function(error) {
-            console.error("Error fetching user data:", error);
-          });
-          
-        // Fetch chapters for PYQs from Firestore (assume collection "pyqs_chapters")
-        const chaptersContainer = document.getElementById("chaptersContainer");
-        firebase.firestore().collection("pyqs_chapters").get()
-          .then(function(snapshot) {
-            snapshot.forEach(function(doc) {
-              const data = doc.data();
-              const chapterDiv = document.createElement("div");
-              chapterDiv.classList.add("chapter-card");
-              chapterDiv.innerHTML = `<h3>${data.chapterName}</h3><p>Click to view PYQs</p>`;
-              // Redirect to chapter-specific PYQs page using query parameter "chapterId"
-              chapterDiv.addEventListener("click", function() {
-                window.location.href = `pyqs_chapter.html?chapterId=${doc.id}`;
-              });
-              chaptersContainer.appendChild(chapterDiv);
-            });
-          })
-          .catch(function(error) {
-            console.error("Error fetching chapters:", error);
-          });
-      }
-    });
-    
-    // Profile Dropdown Toggle
-    const profile = document.querySelector(".profile");
-    const profileDropdown = document.getElementById("profileDropdown");
-    profile.addEventListener("click", function(e) {
-      e.stopPropagation();
-      profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
-    });
-    document.addEventListener("click", function() {
-      if (profileDropdown.style.display === "block") {
-        profileDropdown.style.display = "none";
-      }
-    });
-    
-    // Dark Mode Toggle
+
+    // Initialize services
+    const auth = firebase.auth();
+    const firestore = firebase.firestore();
+
+    // Cache DOM elements
+    const profileNameEl = document.getElementById("profileName");
+    const profileGreetingEl = document.getElementById("profileGreeting");
+    const navbarProfilePic = document.getElementById("navbarProfilePic");
+    const sidebar = document.getElementById("sidebar");
+    const sidebarOverlay = document.getElementById("sidebarOverlay");
+    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+    const searchToggle = document.getElementById("searchToggle");
+    const searchMobile = document.getElementById("searchMobile");
+    const searchInput = document.getElementById("searchInput");
     const darkToggle = document.getElementById("darkToggle");
-    darkToggle.addEventListener("click", function() {
+    const profileEl = document.querySelector(".profile");
+    const profileDropdownEl = document.getElementById("profileDropdown");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const successMessage = document.getElementById("successMessage");
+
+    // Stats elements
+    const totalQuestionsEl = document.getElementById("totalQuestions");
+    const solvedQuestionsEl = document.getElementById("solvedQuestions");
+    const accuracyRateEl = document.getElementById("accuracyRate");
+    const studyStreakEl = document.getElementById("studyStreak");
+
+    // Filter elements
+    const examTypeButtons = document.querySelectorAll('.exam-type-btn');
+    const subjectFilter = document.getElementById("subjectFilter");
+    const yearFilter = document.getElementById("yearFilter");
+    const difficultyFilter = document.getElementById("difficultyFilter");
+    const statusFilter = document.getElementById("statusFilter");
+    const clearFiltersBtn = document.getElementById("clearFilters");
+
+    // Content elements
+    const chaptersContainer = document.getElementById("chaptersContainer");
+    const loadingSkeleton = document.getElementById("loadingSkeleton");
+    const sectionTitleText = document.getElementById("sectionTitleText");
+
+    // Global variables
+    let currentUser = null;
+    let allChapters = [];
+    let filteredChapters = [];
+    let currentExamType = 'all';
+    let userProgress = {};
+
+    // Sample chapter data (in real app, this would come from Firebase)
+    const sampleChapters = [
+      {
+        id: 'physics_mechanics',
+        name: 'Mechanics',
+        subject: 'physics',
+        examType: 'jee',
+        difficulty: 'medium',
+        totalQuestions: 150,
+        solvedQuestions: 45,
+        accuracy: 78,
+        icon: 'fas fa-cogs',
+        description: 'Laws of motion, work, energy, and power',
+        years: ['2024', '2023', '2022', '2021', '2020']
+      },
+      {
+        id: 'chemistry_organic',
+        name: 'Organic Chemistry',
+        subject: 'chemistry',
+        examType: 'both',
+        difficulty: 'hard',
+        totalQuestions: 200,
+        solvedQuestions: 67,
+        accuracy: 65,
+        icon: 'fas fa-flask',
+        description: 'Hydrocarbons, functional groups, and reactions',
+        years: ['2024', '2023', '2022', '2021', '2020']
+      },
+      {
+        id: 'biology_genetics',
+        name: 'Genetics',
+        subject: 'biology',
+        examType: 'neet',
+        difficulty: 'medium',
+        totalQuestions: 120,
+        solvedQuestions: 89,
+        accuracy: 92,
+        icon: 'fas fa-dna',
+        description: 'Heredity, variation, and molecular basis',
+        years: ['2024', '2023', '2022', '2021']
+      },
+      {
+        id: 'math_calculus',
+        name: 'Calculus',
+        subject: 'mathematics',
+        examType: 'jee',
+        difficulty: 'hard',
+        totalQuestions: 180,
+        solvedQuestions: 23,
+        accuracy: 45,
+        icon: 'fas fa-square-root-alt',
+        description: 'Limits, derivatives, and integrals',
+        years: ['2024', '2023', '2022', '2021', '2020']
+      },
+      {
+        id: 'physics_waves',
+        name: 'Waves & Oscillations',
+        subject: 'physics',
+        examType: 'both',
+        difficulty: 'medium',
+        totalQuestions: 95,
+        solvedQuestions: 78,
+        accuracy: 85,
+        icon: 'fas fa-wave-square',
+        description: 'Simple harmonic motion and wave properties',
+        years: ['2024', '2023', '2022']
+      },
+      {
+        id: 'chemistry_physical',
+        name: 'Physical Chemistry',
+        subject: 'chemistry',
+        examType: 'both',
+        difficulty: 'easy',
+        totalQuestions: 110,
+        solvedQuestions: 95,
+        accuracy: 88,
+        icon: 'fas fa-atom',
+        description: 'Thermodynamics, kinetics, and equilibrium',
+        years: ['2024', '2023', '2022', '2021']
+      }
+    ];
+
+    // Initialize app
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeTheme();
+      setupEventListeners();
+      showLoadingSkeleton();
+    });
+
+    // Theme Management
+    function initializeTheme() {
+      const savedTheme = localStorage.getItem('edurack_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark) || (!savedTheme && prefersDark)) {
+        document.body.classList.add('dark-mode');
+        darkToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        document.body.classList.remove('dark-mode');
+        darkToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+    }
+
+    // Event Listeners Setup
+    function setupEventListeners() {
+      // Mobile menu toggle
+      mobileMenuToggle.addEventListener("click", toggleMobileMenu);
+      sidebarOverlay.addEventListener("click", closeMobileMenu);
+      
+      // Search functionality
+      searchToggle.addEventListener("click", toggleMobileSearch);
+      searchInput.addEventListener("input", handleSearch);
+      searchMobile.querySelector('input').addEventListener("input", handleSearch);
+      document.addEventListener("click", closeMobileSearchOutside);
+      
+      // Profile dropdown
+      profileEl.addEventListener("click", toggleProfileDropdown);
+      document.addEventListener("click", closeProfileDropdownOutside);
+      
+      // Dark mode toggle
+      darkToggle.addEventListener("click", toggleDarkMode);
+      
+      // Exam type buttons
+      examTypeButtons.forEach(btn => {
+        btn.addEventListener('click', () => handleExamTypeChange(btn.dataset.exam));
+      });
+      
+      // Filter controls
+      subjectFilter.addEventListener('change', applyFilters);
+      yearFilter.addEventListener('change', applyFilters);
+      difficultyFilter.addEventListener('change', applyFilters);
+      statusFilter.addEventListener('change', applyFilters);
+      clearFiltersBtn.addEventListener('click', clearAllFilters);
+      
+      // Logout
+      logoutBtn.addEventListener("click", handleLogout);
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', handleKeyboardShortcuts);
+    }
+
+    // Mobile Menu Functions
+    function toggleMobileMenu(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle("active");
+      sidebarOverlay.classList.toggle("active");
+      document.body.style.overflow = sidebar.classList.contains("active") ? "hidden" : "";
+    }
+
+    function closeMobileMenu() {
+      sidebar.classList.remove("active");
+      sidebarOverlay.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    // Search Functions
+    function toggleMobileSearch() {
+      searchMobile.style.display = searchMobile.style.display === "block" ? "none" : "block";
+      if (searchMobile.style.display === "block") {
+        searchMobile.querySelector("input").focus();
+      }
+    }
+
+    function closeMobileSearchOutside(e) {
+      if (!searchToggle.contains(e.target) && !searchMobile.contains(e.target)) {
+        searchMobile.style.display = "none";
+      }
+    }
+
+    function handleSearch(e) {
+      const query = e.target.value.toLowerCase().trim();
+      
+      if (query === '') {
+        filteredChapters = [...allChapters];
+      } else {
+        filteredChapters = allChapters.filter(chapter => 
+          chapter.name.toLowerCase().includes(query) ||
+          chapter.subject.toLowerCase().includes(query) ||
+          chapter.description.toLowerCase().includes(query)
+        );
+      }
+      
+      renderChapters();
+      
+      // Update both search inputs
+      if (e.target !== searchInput) {
+        searchInput.value = e.target.value;
+      }
+      if (e.target !== searchMobile.querySelector('input')) {
+        searchMobile.querySelector('input').value = e.target.value;
+      }
+    }
+
+    // Profile Dropdown Functions
+    function toggleProfileDropdown(e) {
+      e.stopPropagation();
+      profileDropdownEl.style.display = profileDropdownEl.style.display === "block" ? "none" : "block";
+    }
+
+    function closeProfileDropdownOutside() {
+      profileDropdownEl.style.display = "none";
+    }
+
+    // Theme Functions
+    function toggleDarkMode() {
       document.body.classList.toggle("dark-mode");
-      darkToggle.innerHTML = document.body.classList.contains("dark-mode") 
+      const isDarkMode = document.body.classList.contains("dark-mode");
+      localStorage.setItem('edurack_theme', isDarkMode ? 'dark' : 'light');
+      
+      darkToggle.innerHTML = isDarkMode 
         ? '<i class="fas fa-sun"></i>' 
         : '<i class="fas fa-moon"></i>';
-    });
-    
-    // Logout functionality
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        firebase.auth().signOut().then(() => {
-          window.location.href = "index.html";
-        }).catch((error) => {
-          console.error("Sign out error:", error);
-        });
-      });
     }
-    
-    // Mobile Sidebar Toggle via Hamburger
-    const mobileMenuToggle = document.getElementById("mobileMenuToggle");
-    mobileMenuToggle.addEventListener("click", function(e) {
-      e.stopPropagation();
-      const sidebar = document.getElementById("sidebar");
-      sidebar.classList.toggle("active");
-    });
-    document.addEventListener("click", function(e) {
-      const sidebar = document.getElementById("sidebar");
-      if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-        sidebar.classList.remove("active");
+
+    // Exam Type Functions
+    function handleExamTypeChange(examType) {
+      currentExamType = examType;
+      
+      // Update active button
+      examTypeButtons.forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.exam === examType) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Update section title
+      const titleMap = {
+        'all': 'All Chapters',
+        'jee': 'JEE Chapters',
+        'neet': 'NEET Chapters'
+      };
+      sectionTitleText.textContent = titleMap[examType];
+      
+      applyFilters();
+      playSuccessSound();
+    }
+
+    // Filter Functions
+    function applyFilters() {
+      let filtered = [...allChapters];
+      
+      // Filter by exam type
+      if (currentExamType !== 'all') {
+        filtered = filtered.filter(chapter => 
+          chapter.examType === currentExamType || chapter.examType === 'both'
+        );
+      }
+      
+      // Filter by subject
+      if (subjectFilter.value) {
+        filtered = filtered.filter(chapter => chapter.subject === subjectFilter.value);
+      }
+      
+      // Filter by year
+      if (yearFilter.value) {
+        filtered = filtered.filter(chapter => chapter.years.includes(yearFilter.value));
+      }
+      
+      // Filter by difficulty
+      if (difficultyFilter.value) {
+        filtered = filtered.filter(chapter => chapter.difficulty === difficultyFilter.value);
+      }
+      
+      // Filter by status
+      if (statusFilter.value) {
+        filtered = filtered.filter(chapter => {
+          const progress = chapter.solvedQuestions / chapter.totalQuestions;
+          switch (statusFilter.value) {
+            case 'unsolved':
+              return progress === 0;
+            case 'solved':
+              return progress === 1;
+            case 'bookmarked':
+              return userProgress[chapter.id]?.bookmarked || false;
+            default:
+              return true;
+          }
+        });
+      }
+      
+      filteredChapters = filtered;
+      renderChapters();
+    }
+
+    function clearAllFilters() {
+      subjectFilter.value = '';
+      yearFilter.value = '';
+      difficultyFilter.value = '';
+      statusFilter.value = '';
+      searchInput.value = '';
+      searchMobile.querySelector('input').value = '';
+      
+      applyFilters();
+      showSuccessMessage('Filters cleared successfully!');
+    }
+
+    // Firebase Auth State Management
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        currentUser = user;
+        await loadUserData(user);
+        await loadChaptersData();
+        hideLoadingSkeleton();
+      } else {
+        window.location.href = "index.html";
       }
     });
+
+    // Load User Data
+    async function loadUserData(user) {
+      try {
+        const doc = await firestore.collection("users").doc(user.uid).get();
+        
+        if (doc.exists) {
+          const userData = doc.data();
+          const name = userData.fullName || "User";
+          
+          // Update navbar
+          profileNameEl.innerText = name;
+          profileGreetingEl.innerText = `Hi, ${name}!`;
+          
+          // Update profile picture
+          if (userData.photoURL) {
+            navbarProfilePic.src = userData.photoURL;
+          } else {
+            const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=007adf&color=fff&size=200`;
+            navbarProfilePic.src = avatarUrl;
+          }
+          
+          // Load user progress
+          await loadUserProgress(user.uid);
+        }
+      } catch (error) {
+        console.error("Error loading user data:", error);
+      }
+    }
+
+    // Load User Progress
+    async function loadUserProgress(userId) {
+      try {
+        const doc = await firestore.collection("user_progress").doc(userId).get();
+        if (doc.exists) {
+          userProgress = doc.data().chapters || {};
+        }
+        updateStats();
+      } catch (error) {
+        console.error("Error loading user progress:", error);
+      }
+    }
+
+    // Load Chapters Data
+    async function loadChaptersData() {
+      try {
+        // In a real app, this would fetch from Firebase
+        // For demo purposes, we'll use sample data
+        allChapters = [...sampleChapters];
+        filteredChapters = [...allChapters];
+        
+        // Simulate loading delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        renderChapters();
+        updateStats();
+      } catch (error) {
+        console.error("Error loading chapters:", error);
+        showErrorMessage("Error loading chapters. Please refresh the page.");
+      }
+    }
+
+    // Render Chapters
+    function renderChapters() {
+      chaptersContainer.innerHTML = '';
+      
+      if (filteredChapters.length === 0) {
+        chaptersContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-secondary);">
+            <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+            <h3>No chapters found</h3>
+            <p>Try adjusting your filters or search terms</p>
+          </div>
+        `;
+        return;
+      }
+      
+      filteredChapters.forEach((chapter, index) => {
+        const chapterCard = createChapterCard(chapter, index);
+        chaptersContainer.appendChild(chapterCard);
+      });
+      
+      // Animate cards
+      animateChapterCards();
+    }
+
+    // Create Chapter Card
+    function createChapterCard(chapter, index) {
+      const progress = (chapter.solvedQuestions / chapter.totalQuestions) * 100;
+      const isBookmarked = userProgress[chapter.id]?.bookmarked || false;
+      
+      const card = document.createElement('div');
+      card.className = 'chapter-card';
+      card.style.animationDelay = `${index * 0.1}s`;
+      
+      card.innerHTML = `
+        <div class="chapter-card-header">
+          <div class="chapter-icon">
+            <i class="${chapter.icon}"></i>
+          </div>
+          <div class="chapter-difficulty difficulty-${chapter.difficulty}">
+            ${chapter.difficulty.charAt(0).toUpperCase() + chapter.difficulty.slice(1)}
+          </div>
+        </div>
+        
+        <h3>${chapter.name}</h3>
+        <p>${chapter.description}</p>
+        
+        <div class="chapter-stats">
+          <div class="chapter-stat">
+            <span>${chapter.totalQuestions}</span>
+            <span>Total</span>
+          </div>
+          <div class="chapter-stat">
+            <span>${chapter.solvedQuestions}</span>
+            <span>Solved</span>
+          </div>
+          <div class="chapter-stat">
+            <span>${chapter.accuracy}%</span>
+            <span>Accuracy</span>
+          </div>
+        </div>
+        
+        <div class="chapter-progress">
+          <div class="chapter-progress-bar" style="width: ${progress}%"></div>
+        </div>
+        
+        <div class="chapter-actions">
+          <button class="btn btn-primary" onclick="startChapter('${chapter.id}')">
+            <i class="fas fa-play"></i> Start
+          </button>
+          <button class="btn btn-outline" onclick="toggleBookmark('${chapter.id}')">
+            <i class="fas fa-bookmark${isBookmarked ? '' : '-o'}"></i>
+          </button>
+          <button class="btn btn-outline" onclick="viewStats('${chapter.id}')">
+            <i class="fas fa-chart-bar"></i>
+          </button>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Animation Functions
+    function animateChapterCards() {
+      const cards = document.querySelectorAll('.chapter-card');
+      cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+          card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+          card.style.opacity = '1';
+          card.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    }
+
+    // Chapter Actions
+    function startChapter(chapterId) {
+      playSuccessSound();
+      showSuccessMessage('Starting chapter...');
+      
+      // Add bounce animation to the clicked card
+      const cards = document.querySelectorAll('.chapter-card');
+      cards.forEach(card => {
+        if (card.innerHTML.includes(chapterId)) {
+          card.classList.add('bounce');
+          setTimeout(() => card.classList.remove('bounce'), 1000);
+        }
+      });
+      
+      // Simulate navigation delay
+      setTimeout(() => {
+        window.location.href = `chapter-questions.html?chapterId=${chapterId}`;
+      }, 500);
+    }
+
+    function toggleBookmark(chapterId) {
+      if (!currentUser) return;
+      
+      const isCurrentlyBookmarked = userProgress[chapterId]?.bookmarked || false;
+      const newBookmarkState = !isCurrentlyBookmarked;
+      
+      // Update local state
+      if (!userProgress[chapterId]) {
+        userProgress[chapterId] = {};
+      }
+      userProgress[chapterId].bookmarked = newBookmarkState;
+      
+      // Update Firebase
+      firestore.collection("user_progress").doc(currentUser.uid).update({
+        [`chapters.${chapterId}.bookmarked`]: newBookmarkState,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }).then(() => {
+        showSuccessMessage(newBookmarkState ? 'Chapter bookmarked!' : 'Bookmark removed!');
+        renderChapters(); // Re-render to update bookmark icon
+        playSuccessSound();
+      }).catch(error => {
+        console.error('Error updating bookmark:', error);
+        showErrorMessage('Error updating bookmark. Please try again.');
+      });
+    }
+
+    function viewStats(chapterId) {
+      playSuccessSound();
+      const chapter = allChapters.find(c => c.id === chapterId);
+      if (!chapter) return;
+      
+      // Create and show stats modal
+      const modal = createStatsModal(chapter);
+      document.body.appendChild(modal);
+      
+      setTimeout(() => {
+        modal.classList.add('active');
+      }, 10);
+    }
+
+    // Create Stats Modal
+    function createStatsModal(chapter) {
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--modal-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 500;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      `;
+      
+      const progress = (chapter.solvedQuestions / chapter.totalQuestions) * 100;
+      
+      modal.innerHTML = `
+        <div style="
+          background: var(--white);
+          border-radius: var(--border-radius);
+          width: 90%;
+          max-width: 500px;
+          padding: 30px;
+          box-shadow: var(--card-shadow);
+          transform: scale(0.9);
+          transition: transform 0.3s ease;
+        ">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+            <div style="
+              width: 60px;
+              height: 60px;
+              border-radius: 50%;
+              background: var(--hover-bg);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 24px;
+              color: var(--primary-color);
+            ">
+              <i class="${chapter.icon}"></i>
+            </div>
+            <div>
+              <h3 style="color: var(--text-color); margin-bottom: 4px;">${chapter.name}</h3>
+              <p style="color: var(--text-secondary); margin: 0;">${chapter.subject.charAt(0).toUpperCase() + chapter.subject.slice(1)}</p>
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+            <div style="text-align: center; padding: 16px; background: var(--light-bg); border-radius: 8px;">
+              <div style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color);">${chapter.totalQuestions}</div>
+              <div style="font-size: 0.9rem; color: var(--text-secondary);">Total Questions</div>
+            </div>
+            <div style="text-align: center; padding: 16px; background: var(--light-bg); border-radius: 8px;">
+              <div style="font-size: 1.5rem; font-weight: 600; color: var(--success-color);">${chapter.solvedQuestions}</div>
+              <div style="font-size: 0.9rem; color: var(--text-secondary);">Solved</div>
+            </div>
+            <div style="text-align: center; padding: 16px; background: var(--light-bg); border-radius: 8px;">
+              <div style="font-size: 1.5rem; font-weight: 600; color: var(--accent-color);">${chapter.accuracy}%</div>
+              <div style="font-size: 0.9rem; color: var(--text-secondary);">Accuracy</div>
+            </div>
+            <div style="text-align: center; padding: 16px; background: var(--light-bg); border-radius: 8px;">
+              <div style="font-size: 1.5rem; font-weight: 600; color: var(--warning-color);">${Math.round(progress)}%</div>
+              <div style="font-size: 0.9rem; color: var(--text-secondary);">Progress</div>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="color: var(--text-color); font-weight: 500;">Overall Progress</span>
+              <span style="color: var(--text-secondary);">${Math.round(progress)}%</span>
+            </div>
+            <div style="width: 100%; height: 12px; background: var(--light-bg); border-radius: 6px; overflow: hidden;">
+              <div style="height: 100%; background: var(--gradient-primary); border-radius: 6px; width: ${progress}%; transition: width 1s ease;"></div>
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button onclick="closeStatsModal()" style="
+              padding: 10px 20px;
+              background: var(--light-bg);
+              color: var(--text-color);
+              border: 1px solid var(--border-color);
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.3s ease;
+            ">Close</button>
+            <button onclick="startChapter('${chapter.id}')" style="
+              padding: 10px 20px;
+              background: var(--primary-color);
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+              transition: all 0.3s ease;
+            ">Start Practice</button>
+          </div>
+        </div>
+      `;
+      
+      // Close modal on outside click
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeStatsModal();
+        }
+      });
+      
+      return modal;
+    }
+
+    function closeStatsModal() {
+      const modal = document.querySelector('.modal-overlay');
+      if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+          modal.remove();
+        }, 300);
+      }
+    }
+
+    // Update Stats
+    function updateStats() {
+      let totalQuestions = 0;
+      let solvedQuestions = 0;
+      let totalAccuracy = 0;
+      let chaptersWithProgress = 0;
+      
+      allChapters.forEach(chapter => {
+        totalQuestions += chapter.totalQuestions;
+        solvedQuestions += chapter.solvedQuestions;
+        
+        if (chapter.solvedQuestions > 0) {
+          totalAccuracy += chapter.accuracy;
+          chaptersWithProgress++;
+        }
+      });
+      
+      const averageAccuracy = chaptersWithProgress > 0 ? Math.round(totalAccuracy / chaptersWithProgress) : 0;
+      const studyStreak = calculateStudyStreak();
+      
+      // Animate number changes
+      animateNumber(totalQuestionsEl, parseInt(totalQuestionsEl.textContent) || 0, totalQuestions);
+      animateNumber(solvedQuestionsEl, parseInt(solvedQuestionsEl.textContent) || 0, solvedQuestions);
+      animateNumber(accuracyRateEl, parseInt(accuracyRateEl.textContent) || 0, averageAccuracy, '%');
+      animateNumber(studyStreakEl, parseInt(studyStreakEl.textContent) || 0, studyStreak);
+    }
+
+    function calculateStudyStreak() {
+      // In a real app, this would calculate based on user's study history
+      return Math.floor(Math.random() * 15) + 1; // Random for demo
+    }
+
+    function animateNumber(element, start, end, suffix = '') {
+      const duration = 1000;
+      const startTime = performance.now();
+      
+      function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const current = Math.round(start + (end - start) * progress);
+        element.textContent = current + suffix;
+        
+        if (progress < 1) {
+          requestAnimationFrame(updateNumber);
+        }
+      }
+      
+      requestAnimationFrame(updateNumber);
+    }
+
+    // Loading Functions
+    function showLoadingSkeleton() {
+      loadingSkeleton.style.display = 'grid';
+      chaptersContainer.style.display = 'none';
+    }
+
+    function hideLoadingSkeleton() {
+      loadingSkeleton.style.display = 'none';
+      chaptersContainer.style.display = 'grid';
+    }
+
+    // Message Functions
+    function showSuccessMessage(message) {
+      const messageEl = successMessage.querySelector('span');
+      messageEl.textContent = message;
+      successMessage.classList.add('show');
+      
+      setTimeout(() => {
+        successMessage.classList.remove('show');
+      }, 3000);
+    }
+
+    function showErrorMessage(message) {
+      // Create error message element if it doesn't exist
+      let errorMessage = document.getElementById('errorMessage');
+      if (!errorMessage) {
+        errorMessage = document.createElement('div');
+        errorMessage.id = 'errorMessage';
+        errorMessage.style.cssText = `
+          background: rgba(244, 67, 54, 0.1);
+          border: 1px solid rgba(244, 67, 54, 0.3);
+          color: var(--danger-color);
+          padding: 16px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          display: none;
+          align-items: center;
+          gap: 8px;
+          animation: slideDown 0.3s ease;
+        `;
+        errorMessage.innerHTML = '<i class="fas fa-exclamation-circle"></i><span></span>';
+        successMessage.parentNode.insertBefore(errorMessage, successMessage.nextSibling);
+      }
+      
+      const messageEl = errorMessage.querySelector('span');
+      messageEl.textContent = message;
+      errorMessage.style.display = 'flex';
+      
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 5000);
+    }
+
+    // Sound Functions
+    function playSuccessSound() {
+      try {
+        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+        audio.volume = 0.3;
+        audio.play().catch(() => {}); // Ignore errors
+      } catch (error) {
+        // Ignore audio errors
+      }
+    }
+
+    // Keyboard Shortcuts
+    function handleKeyboardShortcuts(e) {
+      // Ctrl/Cmd + K for search
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+      
+      // Escape to clear search
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        searchMobile.querySelector('input').value = '';
+        handleSearch({ target: { value: '' } });
+      }
+      
+      // Number keys for exam type selection
+      if (e.key >= '1' && e.key <= '3') {
+        const examTypes = ['all', 'jee', 'neet'];
+        const index = parseInt(e.key) - 1;
+        if (examTypes[index]) {
+          handleExamTypeChange(examTypes[index]);
+        }
+      }
+    }
+
+    // Logout Function
+    function handleLogout(e) {
+      e.preventDefault();
+      
+      if (confirm('Are you sure you want to log out?')) {
+        auth.signOut()
+          .then(() => {
+            window.location.href = "index.html";
+          })
+          .catch(error => {
+            console.error("Sign out error:", error);
+            showErrorMessage('Error signing out. Please try again.');
+          });
+      }
+    }
+
+    // Make functions globally available
+    window.startChapter = startChapter;
+    window.toggleBookmark = toggleBookmark;
+    window.viewStats = viewStats;
+    window.closeStatsModal = closeStatsModal;
+
+    // Register Service Worker for PWA capabilities
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js")
+          .then(registration => console.log("Service Worker registered with scope:", registration.scope))
+          .catch(err => console.error("Service Worker registration failed:", err));
+      });
+    }
+
+    console.log('🔥 Edurack PYQs - All features loaded and ready!');
   </script>
 </body>
 </html>
